@@ -122,7 +122,7 @@ DEFAULTS = {"seed": "", "drops": True, "drop_chance": 25, "spots_on": True, "spo
 DIFFICULTIES = {"Any": None, "Easy": "easy", "Normal": "normal", "Hard": "hard", "Very hard": "very-hard"}
 VERY_HARD_DOORS = 60     # Very hard turns More locked doors on at this chance or more (user, 2026-10-18)
 VERY_HARD_SPOTS = 10     # ... and lowers Many search places to this many if it is on and higher
-RED, GREEN = "#b00020", "#1b6e20"
+RED, GREEN, GREY = "#b00020", "#1b6e20", "#555555"
 NO_DATA = ("Your original game files were not found. Choose your game data directory: the folder of "
            "your GOG, Steam or CD copy of Alone in the Dark that holds ITD_RESS.PAK (usually called "
            "INDARK).")
@@ -301,18 +301,23 @@ class App:
         self.custom_hd = tk.BooleanVar(value=self.s["custom_hd"])
         self.hd_assets = tk.StringVar(value=self.s["hd_assets"])
         self.hd_cb = ttk.Checkbutton(g, text="Include custom HD backgrounds (TatouHd)", variable=self.custom_hd,
-                                     command=self.sync)
+                                     command=self.hd_clicked)
         self.hd_cb.grid(row=6, column=0, columnspan=3, sticky="w", pady=(8, 0))
         Tip(self.hd_cb, HELP["custom_hd"])
         self.hd_entry = ttk.Entry(g, textvariable=self.hd_assets)
         self.hd_entry.grid(row=7, column=0, sticky="ew", padx=(0, 6), pady=(2, 0))
         self.hd_entry.bind("<FocusOut>", lambda _e: self.sync())
+        self.hd_entry.bind("<Return>", lambda _e: self.root.focus_set())   # leaves the field: checks it
         Tip(self.hd_entry, HELP["custom_hd"])
         self.hd_browse = ttk.Button(g, text="Browse...", command=self.browse_hd)
         self.hd_browse.grid(row=7, column=1, pady=(2, 0))
         self.hd_status = tk.Label(g, text="", justify="left", anchor="w", wraplength=580)
         self.hd_status.grid(row=8, column=0, columnspan=3, sticky="w")
         self.hd_problem, self.hd_ok = None, False   # why custom HD can't go into this folder (None: it can)
+        # The pack check reads every image header (seconds for a big pack), so it runs in a thread and
+        # only when the pack folder changes or the box is ticked; other changes reuse its result.
+        # Randomize checks the pack again before any write (_randomize).
+        self.pack_key, self.pack_result = None, None   # the folder checked; (ok, msg), None while checking
         self.found = []                 # the Steam/GOG/CD search, per refresh
         self.data_ok, self.data_path = False, None
 
@@ -529,17 +534,49 @@ class App:
         else:
             self.hd_cb.state(["!disabled"])
             if self.custom_hd.get():
-                try:
-                    s = self._check_pack(Path(self.hd_assets.get().strip() or "."))
-                    msg = (f"{s['stills']} still(s), {s['animations']} animation(s) ({s['frames']} frames), "
-                           f"{s['bytes'] / 1e6:.0f} MB")
-                except CH.Refused as e:
-                    msg, ok = str(e), False
+                key = self.hd_assets.get().strip()
+                if key != self.pack_key:
+                    if self._focus() is self.hd_entry:          # still typing the folder
+                        msg, ok = "Press Enter or leave the field to check this folder.", False
+                    else:
+                        self.start_pack_check(key)
+                if key == self.pack_key:
+                    if self.pack_result is None:
+                        msg, ok = "Checking the custom HD pack...", False
+                    else:
+                        ok, msg = self.pack_result
         on = self.custom_hd.get()
         self.hd_entry.state(["!disabled"] if on else ["disabled"])
         self.hd_browse.state(["!disabled"] if on else ["disabled"])
-        self.hd_status.config(text=msg, fg=GREEN if ok else RED)
+        pending = on and not self.hd_problem and not ok and (self.pack_key != self.hd_assets.get().strip()
+                                                              or self.pack_result is None)
+        self.hd_status.config(text=msg, fg=GREEN if ok else GREY if pending else RED)
         self.hd_ok = ok
+
+    def _focus(self):
+        try:
+            return self.root.focus_get()
+        except (KeyError, tk.TclError):      # focus in a dialog Tk doesn't know
+            return None
+
+    def hd_clicked(self):
+        self.pack_key = None                 # ticking the box checks the pack again
+        self.sync()
+
+    def start_pack_check(self, key: str):
+        self.pack_key, self.pack_result = key, None
+
+        def work():
+            try:
+                s = self._check_pack(Path(key or "."))
+                res = (True, f"{s['stills']} still(s), {s['animations']} animation(s) ({s['frames']} frames), "
+                             f"{s['bytes'] / 1e6:.0f} MB")
+            except CH.Refused as e:
+                res = (False, str(e))
+            except Exception as e:           # an unreadable file or folder
+                res = (False, f"the HD pack could not be read: {e}")
+            self.q.put(("pack", (key, res)))
+        threading.Thread(target=work, daemon=True).start()
 
     def hd_blocks(self) -> bool:
         """The option is ticked but can't be installed: Randomize stays off."""
@@ -667,6 +704,11 @@ class App:
                 kind, payload = self.q.get_nowait()
                 if kind == "log":
                     self.say(payload)
+                elif kind == "pack":
+                    key, res = payload
+                    if key == self.pack_key:      # not a folder that was changed again meanwhile
+                        self.pack_result = res
+                        self.sync()
                 elif kind == "done":
                     self.busy = False
                     self.refresh()
