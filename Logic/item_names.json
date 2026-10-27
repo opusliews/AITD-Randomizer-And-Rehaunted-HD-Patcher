@@ -1,0 +1,8 @@
+{
+ "_about": "Player-facing item names for spoilers. By default the generator uses the title the game itself gives an item when it is read or used (found_name renames in the scripts: books, keys, records, letters), ignoring state renames (empty, broken, wet). Entries here override that. status: decided / suggested.",
+ "78": {
+  "name": "The Sacrificial Dagger",
+  "status": "decided",
+  "note": "user 2026-10-16 (was the suggestion 'A Wavy Dagger'); kills the library monster. The parchment OBJ 114 shows as A Parchment (\"The Sacrificial Dagger\")."
+ }
+}

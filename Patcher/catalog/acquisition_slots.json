@@ -1,0 +1,1703 @@
+{
+ "source": "Generated/Patcher/slot_catalog2.py",
+ "slots": [
+  {
+   "life": 0,
+   "at": 168,
+   "instruction": "found 3",
+   "owners": [
+    0
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "C:0",
+   "family": "container",
+   "location": {
+    "floor": 0,
+    "room": 0
+   },
+   "source_obj": 0,
+   "items": [
+    3
+   ],
+   "item_sites": {
+    "3": [
+     {
+      "offset": 160,
+      "kind": "expr_arg",
+      "detail": "object",
+      "instruction": "if_egal object(3) #0 @L176",
+      "at": 156
+     },
+     {
+      "offset": 170,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 3",
+      "at": 168
+     }
+    ]
+   },
+   "local_requirements": [
+    "@0 if_egal body #0 @L126",
+    "@10 if_egal col_by #1 @L118",
+    "@32 if_egal obj_1.end_anim #1 @L92",
+    "@44 if_egal posrel(1) #2 @L92",
+    "@146 if_egal end_anim #1 @L202",
+    "@156 if_egal object(3) #0 @L176"
+   ],
+   "names": {
+    "3": "A Rifle"
+   }
+  },
+  {
+   "life": 1,
+   "at": 164,
+   "instruction": "found 5",
+   "owners": [
+    4
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "C:4",
+   "family": "container",
+   "location": {
+    "floor": 0,
+    "room": 0
+   },
+   "source_obj": 4,
+   "items": [
+    5
+   ],
+   "item_sites": {
+    "5": [
+     {
+      "offset": 156,
+      "kind": "expr_arg",
+      "detail": "object",
+      "instruction": "if_egal object(5) #0 @L172",
+      "at": 152
+     },
+     {
+      "offset": 166,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 5",
+      "at": 164
+     }
+    ]
+   },
+   "local_requirements": [
+    "@0 if_egal body #2 @L132",
+    "@10 if_egal col_by #1 @L124",
+    "@32 if_egal obj_1.end_anim #1 @L98",
+    "@44 if_egal posrel(1) #2 @L98",
+    "@142 if_egal end_anim #1 @L198",
+    "@152 if_egal object(5) #0 @L172"
+   ],
+   "names": {
+    "5": "An Old Indian Cover"
+   }
+  },
+  {
+   "life": 45,
+   "at": 234,
+   "instruction": "found 38",
+   "owners": [
+    36
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "C:36",
+   "family": "locked_container",
+   "location": {
+    "floor": 1,
+    "room": 2
+   },
+   "source_obj": 36,
+   "items": [
+    38
+   ],
+   "item_sites": {
+    "38": [
+     {
+      "offset": 226,
+      "kind": "expr_arg",
+      "detail": "object",
+      "instruction": "if_egal object(38) #0 @L248",
+      "at": 222
+     },
+     {
+      "offset": 236,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 38",
+      "at": 234
+     }
+    ]
+   },
+   "local_requirements": [
+    "@0 if_egal body #35 @L192",
+    "@10 if_egal col_by #1 @L188",
+    "@32 if_egal posrel(1) #2 @L188",
+    "@44 if_egal in_hand #37 @L120",
+    "@60 if_egal obj_1.end_anim #1 @L116",
+    "@120 L120: if_egal var_32 #1 @L184",
+    "@132 if_egal obj_1.end_anim #1 @L180",
+    "@212 if_egal end_anim #1 @L274",
+    "@222 if_egal object(38) #0 @L248"
+   ],
+   "names": {
+    "38": "An Old Cavalry Saber"
+   }
+  },
+  {
+   "life": 49,
+   "at": 626,
+   "instruction": "put_at 41 1",
+   "owners": [
+    38
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "slot_id": "Y:38",
+   "family": "item_byproduct",
+   "location": null,
+   "source_obj": 38,
+   "items": [
+    41
+   ],
+   "item_sites": {
+    "41": [
+     {
+      "offset": 628,
+      "kind": "word",
+      "detail": "put_at#0",
+      "instruction": "put_at 41 1",
+      "at": 626
+     }
+    ]
+   },
+   "local_requirements": [
+    "@10 if_egal var_35 #1 @L176",
+    "@22 if_egal var_38 #0 @L78",
+    "@78 L78: if_egal var_34 #1 @L134",
+    "@150 L150: if_egal in_hand #38 @L172",
+    "@210 if_different in_hand #38 @L232",
+    "@302 if_egal var_38 #0 @L326",
+    "@348 if_egal var_0 #1 @L666",
+    "@572 L572: if_different obj_1.hit #-1 @L666",
+    "@584 if_egal var_38 #0 @L666",
+    "@600 if_inf_egal var_37 #0 @L666"
+   ],
+   "names": {
+    "41": "A Saber Blade"
+   }
+  },
+  {
+   "life": 54,
+   "at": 42,
+   "instruction": "found 46",
+   "owners": [
+    45
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "C:45",
+   "family": "container",
+   "location": {
+    "floor": 1,
+    "room": 3
+   },
+   "source_obj": 45,
+   "items": [
+    46
+   ],
+   "item_sites": {
+    "46": [
+     {
+      "offset": 34,
+      "kind": "expr_arg",
+      "detail": "object",
+      "instruction": "if_egal object(46) #0 @L50",
+      "at": 30
+     },
+     {
+      "offset": 44,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 46",
+      "at": 42
+     }
+    ]
+   },
+   "local_requirements": [
+    "@0 if_egal var_41 #1 @L90",
+    "@20 if_egal beta #512 @L86",
+    "@30 if_egal object(46) #0 @L50"
+   ],
+   "names": {
+    "46": "A First Aid Case"
+   }
+  },
+  {
+   "life": 57,
+   "at": 126,
+   "instruction": "found 48",
+   "owners": [
+    46
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "slot_id": "I:46",
+   "family": "inventory_container",
+   "location": null,
+   "source_obj": 46,
+   "items": [
+    48
+   ],
+   "item_sites": {
+    "48": [
+     {
+      "offset": 128,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 48",
+      "at": 126
+     },
+     {
+      "offset": 136,
+      "kind": "const",
+      "detail": "isfound",
+      "instruction": "if_egal isfound(#48) #1 @L162",
+      "at": 130
+     },
+     {
+      "offset": 158,
+      "kind": "target",
+      "detail": "found_weight",
+      "instruction": "obj_48.found_weight 20",
+      "at": 156
+     }
+    ]
+   },
+   "local_requirements": [],
+   "names": {
+    "48": "A Flask"
+   }
+  },
+  {
+   "life": 68,
+   "at": 40,
+   "instruction": "put_at 53 56",
+   "owners": [
+    56
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "B:56",
+   "family": "breakage",
+   "location": {
+    "floor": 1,
+    "room": 4
+   },
+   "source_obj": 56,
+   "items": [
+    53
+   ],
+   "item_sites": {
+    "53": [
+     {
+      "offset": 42,
+      "kind": "word",
+      "detail": "put_at#0",
+      "instruction": "put_at 53 56",
+      "at": 40
+     }
+    ]
+   },
+   "local_requirements": [
+    "@0 if_egal isfound(#56) #0 @L64",
+    "@14 if_egal object(56) #1 @L64"
+   ],
+   "names": {
+    "53": "A Key"
+   }
+  },
+  {
+   "life": 117,
+   "at": 60,
+   "instruction": "found 76",
+   "owners": [
+    75
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "H:117",
+   "family": "extra_search",
+   "location": {
+    "floor": 2,
+    "room": 0
+   },
+   "source_obj": 75,
+   "items": [
+    76
+   ],
+   "item_sites": {
+    "76": [
+     {
+      "offset": 52,
+      "kind": "expr_arg",
+      "detail": "object",
+      "instruction": "if_egal object(76) #0 @L68",
+      "at": 48
+     },
+     {
+      "offset": 62,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 76",
+      "at": 60
+     }
+    ]
+   },
+   "local_requirements": [
+    "@0 if_egal obj_1.hard_col #6 @L80",
+    "@12 if_egal obj_1.anim #2 @L80",
+    "@24 if_egal obj_1.end_anim #1 @L80",
+    "@36 if_egal posrel(1) #1 @L76",
+    "@48 if_egal object(76) #0 @L68"
+   ],
+   "names": {
+    "76": "A Book"
+   }
+  },
+  {
+   "life": 131,
+   "at": 118,
+   "instruction": "put_at 81 82",
+   "owners": [
+    82
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "M:82",
+   "family": "monster_drop",
+   "location": {
+    "floor": 2,
+    "room": 2
+   },
+   "source_obj": 82,
+   "items": [
+    81
+   ],
+   "also": [
+    {
+     "life": 132,
+     "at": 248
+    }
+   ],
+   "item_sites": {
+    "81": [
+     {
+      "offset": 120,
+      "kind": "word",
+      "detail": "put_at#0",
+      "instruction": "put_at 81 82",
+      "at": 118
+     },
+     {
+      "offset": 250,
+      "kind": "word",
+      "detail": "put_at#0",
+      "instruction": "put_at 81 82",
+      "at": 248,
+      "life": 132
+     }
+    ]
+   },
+   "local_requirements": [
+    "@12 if_egal end_anim #1 @L44",
+    "@54 if_egal end_anim #1 @L86",
+    "@106 if_egal end_anim #1 @L144"
+   ],
+   "names": {
+    "81": "A Sword"
+   }
+  },
+  {
+   "life": 160,
+   "at": 126,
+   "instruction": "found 95",
+   "owners": [
+    94
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "slot_id": "I:94",
+   "family": "inventory_container",
+   "location": null,
+   "source_obj": 94,
+   "items": [
+    95
+   ],
+   "item_sites": {
+    "95": [
+     {
+      "offset": 128,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 95",
+      "at": 126
+     },
+     {
+      "offset": 136,
+      "kind": "const",
+      "detail": "isfound",
+      "instruction": "if_egal isfound(#95) #1 @L162",
+      "at": 130
+     },
+     {
+      "offset": 158,
+      "kind": "target",
+      "detail": "found_weight",
+      "instruction": "obj_95.found_weight 20",
+      "at": 156
+     }
+    ]
+   },
+   "local_requirements": [],
+   "names": {
+    "95": "A Flask"
+   }
+  },
+  {
+   "life": 268,
+   "at": 508,
+   "instruction": "put_at 141 149",
+   "owners": [
+    149
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "M:149",
+   "family": "monster_drop",
+   "location": {
+    "floor": 3,
+    "room": 2
+   },
+   "source_obj": 149,
+   "items": [
+    141
+   ],
+   "item_sites": {
+    "141": [
+     {
+      "offset": 510,
+      "kind": "word",
+      "detail": "put_at#0",
+      "instruction": "put_at 141 149",
+      "at": 508
+     }
+    ]
+   },
+   "local_requirements": [
+    "@2 if_different obj_1.room #2 @L32",
+    "@42 if_sup var_21 #0 @L446",
+    "@54 if_inf_egal dist(1) #2500 @L442",
+    "@66 if_egal in_hand #81 @L214",
+    "@214 L214: if_egal in_hand #38 @L362",
+    "@446 L446: if_egal col #1 @L462",
+    "@472 if_egal end_anim #1 @L486",
+    "@496 if_egal end_anim #1 @L534"
+   ],
+   "names": {
+    "141": "A Key"
+   }
+  },
+  {
+   "life": 364,
+   "at": 126,
+   "instruction": "found 103",
+   "owners": [
+    181
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "slot_id": "I:181",
+   "family": "inventory_container",
+   "location": null,
+   "source_obj": 181,
+   "items": [
+    103
+   ],
+   "item_sites": {
+    "103": [
+     {
+      "offset": 128,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 103",
+      "at": 126
+     },
+     {
+      "offset": 136,
+      "kind": "const",
+      "detail": "isfound",
+      "instruction": "if_egal isfound(#103) #1 @L162",
+      "at": 130
+     },
+     {
+      "offset": 158,
+      "kind": "target",
+      "detail": "found_weight",
+      "instruction": "obj_103.found_weight 20",
+      "at": 156
+     }
+    ]
+   },
+   "local_requirements": [],
+   "names": {
+    "103": "A Revolver"
+   }
+  },
+  {
+   "life": 503,
+   "at": 282,
+   "instruction": "found 268",
+   "owners": [
+    267
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "C:267",
+   "family": "locked_container",
+   "location": {
+    "floor": 5,
+    "room": 11
+   },
+   "source_obj": 267,
+   "items": [
+    268,
+    269
+   ],
+   "item_sites": {
+    "268": [
+     {
+      "offset": 274,
+      "kind": "expr_arg",
+      "detail": "object",
+      "instruction": "if_egal object(268) #0 @L300",
+      "at": 270
+     },
+     {
+      "offset": 284,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 268",
+      "at": 282
+     }
+    ],
+    "269": [
+     {
+      "offset": 288,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 269",
+      "at": 286
+     },
+     {
+      "offset": 304,
+      "kind": "expr_arg",
+      "detail": "object",
+      "instruction": "L300: if_egal object(269) #0 @L320",
+      "at": 300
+     },
+     {
+      "offset": 314,
+      "kind": "word",
+      "detail": "found#0",
+      "instruction": "found 269",
+      "at": 312
+     }
+    ]
+   },
+   "local_requirements": [
+    "@0 if_egal body #245 @L240",
+    "@10 if_egal col_by #1 @L214",
+    "@32 if_egal posrel(1) #2 @L188",
+    "@44 if_egal in_hand #144 @L120",
+    "@60 if_egal obj_1.end_anim #1 @L116",
+    "@120 L120: if_egal var_194 #1 @L184",
+    "@132 if_egal obj_1.end_anim #1 @L180",
+    "@214 L214: if_egal falling #1 @L232",
+    "@260 if_egal end_anim #1 @L346",
+    "@270 if_egal object(268) #0 @L300"
+   ],
+   "names": {
+    "268": "A Gem",
+    "269": "A Book"
+   }
+  },
+  {
+   "life": 562,
+   "at": 24,
+   "instruction": "take 2",
+   "owners": [
+    2
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "slot_id": "S:2",
+   "family": "starting_inventory",
+   "location": null,
+   "items": [
+    2
+   ],
+   "item_sites": {
+    "2": [
+     {
+      "offset": 26,
+      "kind": "word",
+      "detail": "take#0",
+      "instruction": "take 2",
+      "at": 24
+     }
+    ]
+   },
+   "local_requirements": [],
+   "names": {
+    "2": "Actions"
+   }
+  },
+  {
+   "slot_id": "P:17",
+   "family": "direct_pickup",
+   "location": {
+    "floor": 3,
+    "room": 10
+   },
+   "source_obj": 17,
+   "items": [
+    17
+   ],
+   "life": null,
+   "at": null,
+   "instruction": "OBJETS flags 0x80",
+   "owners": [],
+   "owner_roles": [],
+   "item_sites": {
+    "17": []
+   },
+   "local_requirements": [],
+   "names": {
+    "17": "An Oil Can"
+   }
+  },
+  {
+   "slot_id": "P:25",
+   "family": "direct_pickup",
+   "location": {
+    "floor": 1,
+    "room": 0
+   },
+   "source_obj": 25,
+   "items": [
+    25
+   ],
+   "life": null,
+   "at": null,
+   "instruction": "OBJETS flags 0x80",
+   "owners": [],
+   "owner_roles": [],
+   "item_sites": {
+    "25": []
+   },
+   "local_requirements": [],
+   "names": {
+    "25": "A Bow"
+   }
+  },
+  {
+   "slot_id": "P:96",
+   "family": "direct_pickup",
+   "location": {
+    "floor": 2,
+    "room": 5
+   },
+   "source_obj": 96,
+   "items": [
+    96
+   ],
+   "life": null,
+   "at": null,
+   "instruction": "OBJETS flags 0x80",
+   "owners": [],
+   "owner_roles": [],
+   "item_sites": {
+    "96": []
+   },
+   "local_requirements": [],
+   "names": {
+    "96": "A Jug"
+   }
+  },
+  {
+   "slot_id": "P:148",
+   "family": "direct_pickup",
+   "location": {
+    "floor": 3,
+    "room": 2
+   },
+   "source_obj": 148,
+   "items": [
+    148
+   ],
+   "life": null,
+   "at": null,
+   "instruction": "OBJETS flags 0x80",
+   "owners": [],
+   "owner_roles": [],
+   "item_sites": {
+    "148": []
+   },
+   "local_requirements": [],
+   "names": {
+    "148": "A Book"
+   }
+  },
+  {
+   "slot_id": "P:205",
+   "family": "direct_pickup",
+   "location": {
+    "floor": 4,
+    "room": 0
+   },
+   "source_obj": 205,
+   "items": [
+    205
+   ],
+   "life": null,
+   "at": null,
+   "instruction": "OBJETS flags 0x80",
+   "owners": [],
+   "owner_roles": [],
+   "item_sites": {
+    "205": []
+   },
+   "local_requirements": [],
+   "names": {
+    "205": "A Block"
+   }
+  },
+  {
+   "slot_id": "P:232",
+   "family": "direct_pickup",
+   "location": {
+    "floor": 6,
+    "room": 6
+   },
+   "source_obj": 232,
+   "items": [
+    232
+   ],
+   "life": null,
+   "at": null,
+   "instruction": "OBJETS flags 0x80",
+   "owners": [],
+   "owner_roles": [],
+   "item_sites": {
+    "232": []
+   },
+   "local_requirements": [],
+   "names": {
+    "232": "A Hook"
+   }
+  }
+ ],
+ "item_use_placements": [
+  {
+   "life": 11,
+   "at": 20,
+   "instruction": "drop var_9 1",
+   "owners": [
+    1
+   ],
+   "owner_roles": [
+    "life"
+   ],
+   "note": "the player's own drop (LIFE 11, item in var_9)",
+   "kind": "player_drop"
+  },
+  {
+   "life": 14,
+   "at": 36,
+   "instruction": "put 5 50 -2600 10500 1 2 0 0 0",
+   "owners": [
+    5
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put",
+   "item": 5,
+   "to": {
+    "floor": 2,
+    "room": 1,
+    "x": 50,
+    "y": -2600,
+    "z": 10500
+   }
+  },
+  {
+   "life": 70,
+   "at": 34,
+   "instruction": "put 54 3200 -1600 4500 7 1 256 0 0",
+   "owners": [
+    54
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put",
+   "item": 54,
+   "to": {
+    "floor": 1,
+    "room": 7,
+    "x": 3200,
+    "y": -1600,
+    "z": 4500
+   }
+  },
+  {
+   "life": 70,
+   "at": 104,
+   "instruction": "put 54 3200 -1800 -4800 7 1 -256 0 0",
+   "owners": [
+    54
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put",
+   "item": 54,
+   "to": {
+    "floor": 1,
+    "room": 7,
+    "x": 3200,
+    "y": -1800,
+    "z": -4800
+   }
+  },
+  {
+   "life": 71,
+   "at": 34,
+   "instruction": "put 55 3200 -1600 4500 7 1 256 0 0",
+   "owners": [
+    55
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put",
+   "item": 55,
+   "to": {
+    "floor": 1,
+    "room": 7,
+    "x": 3200,
+    "y": -1600,
+    "z": 4500
+   }
+  },
+  {
+   "life": 71,
+   "at": 104,
+   "instruction": "put 55 3200 -1800 -4700 7 1 -256 0 0",
+   "owners": [
+    55
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put",
+   "item": 55,
+   "to": {
+    "floor": 1,
+    "room": 7,
+    "x": 3200,
+    "y": -1800,
+    "z": -4700
+   }
+  },
+  {
+   "life": 184,
+   "at": 22,
+   "instruction": "put 107 -4000 -610 -6200 0 2 0 768 256",
+   "owners": [
+    107
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put",
+   "item": 107,
+   "to": {
+    "floor": 2,
+    "room": 0,
+    "x": -4000,
+    "y": -610,
+    "z": -6200
+   }
+  },
+  {
+   "life": 190,
+   "at": 78,
+   "instruction": "put 110 5300 -1000 -6100 6 6 0 0 0",
+   "owners": [
+    110
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put",
+   "item": 110,
+   "to": {
+    "floor": 6,
+    "room": 6,
+    "x": 5300,
+    "y": -1000,
+    "z": -6100
+   }
+  },
+  {
+   "life": 283,
+   "at": 148,
+   "instruction": "drop #123 1",
+   "owners": [
+    125
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "drop_at",
+   "item": null,
+   "onto": 123
+  },
+  {
+   "life": 283,
+   "at": 170,
+   "instruction": "put_at 125 123",
+   "owners": [
+    125
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put_at",
+   "item": 125,
+   "onto": 123
+  },
+  {
+   "life": 352,
+   "at": 30,
+   "instruction": "put 171 700 -800 -2600 12 3 0 0 0",
+   "owners": [
+    171
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put",
+   "item": 171,
+   "to": {
+    "floor": 3,
+    "room": 12,
+    "x": 700,
+    "y": -800,
+    "z": -2600
+   }
+  },
+  {
+   "life": 352,
+   "at": 98,
+   "instruction": "put 171 700 -800 500 12 3 0 0 0",
+   "owners": [
+    171
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put",
+   "item": 171,
+   "to": {
+    "floor": 3,
+    "room": 12,
+    "x": 700,
+    "y": -800,
+    "z": 500
+   }
+  },
+  {
+   "life": 379,
+   "at": 148,
+   "instruction": "drop #123 1",
+   "owners": [
+    126
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "drop_at",
+   "item": null,
+   "onto": 123
+  },
+  {
+   "life": 379,
+   "at": 170,
+   "instruction": "put_at 126 123",
+   "owners": [
+    126
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put_at",
+   "item": 126,
+   "onto": 123
+  },
+  {
+   "life": 431,
+   "at": 148,
+   "instruction": "drop #123 1",
+   "owners": [
+    127
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "drop_at",
+   "item": null,
+   "onto": 123
+  },
+  {
+   "life": 431,
+   "at": 170,
+   "instruction": "put_at 127 123",
+   "owners": [
+    127
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "kind": "put_at",
+   "item": 127,
+   "onto": 123
+  }
+ ],
+ "item_returns": [
+  {
+   "life": 206,
+   "at": 22,
+   "instruction": "found 125",
+   "owners": [
+    123
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "item": 125
+  },
+  {
+   "life": 206,
+   "at": 36,
+   "instruction": "found 126",
+   "owners": [
+    123
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "item": 126
+  },
+  {
+   "life": 206,
+   "at": 50,
+   "instruction": "found 127",
+   "owners": [
+    123
+   ],
+   "owner_roles": [
+    "found"
+   ],
+   "item": 127
+  }
+ ],
+ "optional_empty_zones": [
+  {
+   "zone_id": "F0:R0:HC11",
+   "parameter": 3,
+   "controller_life": 7,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F0:R0:HC12",
+   "parameter": 4,
+   "controller_life": 7,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F0:R0:HC13",
+   "parameter": 5,
+   "controller_life": 7,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F0:R0:HC14",
+   "parameter": 8,
+   "controller_life": 7,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F0:R0:HC15",
+   "parameter": 6,
+   "controller_life": 7,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F0:R0:HC16",
+   "parameter": 7,
+   "controller_life": 7,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F0:R0:HC17",
+   "parameter": 10,
+   "controller_life": 7,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": ""
+  },
+  {
+   "zone_id": "F0:R0:HC23",
+   "parameter": 9,
+   "controller_life": 7,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": ""
+  },
+  {
+   "zone_id": "F1:R0:HC7",
+   "parameter": 2,
+   "controller_life": 27,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F1:R0:HC8",
+   "parameter": 1,
+   "controller_life": 27,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F1:R2:HC6",
+   "parameter": 2,
+   "controller_life": 46,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F1:R2:HC9",
+   "parameter": 1,
+   "controller_life": 46,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F1:R3:HC3",
+   "parameter": 1,
+   "controller_life": 56,
+   "shares_parameter_with": [],
+   "messages": "\"no_water\"",
+   "usable": false,
+   "reason": "message \"no_water\"",
+   "user_note": "Area says \"no water\". No randomized items allowed here."
+  },
+  {
+   "zone_id": "F1:R3:HC5",
+   "parameter": 2,
+   "controller_life": 56,
+   "shares_parameter_with": [],
+   "messages": "\"no_water\"",
+   "usable": false,
+   "reason": "message \"no_water\"",
+   "user_note": "Area says \"no water\". No randomized items allowed here."
+  },
+  {
+   "zone_id": "F1:R4:HC6",
+   "parameter": 0,
+   "controller_life": 66,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F1:R4:HC7",
+   "parameter": 4,
+   "controller_life": 66,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F1:R4:HC9",
+   "parameter": 2,
+   "controller_life": 66,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F1:R5:HC7",
+   "parameter": 1,
+   "controller_life": 81,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F1:R5:HC8",
+   "parameter": 0,
+   "controller_life": 81,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R0:HC12",
+   "parameter": 7,
+   "controller_life": 115,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important_in_this_bookcase!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R0:HC13",
+   "parameter": 9,
+   "controller_life": 115,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important_in_this_bookcase!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R0:HC15",
+   "parameter": 2,
+   "controller_life": 115,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important_in_this_bookcase!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R0:HC17",
+   "parameter": 0,
+   "controller_life": 115,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important_in_this_bookcase!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": ""
+  },
+  {
+   "zone_id": "F2:R0:HC18",
+   "parameter": 6,
+   "controller_life": 115,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important_in_this_bookcase!\"",
+   "usable": false,
+   "reason": "parameter also handled by an extra controller (item slot)",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R0:HC20",
+   "parameter": 3,
+   "controller_life": 115,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important_in_this_bookcase!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R0:HC22",
+   "parameter": 11,
+   "controller_life": 115,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R0:HC23",
+   "parameter": 4,
+   "controller_life": 115,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important_in_this_bookcase!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area\n"
+  },
+  {
+   "zone_id": "F2:R3:HC6",
+   "parameter": 2,
+   "controller_life": 138,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R3:HC7",
+   "parameter": 1,
+   "controller_life": 138,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R3:HC10",
+   "parameter": 3,
+   "controller_life": 138,
+   "shares_parameter_with": [],
+   "messages": "",
+   "usable": false,
+   "reason": "message none",
+   "user_note": "Must confirm: makes a growl sound, werewolf spawns here."
+  },
+  {
+   "zone_id": "F2:R5:HC5",
+   "parameter": 1,
+   "controller_life": 159,
+   "shares_parameter_with": [],
+   "messages": "\"no_water\"",
+   "usable": false,
+   "reason": "message \"no_water\"",
+   "user_note": ""
+  },
+  {
+   "zone_id": "F2:R5:HC6",
+   "parameter": 2,
+   "controller_life": 159,
+   "shares_parameter_with": [],
+   "messages": "\"no_water\"",
+   "usable": false,
+   "reason": "message \"no_water\"",
+   "user_note": "Says \"no water\". Cannot be used for random items."
+  },
+  {
+   "zone_id": "F2:R5:HC8",
+   "parameter": 4,
+   "controller_life": 159,
+   "shares_parameter_with": [],
+   "messages": "\"no_water\"",
+   "usable": false,
+   "reason": "message \"no_water\"",
+   "user_note": "Says \"no water\". Cannot be used for random items."
+  },
+  {
+   "zone_id": "F2:R5:HC9",
+   "parameter": 3,
+   "controller_life": 159,
+   "shares_parameter_with": [],
+   "messages": "\"no_water\"",
+   "usable": false,
+   "reason": "message \"no_water\"",
+   "user_note": "Says \"no water\". Cannot be used for random items."
+  },
+  {
+   "zone_id": "F2:R6:HC7",
+   "parameter": 2,
+   "controller_life": 172,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R7:HC5",
+   "parameter": 2,
+   "controller_life": 182,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": ""
+  },
+  {
+   "zone_id": "F2:R7:HC8",
+   "parameter": 3,
+   "controller_life": 182,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F2:R10:HC0",
+   "parameter": 3,
+   "controller_life": 201,
+   "shares_parameter_with": [],
+   "messages": "\"photograph_of_jeremy_with_his_niece!\";\"photograph_of_uncle_jeremy_with_me!\"",
+   "usable": false,
+   "reason": "message \"photograph_of_jeremy_with_his_niece!\";\"photograph_of_uncle_jeremy_with_me!\"",
+   "user_note": "Don't allow returning random items."
+  },
+  {
+   "zone_id": "F2:R10:HC6",
+   "parameter": 4,
+   "controller_life": 201,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": false,
+   "reason": "excluded by user note",
+   "user_note": "Enemy OBJ 124 kills you if you search this, so this volume cannot contain items."
+  },
+  {
+   "zone_id": "F3:R4:HC8",
+   "parameter": 3,
+   "controller_life": 304,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F3:R4:HC9",
+   "parameter": 2,
+   "controller_life": 304,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F3:R4:HC10",
+   "parameter": 5,
+   "controller_life": 304,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F3:R4:HC11",
+   "parameter": 1,
+   "controller_life": 304,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F3:R4:HC12",
+   "parameter": 4,
+   "controller_life": 304,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F3:R4:HC13",
+   "parameter": 6,
+   "controller_life": 304,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F3:R8:HC20",
+   "parameter": 4,
+   "controller_life": 350,
+   "shares_parameter_with": [],
+   "messages": "\"no_water\"",
+   "usable": false,
+   "reason": "message \"no_water\"",
+   "user_note": "cannot be used for randomization"
+  },
+  {
+   "zone_id": "F3:R10:HC7",
+   "parameter": 1,
+   "controller_life": 362,
+   "shares_parameter_with": [],
+   "messages": "\"you_fill_the_jug\";\"it_s_full_of_water\"",
+   "usable": false,
+   "reason": "message \"you_fill_the_jug\";\"it_s_full_of_water\"",
+   "user_note": "It's full of water. Can't give items, can't change implementation of this barrel, used to fill up the jug"
+  },
+  {
+   "zone_id": "F3:R11:HC7",
+   "parameter": 1,
+   "controller_life": 378,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F3:R12:HC10",
+   "parameter": 0,
+   "controller_life": 421,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F3:R12:HC14",
+   "parameter": 2,
+   "controller_life": 421,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": false,
+   "reason": "excluded by user note",
+   "user_note": "Prevent this table from giving randomized items when searched."
+  },
+  {
+   "zone_id": "F3:R12:HC15",
+   "parameter": 1,
+   "controller_life": 421,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F4:R0:HC8",
+   "parameter": 3,
+   "controller_life": 436,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F4:R0:HC12",
+   "parameter": 1,
+   "controller_life": 436,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F4:R0:HC20",
+   "parameter": 4,
+   "controller_life": 436,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  },
+  {
+   "zone_id": "F4:R0:HC22",
+   "parameter": 2,
+   "controller_life": 436,
+   "shares_parameter_with": [],
+   "messages": "\"nothing_important!\"",
+   "usable": true,
+   "reason": "",
+   "user_note": "Empty searchable area"
+  }
+ ],
+ "items_without_acquisition": [],
+ "cross_check_problems": []
+}

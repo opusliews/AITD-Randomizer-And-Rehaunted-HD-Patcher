@@ -1,0 +1,230 @@
+{
+ "_about": "Player-facing location labels for spoilers (user, 2026-10-15). Label = '<region> – <room>' unless the region or the room is suppressed. Region null = suppressed; room null = use the region alone. status: decided (user) / suggested (Claude, awaiting the user's review).",
+ "regions": {
+  "0": null,
+  "1": "3rd floor",
+  "2": "2nd floor",
+  "3": "1st floor",
+  "4": null,
+  "5": null,
+  "6": "Maze",
+  "6/6N": "Deep Tunnels",
+  "6/6": null
+ },
+ "rooms": {
+  "0/0": {
+   "name": "Attic",
+   "status": "decided"
+  },
+  "1/0": {
+   "name": "Storage Closet",
+   "status": "decided"
+  },
+  "1/1": {
+   "name": "Corridor",
+   "status": "decided"
+  },
+  "1/2": {
+   "name": "Study",
+   "status": "decided"
+  },
+  "1/3": {
+   "name": "Master Bathroom",
+   "status": "decided"
+  },
+  "1/4": {
+   "name": "Master Bedroom",
+   "status": "decided"
+  },
+  "1/5": {
+   "name": "Dressing Room",
+   "status": "decided"
+  },
+  "1/6": {
+   "name": "Storage Closet",
+   "same_as": "1/0",
+   "status": "decided",
+   "note": "user 2026-10-16: the attic stairs landing counts as the Storage Closet"
+  },
+  "1/7": {
+   "name": "Stairwell",
+   "status": "decided"
+  },
+  "2/0": {
+   "name": "Library",
+   "status": "decided"
+  },
+  "2/1": {
+   "name": "Gallery",
+   "status": "decided"
+  },
+  "2/2": {
+   "name": "Stairwell",
+   "status": "decided"
+  },
+  "2/3": {
+   "name": "Bedroom 1",
+   "status": "decided"
+  },
+  "2/4": {
+   "name": "Corridor",
+   "status": "decided"
+  },
+  "2/5": {
+   "name": "Bathroom",
+   "status": "decided"
+  },
+  "2/6": {
+   "name": "Bedroom 2",
+   "status": "decided"
+  },
+  "2/7": {
+   "name": "Bedroom 3",
+   "status": "decided"
+  },
+  "2/8": {
+   "name": "Ritual Chamber",
+   "status": "decided"
+  },
+  "2/10": {
+   "name": "Living Room",
+   "status": "decided"
+  },
+  "3/0": {
+   "name": "Front Hall",
+   "status": "decided"
+  },
+  "3/1": {
+   "name": "Entrance Hall",
+   "status": "decided"
+  },
+  "3/2": {
+   "name": "Drawing Room",
+   "status": "decided"
+  },
+  "3/3": {
+   "name": "Ballroom",
+   "status": "decided"
+  },
+  "3/4": {
+   "name": "Garden",
+   "status": "decided"
+  },
+  "3/5": {
+   "name": "Staircase",
+   "status": "decided"
+  },
+  "3/7": {
+   "name": "Pantry",
+   "status": "decided"
+  },
+  "3/8": {
+   "name": "Kitchen",
+   "status": "decided"
+  },
+  "3/9": {
+   "name": "Auxiliary Corridor",
+   "status": "decided"
+  },
+  "3/10": {
+   "name": "Kitchen Closet",
+   "status": "decided"
+  },
+  "3/11": {
+   "name": "Jeremy's Study",
+   "status": "decided"
+  },
+  "3/12": {
+   "name": "Dining Room",
+   "status": "decided"
+  },
+  "3/13": {
+   "name": "Smoking Room",
+   "status": "decided"
+  },
+  "4/0": {
+   "name": "Cellar",
+   "status": "decided"
+  },
+  "5/0": {
+   "name": "Cthonian Tunnels",
+   "status": "decided"
+  },
+  "5/1": {
+   "name": "Cthonian Tunnels",
+   "status": "decided"
+  },
+  "5/2": {
+   "name": "Cthonian Tunnels",
+   "status": "decided"
+  },
+  "5/3": {
+   "name": "Cthonian Tunnels",
+   "status": "decided"
+  },
+  "5/4": {
+   "name": "Cthonian Tunnels",
+   "status": "decided"
+  },
+  "5/5": {
+   "name": "Giant Spider Lair",
+   "status": "decided"
+  },
+  "5/6": {
+   "name": "Giant Spider Lair",
+   "status": "decided"
+  },
+  "5/7": {
+   "name": "Underground Pier",
+   "status": "decided"
+  },
+  "5/8": {
+   "name": "Underground Pillars",
+   "status": "decided"
+  },
+  "5/9": {
+   "name": "Spider-Wolf Lair",
+   "status": "decided"
+  },
+  "5/10": {
+   "name": "Pirate Cove",
+   "status": "decided"
+  },
+  "5/11": {
+   "name": "Pirate Cove",
+   "status": "decided"
+  },
+  "6/0": {
+   "name": "Maze Start",
+   "status": "decided"
+  },
+  "6/1": {
+   "name": "Maze",
+   "status": "decided"
+  },
+  "6/2": {
+   "name": "Maze",
+   "status": "decided"
+  },
+  "6/3": {
+   "name": "Maze",
+   "status": "decided"
+  },
+  "6/4": {
+   "name": "Maze",
+   "status": "decided"
+  },
+  "6/5": {
+   "name": "Maze End",
+   "status": "decided"
+  },
+  "6/6N": {
+   "name": "Maze Entrance",
+   "status": "decided"
+  },
+  "6/6": {
+   "name": "Pregzt's Tomb",
+   "status": "decided"
+  }
+ }
+}

@@ -1,0 +1,159 @@
+=== OBJ 13 (found_life 9, life 10)
+  LIFE   7 [11.life] found 13    ; @82
+  LIFE   9 [13.found_life] var 9 #13    ; @128
+  LIFE   9 [13.found_life] if_different in_hand #13 @L170    ; @148
+  LIFE  10 [13.life] L60: if_egal isfound(#13) #1 @L86    ; @60
+  LIFE  28 [16.found_life] if_egal isfound(#13) #0 @L88    ; @66
+  LIFE 115 [69.life] if_egal obj_13.stage #2 @L86    ; @42
+  LIFE 115 [69.life] if_egal obj_13.room #0 @L86    ; @54
+  LIFE 115 [69.life] L86: if_egal in_hand #13 @L116    ; @86
+  LIFE 172 [92.life] if_egal obj_13.stage #2 @L204    ; @160
+  LIFE 172 [92.life] if_egal obj_13.room #6 @L204    ; @172
+  LIFE 172 [92.life] L204: if_egal in_hand #13 @L234    ; @204
+  LIFE 205 [121.found_life] if_egal isfound(#13) #0 @L148    ; @126
+  LIFE 351 [174.found_life] if_egal isfound(#13) #0 @L148    ; @126
+  LIFE 363 [17.found_life] if_egal isfound(#13) #0 @L88    ; @66
+  LIFE 427 [98.life] if_egal obj_1.room #13 @L82    ; @0
+  LIFE 429 [199.found_life] if_egal isfound(#13) #0 @L148    ; @126
+  LIFE 509 [235.life] L52: if_egal obj_13.stage #6 @L100    ; @52
+  LIFE 509 [235.life] if_inf obj_13.room #6 @L96    ; @64
+  LIFE 509 [235.life] c_var 13 #13    ; @88
+  LIFE 509 [235.life] L100: if_egal in_hand #13 @L134    ; @100
+  LIFE 522 [] if_egal hit_by #13 @L330    ; @0
+  LIFE 533 [283.life] if_egal obj_13.stage #5 @L94    ; @8
+  LIFE 533 [283.life] if_egal object(13) #1 @L94    ; @20
+  LIFE 533 [283.life] if_egal isfound(#13) #0 @L94    ; @32
+  LIFE 533 [283.life] if_sup obj_13.room_y #-1000 @L94    ; @46
+  LIFE 533 [283.life] L246: if_egal isfound(#13) #1 @L306    ; @246
+  LIFE 533 [283.life] if_different in_hand #13 @L306    ; @272
+  LIFE 534 [284.life] if_egal obj_13.stage #6 @L94    ; @8
+  LIFE 534 [284.life] if_egal object(13) #1 @L94    ; @20
+  LIFE 534 [284.life] if_egal isfound(#13) #0 @L94    ; @32
+  LIFE 534 [284.life] if_sup obj_13.room_y #-1000 @L94    ; @46
+  LIFE 534 [284.life] L346: if_egal isfound(#13) #1 @L406    ; @346
+  LIFE 534 [284.life] if_different in_hand #13 @L406    ; @372
+=== OBJ 56 (found_life 67, life -1)
+  LIFE  65 [51.life] body #56    ; @30
+  LIFE  65 [51.life] body #56    ; @56
+  LIFE  66 [52.life] found 56    ; @212
+  LIFE  66 [52.life] if_egal object(56) #1 @L264    ; @216
+  LIFE  67 [56.found_life] var 9 #56    ; @24
+  LIFE  67 [56.found_life] obj_56.life 68    ; @128
+  LIFE  68 [] if_egal isfound(#56) #0 @L64    ; @0
+  LIFE  68 [] if_egal object(56) #1 @L64    ; @14
+  LIFE 534 [284.life] if_different var_4 #56 @L178    ; @150
+  LIFE 534 [284.life] var 4 #56    ; @162
+=== OBJ 86 (found_life 140, life -1)
+  LIFE 138 [85.life] found 86    ; @12
+  LIFE 138 [85.life] L44: if_egal isfound(#86) #1 @L96    ; @44
+  LIFE 140 [86.found_life] var 9 #86    ; @24
+=== OBJ 83 (found_life 174, life -1)
+  LIFE 142 [] if_different anim #83 @L268    ; @208
+  LIFE 172 [92.life] found 83    ; @78
+  LIFE 174 [83.found_life] var 9 #83    ; @24
+=== OBJ 102 (found_life 175, life -1)
+  LIFE 172 [92.life] found 102    ; @82
+  LIFE 175 [102.found_life] var 9 #102    ; @24
+=== OBJ 107 (found_life 184, life -1)
+  LIFE 182 [106.life] found 107    ; @12
+  LIFE 184 [107.found_life] var 9 #107    ; @70
+  LIFE 268 [] if_egal anim #107 @L2090    ; @2068
+  LIFE 268 [] if_egal anim #107 @L2266    ; @2244
+=== OBJ 110 (found_life 190, life -1)
+  LIFE 186 [70.life] found 110    ; @52
+  LIFE 186 [70.life] if_egal isfound(#110) #1 @L90    ; @56
+  LIFE 186 [70.life] obj_110.body #115    ; @70
+  LIFE 186 [70.life] obj_110.flags 0    ; @78
+  LIFE 186 [70.life] L328: if_egal object(110) #0 @L348    ; @328
+  LIFE 190 [110.found_life] obj_110.anim_once -1 -1    ; @10
+  LIFE 190 [110.found_life] obj_110.body #115    ; @18
+  LIFE 190 [110.found_life] obj_110.body #124    ; @56
+  LIFE 190 [110.found_life] obj_110.anim_repeat 89    ; @64
+  LIFE 190 [110.found_life] var 9 #110    ; @116
+  LIFE 518 [40.life] L186: if_egal isfound(#110) #0 @L234    ; @186
+  LIFE 518 [40.life] if_egal object(110) #1 @L234    ; @200
+  LIFE 521 [] obj_110.def_zv 0 0 10000 10000 0 0    ; @30
+=== OBJ 120 (found_life 203, life -1)
+  LIFE 200 [119.life] found 120    ; @24
+  LIFE 203 [120.found_life] var 9 #120    ; @24
+=== OBJ 121 (found_life 205, life -1)
+  LIFE 200 [119.life] found 121    ; @28
+  LIFE 205 [121.found_life] var 9 #121    ; @24
+  LIFE 533 [283.life] L194: if_egal isfound(#121) #1 @L220    ; @194
+  LIFE 533 [283.life] obj_121.found_flag 1536    ; @208
+  LIFE 533 [283.life] obj_121.found_name 850    ; @214
+  LIFE 534 [284.life] L294: if_egal isfound(#121) #1 @L320    ; @294
+  LIFE 534 [284.life] obj_121.found_flag 1536    ; @308
+  LIFE 534 [284.life] obj_121.found_name 850    ; @314
+=== OBJ 123 (found_life 206, life -1)
+  LIFE 201 [122.life] found 123    ; @82
+  LIFE 206 [123.found_life] var 9 #123    ; @78
+  LIFE 283 [125.found_life] if_egal isfound(#123) #1 @L216    ; @126
+  LIFE 283 [125.found_life] drop #123 1    ; @148
+  LIFE 283 [125.found_life] if_egal isfound(#123) #0 @L180    ; @156
+  LIFE 379 [126.found_life] if_egal isfound(#123) #1 @L230    ; @126
+  LIFE 379 [126.found_life] drop #123 1    ; @148
+  LIFE 379 [126.found_life] if_egal isfound(#123) #0 @L180    ; @156
+  LIFE 431 [127.found_life] if_egal isfound(#123) #1 @L216    ; @126
+  LIFE 431 [127.found_life] drop #123 1    ; @148
+  LIFE 431 [127.found_life] if_egal isfound(#123) #0 @L180    ; @156
+=== OBJ 144 (found_life 282, life -1)
+  LIFE 260 [142.life] L44: if_egal isfound(#144) #1 @L136    ; @44
+  LIFE 281 [143.life] found 144    ; @68
+  LIFE 282 [144.found_life] var 9 #144    ; @24
+  LIFE 304 [155.life] L334: if_egal isfound(#144) #1 @L426    ; @334
+  LIFE 503 [267.life] if_egal in_hand #144 @L120    ; @44
+  LIFE 503 [267.life] obj_144.found_name 930    ; @290
+=== OBJ 125 (found_life 283, life -1)
+  LIFE 206 [123.found_life] found 125    ; @22
+  LIFE 281 [143.life] found 125    ; @110
+  LIFE 283 [125.found_life] var 9 #125    ; @24
+  LIFE 283 [125.found_life] put_at 125 123    ; @170
+=== OBJ 163 (found_life 339, life -1)
+  LIFE 326 [162.life] L144: if_egal in_hand #163 @L310    ; @144
+  LIFE 326 [162.life] obj_163.found_name 970    ; @234
+  LIFE 326 [162.life] obj_163.found_name 970    ; @300
+  LIFE 337 [166.life] found 163    ; @72
+  LIFE 339 [163.found_life] var 9 #163    ; @24
+=== OBJ 171 (found_life 352, life -1)
+  LIFE 350 [170.life] found 171    ; @40
+  LIFE 352 [171.found_life] var 9 #171    ; @160
+  LIFE 420 [] if_egal anim #171 @L26    ; @0
+=== OBJ 199 (found_life 429, life -1)
+  LIFE 428 [97.life] found 199    ; @72
+  LIFE 429 [199.found_life] var 9 #199    ; @24
+=== OBJ 182 (found_life 439, life -1)
+  LIFE 365 [103.found_life] if_egal isfound(#182) #0 @L134    ; @112
+  LIFE 436 [203.life] found 182    ; @116
+  LIFE 439 [182.found_life] var 9 #182    ; @24
+=== OBJ 232 (found_life 516, life -1)
+  LIFE 481 [231.life] if_egal in_hand #232 @L60    ; @34
+  LIFE 508 [233.life] if_egal in_hand #232 @L60    ; @34
+  LIFE 512 [273.life] if_egal in_hand #232 @L64    ; @34
+  LIFE 514 [117.life] found 232    ; @38
+  LIFE 516 [232.found_life] var 9 #232    ; @24
+=== OBJ 17 (found_life 363, life -1)
+  LIFE   9 [13.found_life] if_egal isfound(#17) #0 @L352    ; @330
+  LIFE   9 [13.found_life] obj_17.found_name 561    ; @384
+  LIFE   9 [13.found_life] obj_17.found_flag 1536    ; @390
+  LIFE 363 [17.found_life] var 9 #17    ; @24
+=== OBJ 25 (found_life 29, life -1)
+  LIFE  29 [25.found_life] var 9 #25    ; @382
+  LIFE  29 [25.found_life] if_different in_hand #25 @L424    ; @402
+  LIFE 305 [26.found_life] if_egal in_hand #25 @L48    ; @30
+  LIFE 306 [27.found_life] if_egal in_hand #25 @L48    ; @30
+  LIFE 307 [28.found_life] if_egal in_hand #25 @L48    ; @30
+=== OBJ 96 (found_life 162, life -1)
+  LIFE 162 [96.found_life] obj_96.found_name 220    ; @62
+  LIFE 162 [96.found_life] obj_96.found_flag 1537    ; @68
+  LIFE 162 [96.found_life] var 9 #96    ; @168
+  LIFE 362 [179.life] if_egal in_hand #96 @L178    ; @140
+  LIFE 362 [179.life] obj_96.found_name 702    ; @162
+  LIFE 362 [179.life] obj_96.found_flag 1539    ; @168
+=== OBJ 148 (found_life 265, life -1)
+  LIFE 265 [148.found_life] var 9 #148    ; @24
+=== OBJ 205 (found_life 437, life -1)
+  LIFE 437 [205.found_life] var 9 #205    ; @90
+  LIFE 550 [] if_egal object(205) #0 @L1078    ; @998
+  LIFE 550 [] if_egal obj_205.stage #4 @L1078    ; @1010
+  LIFE 550 [] if_egal obj_205.room #0 @L1078    ; @1022

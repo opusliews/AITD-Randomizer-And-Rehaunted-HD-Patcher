@@ -1,0 +1,23 @@
+# Source for the two patchers: the randomizer app (App/build_app.ps1) and the standalone
+# custom HD patcher + pack (HDRepaint/build_custom_hd_app.ps1, make_hd_pack.ps1).
+# Whitelist: everything else under Generated/ is experiments and outputs, not tracked.
+/*
+!/.gitignore
+!/README.md
+!/App/
+!/Generator/
+!/Patcher/
+!/Logic/
+!/VisibleItems/
+!/DropGlow/
+!/HDRepaint/
+
+# Build outputs and caches
+__pycache__/
+*.pyc
+build/
+dist/
+
+# HD images: they ship in the HD pack, not in source (several GB)
+/HDRepaint/*/
+!/HDRepaint/tools/

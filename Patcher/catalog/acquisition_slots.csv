@@ -1,0 +1,21 @@
+slot_id,family,floor,room,life,at,items,local_requirements
+C:0,container,0,0,0,168,3:A Rifle,@0 if_egal body #0 @L126 | @10 if_egal col_by #1 @L118 | @32 if_egal obj_1.end_anim #1 @L92 | @44 if_egal posrel(1) #2 @L92 | @146 if_egal end_anim #1 @L202 | @156 if_egal object(3) #0 @L176
+C:4,container,0,0,1,164,5:An Old Indian Cover,@0 if_egal body #2 @L132 | @10 if_egal col_by #1 @L124 | @32 if_egal obj_1.end_anim #1 @L98 | @44 if_egal posrel(1) #2 @L98 | @142 if_egal end_anim #1 @L198 | @152 if_egal object(5) #0 @L172
+C:36,locked_container,1,2,45,234,38:An Old Cavalry Saber,@0 if_egal body #35 @L192 | @10 if_egal col_by #1 @L188 | @32 if_egal posrel(1) #2 @L188 | @44 if_egal in_hand #37 @L120 | @60 if_egal obj_1.end_anim #1 @L116 | @120 L120: if_egal var_32 #1 @L184 | @132 if_egal obj_1.end_anim #1 @L180 | @212 if_egal end_anim #1 @L274 | @222 if_egal object(38) #0 @L248
+Y:38,item_byproduct,,,49,626,41:A Saber Blade,@10 if_egal var_35 #1 @L176 | @22 if_egal var_38 #0 @L78 | @78 L78: if_egal var_34 #1 @L134 | @150 L150: if_egal in_hand #38 @L172 | @210 if_different in_hand #38 @L232 | @302 if_egal var_38 #0 @L326 | @348 if_egal var_0 #1 @L666 | @572 L572: if_different obj_1.hit #-1 @L666 | @584 if_egal var_38 #0 @L666 | @600 if_inf_egal var_37 #0 @L666
+C:45,container,1,3,54,42,46:A First Aid Case,@0 if_egal var_41 #1 @L90 | @20 if_egal beta #512 @L86 | @30 if_egal object(46) #0 @L50
+I:46,inventory_container,,,57,126,48:A Flask,
+B:56,breakage,1,4,68,40,53:A Key,@0 if_egal isfound(#56) #0 @L64 | @14 if_egal object(56) #1 @L64
+H:117,extra_search,2,0,117,60,76:A Book,@0 if_egal obj_1.hard_col #6 @L80 | @12 if_egal obj_1.anim #2 @L80 | @24 if_egal obj_1.end_anim #1 @L80 | @36 if_egal posrel(1) #1 @L76 | @48 if_egal object(76) #0 @L68
+M:82,monster_drop,2,2,131,118,81:A Sword,@12 if_egal end_anim #1 @L44 | @54 if_egal end_anim #1 @L86 | @106 if_egal end_anim #1 @L144
+I:94,inventory_container,,,160,126,95:A Flask,
+M:149,monster_drop,3,2,268,508,141:A Key,@2 if_different obj_1.room #2 @L32 | @42 if_sup var_21 #0 @L446 | @54 if_inf_egal dist(1) #2500 @L442 | @66 if_egal in_hand #81 @L214 | @214 L214: if_egal in_hand #38 @L362 | @446 L446: if_egal col #1 @L462 | @472 if_egal end_anim #1 @L486 | @496 if_egal end_anim #1 @L534
+I:181,inventory_container,,,364,126,103:A Revolver,
+C:267,locked_container,5,11,503,282,268:A Gem 269:A Book,@0 if_egal body #245 @L240 | @10 if_egal col_by #1 @L214 | @32 if_egal posrel(1) #2 @L188 | @44 if_egal in_hand #144 @L120 | @60 if_egal obj_1.end_anim #1 @L116 | @120 L120: if_egal var_194 #1 @L184 | @132 if_egal obj_1.end_anim #1 @L180 | @214 L214: if_egal falling #1 @L232 | @260 if_egal end_anim #1 @L346 | @270 if_egal object(268) #0 @L300
+S:2,starting_inventory,,,562,24,2:Actions,
+P:17,direct_pickup,3,10,,,17:An Oil Can,
+P:25,direct_pickup,1,0,,,25:A Bow,
+P:96,direct_pickup,2,5,,,96:A Jug,
+P:148,direct_pickup,3,2,,,148:A Book,
+P:205,direct_pickup,4,0,,,205:A Block,
+P:232,direct_pickup,6,6,,,232:A Hook,

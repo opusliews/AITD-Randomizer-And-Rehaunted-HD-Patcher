@@ -1,0 +1,399 @@
+{
+ "_about": "Hand-written logic layer (work-order step 3), applied on top of region_graph_auto.json by logic_check.py. Requirement expressions: item:N, event:NAME, reach:F/R (or a virtual node), &, |, parentheses, true, never. status: verified = from scripts/data (evidence given), rule = agreed with the user (RandomizerPlan.md section 2), assumption = NOT verified, to confirm in play.",
+ "virtual_nodes": {
+  "6/6N": {
+   "status": "verified",
+   "evidence": "RandomizerPlan rule 'Boss room 6/6S needs gem (from 6/5) or hook (from 6/6N)'; AnnotationReview section 4: F6:R6 is divided by gate OBJ 273 (LIFE 512->513, hook in hand). Node 6/6 = the south/altar part (gem door side), 6/6N = the 6/0 doorway part.; confirmed by the user map References/map.png (2026-10-15): 6/6-N (5/11 arrival, 6/0 doorway, 5/9 corridor side) and 6/6-S (boss room)"
+  }
+ },
+ "reroute": [
+  {
+   "zone": "F6:R0:SZ2",
+   "to": "6/6N",
+   "status": "verified",
+   "evidence": "the 6/0 doorway leads into the north part of 6/6; confirmed by the user map References/map.png (2026-10-15)"
+  },
+  {
+   "zone": "F6:R6:SZ2",
+   "from": "6/6N",
+   "status": "verified",
+   "evidence": "the 6/0 exit is in the north part; confirmed by the user map References/map.png (2026-10-15)"
+  },
+  {
+   "zone": "F5:R11:SZ1",
+   "to": "6/6N",
+   "status": "verified",
+   "evidence": "5/11 arrival (5800,-6010,10500); which part is unresolved (LockedDoors.md caveat). North assumed because the rule needs the hook or the gem to reach the altar.; confirmed by the user map References/map.png (2026-10-15)"
+  },
+  {
+   "zone": "F6:R6:SZ1",
+   "from": "6/6N",
+   "status": "verified",
+   "evidence": "the 5/11 exit is on the same side as the arrival; confirmed by the user map References/map.png (2026-10-15)"
+  }
+ ],
+ "extra_edges": [
+  {
+   "from": "6/6N",
+   "to": "6/6",
+   "requires": "item:232",
+   "status": "verified",
+   "evidence": "gate OBJ 273: LIFE 512 needs the hook in hand, LIFE 513 deletes the gate; no posrel test, both sides; user map References/map.png (2026-10-15): opens from either side"
+  },
+  {
+   "from": "6/6",
+   "to": "6/6N",
+   "requires": "item:232",
+   "status": "verified",
+   "evidence": "same gate, from the altar side; user map References/map.png (2026-10-15): opens from either side"
+  }
+ ],
+ "edge_rules": [
+  {
+   "from": "1/7",
+   "to": "2/2",
+   "requires": "event:medusas_dead",
+   "status": "verified",
+   "evidence": "user (play): the medusas bar the stairs from 1/7 to the next floor until both are killed with the mirrors. Applies to both stair zones F1:R7:SZ1/SZ2. The data does not show the blocking mechanism (no script reads var_28/var_59 as a gate); the user's observation is authoritative."
+  },
+  {
+   "from": "2/1",
+   "to": "2/0",
+   "requires": "item:5 & (item:26 | item:27 | item:28)",
+   "status": "rule",
+   "evidence": "gallery 2/1: library needs cover and arrow (conservative rule; the data needs only the cover, AnnotationReview 3.1)"
+  },
+  {
+   "from": "2/1",
+   "to": "2/7",
+   "requires": "item:5 & (item:26 | item:27 | item:28)",
+   "status": "verified",
+   "evidence": "AnnotationReview 3.1: 2/7 needs the cover (painting OBJ 20) and an arrow hit (painting OBJ 79)"
+  },
+  {
+   "from": "2/2",
+   "to": "2/0",
+   "requires": "reach:2/0",
+   "status": "verified",
+   "evidence": "user (play, 2026-10-15): doors 23/34 are openable (pushed) from inside the library"
+  },
+  {
+   "from": "2/0",
+   "to": "2/8",
+   "requires": "item:107",
+   "status": "verified",
+   "evidence": "bookcase OBJ 68: putting book 107 at F2:R0:SZ3 (var_68) places it and deletes the bookcase (LIFE 115 @452-504, LIFE 184)"
+  },
+  {
+   "from": "3/2",
+   "to": "3/3",
+   "requires": "item:141",
+   "status": "verified",
+   "evidence": "ballroom doors 139/140, key 141 in hand (LIFE 250/256)"
+  },
+  {
+   "from": "3/3",
+   "to": "3/2",
+   "requires": "item:141",
+   "status": "verified",
+   "evidence": "user (play tests, 2026-10-15): the drawing-room doors 139/140 open from inside the ballroom, but key 141 is still required"
+  },
+  {
+   "from": "3/5",
+   "to": "4/0",
+   "requires": "item:163",
+   "status": "verified",
+   "evidence": "cellar door 162: key 163 (LIFE 326)"
+  },
+  {
+   "from": "4/0",
+   "to": "5/3",
+   "requires": "item:205",
+   "status": "verified",
+   "evidence": "barrels: taking the wedge 205 releases them (found-LIFE 437 case 2048)"
+  },
+  {
+   "from": "3/11",
+   "to": "5/0",
+   "requires": "item:38",
+   "status": "rule",
+   "evidence": "coat of arms passage needs the saber (whole, or both pieces in the saber-pieces option); LIFE 49 consumes it"
+  },
+  {
+   "from": "5/1",
+   "to": "5/0",
+   "requires": "never",
+   "status": "verified",
+   "evidence": "user (play, 2026-10-15): in no-exploit mode the bridge is one-way 5/0 -> 5/1; afterwards lure the worm and return via the cellar. TODO: test cases around bridge/cellar/worm/caves, the area most prone to odd blockers"
+  },
+  {
+   "from": "6/5",
+   "to": "6/6",
+   "requires": "item:268",
+   "status": "verified",
+   "evidence": "gem door OBJ 272 (LIFE 505, var_195 set by the 6/5 controller); user map References/map.png (2026-10-15): opens only from 6/5"
+  },
+  {
+   "from": "6/6",
+   "to": "6/5",
+   "requires": "reach:6/5 & item:268",
+   "status": "verified",
+   "evidence": "gem door: user (play tests, 2026-10-15): it does not open from the boss room side, only from the maze side (6/5), as normal; modelled as passable from 6/6 only once opened from 6/5"
+  },
+  {
+   "from": "5/9",
+   "to": "6/0",
+   "requires": "item:232",
+   "status": "verified",
+   "evidence": "hook doors 231/233 (LIFE 481/508); user map References/map.png (2026-10-15): opens from either side; user (play tests, 2026-10-15): confirmed both hook doors open with the hook from either side"
+  },
+  {
+   "from": "6/0",
+   "to": "5/9",
+   "requires": "item:232",
+   "status": "verified",
+   "evidence": "hook doors 231/233; user map References/map.png (2026-10-15): opens from either side; user (play tests, 2026-10-15): confirmed both hook doors open with the hook from either side"
+  },
+  {
+   "from": "3/11",
+   "to": "3/13",
+   "requires": "item:108",
+   "status": "assumption",
+   "evidence": "study doors 183/184 from inside the office: key 108 (conservative). The cigar room itself can be entered without the jug (user)."
+  },
+  {
+   "from": "3/1",
+   "to": "3/13",
+   "requires": "reach:3/13",
+   "status": "verified",
+   "evidence": "latch doors 134/135 open only from 3/13 first (LockedDoors.md); user (play, 2026-10-15): the door back to the main hall needs no jug"
+  },
+  {
+   "from": "3/13",
+   "to": "3/11",
+   "requires": "item:108 & event:jug_filled",
+   "status": "rule",
+   "evidence": "study doors 183/184 need key 108 (LIFE 367/373); user (play, 2026-10-15): the office door counts as needing the jug (the cigar smoke and a fixed camera hide it)"
+  },
+  {
+   "from": "3/11",
+   "to": "3/13",
+   "requires": "item:108",
+   "status": "assumption",
+   "evidence": "study doors 183/184 from inside the office: key 108 (conservative). The cigar room itself can be entered without the jug (user)."
+  }
+ ],
+ "events": {
+  "lamp_lit": {
+   "requires": "item:13 & (item:16 | item:17) & (item:121 | item:174 | item:199)",
+   "status": "rule",
+   "evidence": "lamp + oil + (matches or lighter)"
+  },
+  "jug_filled": {
+   "requires": "item:96 & reach:3/10",
+   "status": "verified",
+   "evidence": "LIFE 362 @122-174: search F3:R10:HC7 with the jug in hand"
+  },
+  "knight_dead": {
+   "requires": "reach:2/2 & item:83",
+   "status": "verified",
+   "evidence": "LIFE 131/132: dies only to the thrown statuette 83"
+  },
+  "pirate_dead": {
+   "requires": "reach:3/2 & item:81",
+   "status": "rule",
+   "evidence": "pirate needs sword 81 (the saber is never relied on)"
+  },
+  "ghosts_dead": {
+   "requires": "reach:3/3 & item:123 & item:126",
+   "status": "verified",
+   "evidence": "gramophone + record 126 in the ballroom (LIFE 379)"
+  },
+  "boss_defeated": {
+   "requires": "reach:6/6 & item:110 & event:lamp_lit",
+   "status": "rule",
+   "evidence": "talisman placed + lit lamp thrown (LIFE 518/521/522); user (play tests, 2026-10-15): the boss fight triggers on entering the boss room from either door"
+  },
+  "medusas_dead": {
+   "requires": "reach:1/7 & item:54 & item:55",
+   "status": "verified",
+   "evidence": "user (play, 2026-10-15): the medusas bar the stairs; LIFE 70/71 put the mirrors at F1:R7 SZ3/SZ4 and add to var_50 while unbroken; medusa LIFE 91 dies at var_50 == 3 (both mirrors)"
+  }
+ },
+ "slot_rules": {
+  "M:82": {
+   "requires": "event:knight_dead"
+  },
+  "M:149": {
+   "requires": "event:pirate_dead"
+  },
+  "F3:R3:HC10": {
+   "requires": "event:ghosts_dead",
+   "evidence": "contact behind the ghosts gives key 144 (LIFE 281)"
+  },
+  "B:56": {
+   "requires": "item:56",
+   "evidence": "the vase must be carried and broken (LIFE 68)"
+  },
+  "Y:38": {
+   "requires": "item:38"
+  },
+  "I:46": {
+   "requires": "item:46"
+  },
+  "I:94": {
+   "requires": "item:94"
+  },
+  "I:181": {
+   "requires": "item:181"
+  },
+  "F3:R13:HC10": {
+   "requires": "event:jug_filled",
+   "evidence": "user (play, 2026-10-15): the searchable areas of the cigar room need the jug; the item next to the cigars (F3:R13:HC13, lighter in vanilla) does not"
+  }
+ },
+ "slot_region": {
+  "F6:R6:HC81": "6/6",
+  "P:232": "6/6"
+ },
+ "start": {
+  "region": "0/0",
+  "items": [
+   2
+  ]
+ },
+ "goal": "event:boss_defeated",
+ "_slot_region_note": "the hook lies in the boss room 6/6-S in vanilla (user map References/map.png (2026-10-15)); the earlier assumption (north part) was wrong",
+ "dark_rooms": {
+  "rooms": [
+   "2/0",
+   "2/6",
+   "6/0",
+   "6/1",
+   "6/2",
+   "6/3",
+   "6/4",
+   "6/5"
+  ],
+  "requires": "event:lamp_lit",
+  "status": "verified",
+  "evidence": "user (play tests, 2026-10-15): three dark areas in vanilla: the library 2/0 (not the secret room 2/8), the heavy-statuette room 2/6, and the whole maze 6/0-6/5. Every edge INTO a dark room additionally needs the lit lamp. Lit rendering in the maze: a circle of light around the player (References/darkmaze.png)."
+ },
+ "enemy_drop_slots": {
+  "_about": "Optional enemy-drop slots (option 'enemies can drop items'; user 2026-10-15, Research/EnemyDrops_Review.md). A rolled enemy carries 1-2 items, put at its position just before it deletes itself at death (`put_at ITEM ENEMY` before every `delete ENEMY` in its own scripts). requires = spawn condition + kill requirement; combat is always possible (user).",
+  "E:62": {
+   "enemy": 62,
+   "region": "1/5",
+   "requires": "true",
+   "spawn": "first entry into 1/5 (LIFE 81)"
+  },
+  "E:35": {
+   "enemy": 35,
+   "region": "1/2",
+   "requires": "true",
+   "spawn": "the Study's carpet touched with door 33 open (LIFE 46 -> 43)"
+  },
+  "E:57": {
+   "enemy": 57,
+   "region": "1/4",
+   "requires": "true",
+   "spawn": "being in 1/4 (LIFE 72 room timer)"
+  },
+  "E:64": {
+   "enemy": 64,
+   "region": "1/7",
+   "requires": "event:medusas_dead",
+   "spawn": "placed at new game"
+  },
+  "E:65": {
+   "enemy": 65,
+   "region": "1/7",
+   "requires": "event:medusas_dead",
+   "spawn": "placed at new game"
+  },
+  "E:77": {
+   "enemy": 77,
+   "region": "2/0",
+   "requires": "item:78",
+   "spawn": "library; killable only with the wavy dagger 78 (user)"
+  },
+  "E:87": {
+   "enemy": 87,
+   "region": "2/3",
+   "requires": "item:86",
+   "spawn": "the notebook 86 taken"
+  },
+  "E:176": {
+   "enemy": 176,
+   "region": "3/12",
+   "requires": "true",
+   "spawn": "dining room"
+  },
+  "E:194": {
+   "enemy": 194,
+   "region": "3/12",
+   "requires": "true",
+   "spawn": "dining room"
+  },
+  "E:195": {
+   "enemy": 195,
+   "region": "3/12",
+   "requires": "true",
+   "spawn": "dining room"
+  },
+  "E:196": {
+   "enemy": 196,
+   "region": "3/12",
+   "requires": "true",
+   "spawn": "dining room"
+  },
+  "E:197": {
+   "enemy": 197,
+   "region": "3/12",
+   "requires": "true",
+   "spawn": "dining room"
+  },
+  "E:180": {
+   "enemy": 180,
+   "region": "3/8",
+   "requires": "reach:3/10",
+   "spawn": "the barrel room 3/10 entered (LIFE 362)"
+  },
+  "E:145": {
+   "enemy": 145,
+   "region": "3/3",
+   "requires": "event:ghosts_dead",
+   "spawn": "ballroom; removed after the guarded items are taken and the room is left"
+  },
+  "E:146": {
+   "enemy": 146,
+   "region": "3/3",
+   "requires": "event:ghosts_dead",
+   "spawn": "ballroom"
+  },
+  "E:147": {
+   "enemy": 147,
+   "region": "3/3",
+   "requires": "event:ghosts_dead",
+   "spawn": "ballroom"
+  },
+  "E:222": {
+   "enemy": 222,
+   "region": "5/4",
+   "requires": "true",
+   "spawn": "Cthonian Tunnels"
+  },
+  "E:236": {
+   "enemy": 236,
+   "region": "5/9",
+   "requires": "true",
+   "spawn": "Spider-Wolf Lair"
+  },
+  "E:224": {
+   "enemy": 224,
+   "region": "5/6",
+   "requires": "true",
+   "spawn": "Giant Spider Lair, when camera 27 first shows it (LIFE 469); killed only by luring it into its hole (LIFE 471), which needs nothing; the drop lands on the ledge (-5087, -4010, 6781) (user, 2026-10-27)"
+  }
+ }
+}

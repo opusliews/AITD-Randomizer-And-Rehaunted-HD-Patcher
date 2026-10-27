@@ -1,0 +1,1956 @@
+{
+ "source": "Generated/Patcher/slot_catalog.py",
+ "slots": [
+  {
+   "slot_id": "F0:R0:HC10",
+   "zones": [
+    "F0:R0:HC10"
+   ],
+   "life": 7,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    12,
+    76
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 12,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 52,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(12) #0 @L68",
+       "at": 48
+      },
+      {
+       "offset": 62,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 12",
+       "at": 60
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@12 if_egal posrel(1) #8 @L72",
+    "@24 if_egal obj_1.anim #2 @L72",
+    "@36 if_egal obj_1.end_anim #1 @L72",
+    "@48 if_egal object(12) #0 @L68"
+   ]
+  },
+  {
+   "slot_id": "F0:R0:HC25",
+   "zones": [
+    "F0:R0:HC25"
+   ],
+   "life": 7,
+   "case_values": [
+    2
+   ],
+   "branch_bytes": [
+    82,
+    118
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 13,
+     "name": "An Oil Lamp",
+     "sites": [
+      {
+       "offset": 84,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 13",
+       "at": 82
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@86 if_egal obj_1.anim #2 @L114",
+    "@98 if_egal obj_1.end_anim #1 @L114"
+   ]
+  },
+  {
+   "slot_id": "F0:R0:HC18",
+   "zones": [
+    "F0:R0:HC18"
+   ],
+   "life": 8,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    12,
+    86
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 15,
+     "name": "A Letter",
+     "sites": [
+      {
+       "offset": 58,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(15) #0 @L74",
+       "at": 54
+      },
+      {
+       "offset": 68,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 15",
+       "at": 66
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@12 if_egal obj_1.anim #2 @L86",
+    "@24 if_egal obj_1.end_anim #1 @L86",
+    "@36 if_egal posrel(1) #4 @L82",
+    "@54 if_egal object(15) #0 @L74"
+   ]
+  },
+  {
+   "slot_id": "F1:R0:HC9",
+   "zones": [
+    "F1:R0:HC9"
+   ],
+   "life": 27,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    26,
+    90
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 16,
+     "name": "An Oil Can",
+     "sites": [
+      {
+       "offset": 66,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(16) #0 @L82",
+       "at": 62
+      },
+      {
+       "offset": 76,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 16",
+       "at": 74
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@26 if_egal obj_1.anim #2 @L86",
+    "@38 if_egal obj_1.end_anim #1 @L86",
+    "@50 if_egal posrel(1) #4 @L86",
+    "@62 if_egal object(16) #0 @L82"
+   ]
+  },
+  {
+   "slot_id": "F1:R2:HC8",
+   "zones": [
+    "F1:R2:HC8"
+   ],
+   "life": 46,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    12,
+    70
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 37,
+     "name": "A Key",
+     "sites": [
+      {
+       "offset": 46,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(37) #0 @L62",
+       "at": 42
+      },
+      {
+       "offset": 56,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 37",
+       "at": 54
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@12 if_egal obj_1.anim #2 @L66",
+    "@24 if_egal obj_1.end_anim #1 @L66",
+    "@42 if_egal object(37) #0 @L62"
+   ]
+  },
+  {
+   "slot_id": "F1:R4:HC5",
+   "zones": [
+    "F1:R4:HC5"
+   ],
+   "life": 66,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    56,
+    206
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 54,
+     "name": "A Small Mirror",
+     "sites": [
+      {
+       "offset": 110,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 54",
+       "at": 108
+      },
+      {
+       "offset": 150,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(54) #0 @L170",
+       "at": 146
+      },
+      {
+       "offset": 160,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 54",
+       "at": 158
+      }
+     ]
+    },
+    {
+     "obj": 55,
+     "name": "A Small Mirror",
+     "sites": [
+      {
+       "offset": 114,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 55",
+       "at": 112
+      },
+      {
+       "offset": 164,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 55",
+       "at": 162
+      },
+      {
+       "offset": 174,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "L170: if_egal object(55) #0 @L190",
+       "at": 170
+      },
+      {
+       "offset": 184,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 55",
+       "at": 182
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@56 if_egal obj_1.anim #2 @L202",
+    "@68 if_egal posrel(1) #8 @L202",
+    "@80 if_egal obj_1.end_anim #1 @L202",
+    "@92 if_egal in_hand #53 @L134",
+    "@134 L134: if_egal var_44 #1 @L198",
+    "@146 if_egal object(54) #0 @L170",
+    "@170 L170: if_egal object(55) #0 @L190"
+   ]
+  },
+  {
+   "slot_id": "F1:R4:HC8",
+   "zones": [
+    "F1:R4:HC8"
+   ],
+   "life": 66,
+   "case_values": [
+    3
+   ],
+   "branch_bytes": [
+    212,
+    292
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 56,
+     "name": "A Vase",
+     "sites": [
+      {
+       "offset": 214,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 56",
+       "at": 212
+      },
+      {
+       "offset": 220,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(56) #1 @L264",
+       "at": 216
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@216 if_egal object(56) #1 @L264",
+    "@228 if_egal var_45 #0 @L264",
+    "@240 if_egal var_33 #0 @L264",
+    "@264 L264: if_egal obj_1.anim #2 @L292",
+    "@276 if_egal obj_1.end_anim #1 @L292"
+   ]
+  },
+  {
+   "slot_id": "F2:R0:HC16",
+   "zones": [
+    "F2:R0:HC16"
+   ],
+   "life": 115,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    260,
+    312
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 71,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 288,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(71) #0 @L304",
+       "at": 284
+      },
+      {
+       "offset": 298,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 71",
+       "at": 296
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@260 if_egal obj_1.anim #2 @L308",
+    "@272 if_egal obj_1.end_anim #1 @L308",
+    "@284 if_egal object(71) #0 @L304"
+   ]
+  },
+  {
+   "slot_id": "F2:R0:HC19",
+   "zones": [
+    "F2:R0:HC19"
+   ],
+   "life": 115,
+   "case_values": [
+    5
+   ],
+   "branch_bytes": [
+    318,
+    390
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 72,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 358,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(72) #0 @L374",
+       "at": 354
+      },
+      {
+       "offset": 368,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 72",
+       "at": 366
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@318 if_egal obj_1.anim #2 @L386",
+    "@330 if_egal obj_1.end_anim #1 @L386",
+    "@342 if_egal posrel(1) #2 @L382",
+    "@354 if_egal object(72) #0 @L374"
+   ]
+  },
+  {
+   "slot_id": "F2:R0:HC14",
+   "zones": [
+    "F2:R0:HC14"
+   ],
+   "life": 116,
+   "case_values": [
+    10
+   ],
+   "branch_bytes": [
+    12,
+    80
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 74,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 52,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(74) #0 @L68",
+       "at": 48
+      },
+      {
+       "offset": 62,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 74",
+       "at": 60
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@12 if_egal obj_1.anim #2 @L80",
+    "@24 if_egal obj_1.end_anim #1 @L80",
+    "@36 if_egal posrel(1) #8 @L76",
+    "@48 if_egal object(74) #0 @L68"
+   ]
+  },
+  {
+   "slot_id": "F2:R3:HC9",
+   "zones": [
+    "F2:R3:HC9"
+   ],
+   "life": 138,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    12,
+    100
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 86,
+     "name": "A Notebook",
+     "sites": [
+      {
+       "offset": 14,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 86",
+       "at": 12
+      },
+      {
+       "offset": 50,
+       "kind": "const",
+       "detail": "isfound",
+       "instruction": "L44: if_egal isfound(#86) #1 @L96",
+       "at": 44
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@16 if_egal obj_1.anim #2 @L44",
+    "@28 if_egal obj_1.end_anim #1 @L44",
+    "@44 L44: if_egal isfound(#86) #1 @L96",
+    "@58 if_egal var_79 #0 @L96",
+    "@70 if_egal var_33 #0 @L96"
+   ]
+  },
+  {
+   "slot_id": "F2:R5:HC10",
+   "zones": [
+    "F2:R5:HC10"
+   ],
+   "life": 159,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    20,
+    72
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 94,
+     "name": "A First Aid Case",
+     "sites": [
+      {
+       "offset": 48,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(94) #0 @L64",
+       "at": 44
+      },
+      {
+       "offset": 58,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 94",
+       "at": 56
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@20 if_egal obj_1.anim #2 @L68",
+    "@32 if_egal obj_1.end_anim #1 @L68",
+    "@44 if_egal object(94) #0 @L64"
+   ]
+  },
+  {
+   "slot_id": "F2:R6:HC6",
+   "zones": [
+    "F2:R6:HC6"
+   ],
+   "life": 172,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    20,
+    72
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 101,
+     "name": "Some Bullets",
+     "sites": [
+      {
+       "offset": 48,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(101) #0 @L64",
+       "at": 44
+      },
+      {
+       "offset": 58,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 101",
+       "at": 56
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@20 if_egal obj_1.anim #2 @L68",
+    "@32 if_egal obj_1.end_anim #1 @L68",
+    "@44 if_egal object(101) #0 @L64"
+   ]
+  },
+  {
+   "slot_id": "F2:R6:HC8",
+   "zones": [
+    "F2:R6:HC8"
+   ],
+   "life": 172,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    78,
+    118
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 83,
+     "name": "A Very Heavy Statuette",
+     "sites": [
+      {
+       "offset": 80,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 83",
+       "at": 78
+      }
+     ]
+    },
+    {
+     "obj": 102,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 84,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 102",
+       "at": 82
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@86 if_egal obj_1.anim #2 @L114",
+    "@98 if_egal obj_1.end_anim #1 @L114"
+   ]
+  },
+  {
+   "slot_id": "F2:R7:HC7",
+   "zones": [
+    "F2:R7:HC7"
+   ],
+   "life": 182,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    12,
+    48
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 107,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 14,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 107",
+       "at": 12
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@16 if_egal obj_1.anim #2 @L44",
+    "@28 if_egal obj_1.end_anim #1 @L44"
+   ]
+  },
+  {
+   "slot_id": "F2:R7:HC9",
+   "zones": [
+    "F2:R7:HC9"
+   ],
+   "life": 182,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    54,
+    130
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 108,
+     "name": "A Key",
+     "sites": [
+      {
+       "offset": 82,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(108) #0 @L102",
+       "at": 78
+      },
+      {
+       "offset": 92,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 108",
+       "at": 90
+      }
+     ]
+    },
+    {
+     "obj": 109,
+     "name": "A Parchment",
+     "sites": [
+      {
+       "offset": 96,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 109",
+       "at": 94
+      },
+      {
+       "offset": 106,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "L102: if_egal object(109) #0 @L122",
+       "at": 102
+      },
+      {
+       "offset": 116,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 109",
+       "at": 114
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@54 if_egal obj_1.anim #2 @L126",
+    "@66 if_egal obj_1.end_anim #1 @L126",
+    "@78 if_egal object(108) #0 @L102",
+    "@102 L102: if_egal object(109) #0 @L122"
+   ]
+  },
+  {
+   "slot_id": "F2:R8:HC5",
+   "zones": [
+    "F2:R8:HC5"
+   ],
+   "life": 186,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    52,
+    122
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 110,
+     "name": "A Talisman",
+     "sites": [
+      {
+       "offset": 54,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 110",
+       "at": 52
+      },
+      {
+       "offset": 62,
+       "kind": "const",
+       "detail": "isfound",
+       "instruction": "if_egal isfound(#110) #1 @L90",
+       "at": 56
+      },
+      {
+       "offset": 72,
+       "kind": "target",
+       "detail": "body",
+       "instruction": "obj_110.body #115",
+       "at": 70
+      },
+      {
+       "offset": 80,
+       "kind": "target",
+       "detail": "flags",
+       "instruction": "obj_110.flags 0",
+       "at": 78
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@56 if_egal isfound(#110) #1 @L90",
+    "@90 L90: if_egal obj_1.anim #2 @L118",
+    "@102 if_egal obj_1.end_anim #1 @L118"
+   ]
+  },
+  {
+   "slot_id": "F2:R8:HC6",
+   "zones": [
+    "F2:R8:HC6"
+   ],
+   "life": 186,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    128,
+    268
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 78,
+     "name": "A Dagger",
+     "sites": [
+      {
+       "offset": 156,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(78) #1 @L240",
+       "at": 152
+      },
+      {
+       "offset": 242,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "L240: found 78",
+       "at": 240
+      }
+     ]
+    },
+    {
+     "obj": 111,
+     "name": "A Dagger",
+     "sites": [
+      {
+       "offset": 168,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(111) #1 @L240",
+       "at": 164
+      },
+      {
+       "offset": 246,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 111",
+       "at": 244
+      }
+     ]
+    },
+    {
+     "obj": 112,
+     "name": "A Dagger",
+     "sites": [
+      {
+       "offset": 180,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(112) #1 @L240",
+       "at": 176
+      },
+      {
+       "offset": 250,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 112",
+       "at": 248
+      }
+     ]
+    },
+    {
+     "obj": 113,
+     "name": "A Parchment",
+     "sites": [
+      {
+       "offset": 192,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(113) #1 @L240",
+       "at": 188
+      },
+      {
+       "offset": 254,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 113",
+       "at": 252
+      }
+     ]
+    },
+    {
+     "obj": 114,
+     "name": "A Parchment",
+     "sites": [
+      {
+       "offset": 204,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(114) #1 @L240",
+       "at": 200
+      },
+      {
+       "offset": 258,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 114",
+       "at": 256
+      }
+     ]
+    },
+    {
+     "obj": 116,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 262,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 116",
+       "at": 260
+      }
+     ]
+    },
+    {
+     "obj": 115,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 228,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(115) #1 @L240",
+       "at": 224
+      },
+      {
+       "offset": 266,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 115",
+       "at": 264
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@128 if_egal obj_1.anim #2 @L268",
+    "@140 if_egal obj_1.end_anim #1 @L268",
+    "@152 if_egal object(78) #1 @L240",
+    "@164 if_egal object(111) #1 @L240",
+    "@176 if_egal object(112) #1 @L240",
+    "@188 if_egal object(113) #1 @L240",
+    "@200 if_egal object(114) #1 @L240",
+    "@212 if_egal object(71) #1 @L240",
+    "@224 if_egal object(115) #1 @L240"
+   ]
+  },
+  {
+   "slot_id": "F2:R10:HC10",
+   "zones": [
+    "F2:R10:HC10"
+   ],
+   "life": 200,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    12,
+    60
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 120,
+     "name": "A Poker",
+     "sites": [
+      {
+       "offset": 26,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 120",
+       "at": 24
+      }
+     ]
+    },
+    {
+     "obj": 121,
+     "name": "A Matchbox",
+     "sites": [
+      {
+       "offset": 30,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 121",
+       "at": 28
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@12 if_egal posrel(1) #2 @L60",
+    "@32 if_egal obj_1.anim #2 @L60",
+    "@44 if_egal obj_1.end_anim #1 @L60"
+   ]
+  },
+  {
+   "slot_id": "F2:R10:HC7",
+   "zones": [
+    "F2:R10:HC7"
+   ],
+   "life": 201,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    12,
+    76
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 18,
+     "name": "A Box of Cartridges",
+     "sites": [
+      {
+       "offset": 52,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(18) #0 @L68",
+       "at": 48
+      },
+      {
+       "offset": 62,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 18",
+       "at": 60
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@12 if_egal obj_1.anim #2 @L72",
+    "@24 if_egal obj_1.end_anim #1 @L72",
+    "@36 if_egal posrel(1) #2 @L72",
+    "@48 if_egal object(18) #0 @L68"
+   ]
+  },
+  {
+   "slot_id": "F2:R10:HC14",
+   "zones": [
+    "F2:R10:HC14"
+   ],
+   "life": 201,
+   "case_values": [
+    2
+   ],
+   "branch_bytes": [
+    82,
+    118
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 123,
+     "name": "A Gramophone",
+     "sites": [
+      {
+       "offset": 84,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 123",
+       "at": 82
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@86 if_egal obj_1.anim #2 @L114",
+    "@98 if_egal obj_1.end_anim #1 @L114"
+   ]
+  },
+  {
+   "slot_id": "F3:R3:HC10",
+   "zones": [
+    "F3:R3:HC10"
+   ],
+   "life": 281,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    56,
+    104
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 144,
+     "name": "A Key",
+     "sites": [
+      {
+       "offset": 70,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 144",
+       "at": 68
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@56 if_egal posrel(1) #8 @L100",
+    "@72 if_egal obj_1.anim #2 @L100",
+    "@84 if_egal obj_1.end_anim #1 @L100"
+   ]
+  },
+  {
+   "slot_id": "F3:R3:HC14",
+   "zones": [
+    "F3:R3:HC14"
+   ],
+   "life": 281,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    110,
+    142
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 125,
+     "name": "A Record",
+     "sites": [
+      {
+       "offset": 112,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 125",
+       "at": 110
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@114 if_egal obj_1.anim #2 @L142",
+    "@126 if_egal obj_1.end_anim #1 @L142"
+   ]
+  },
+  {
+   "slot_id": "F3:R4:HC14",
+   "zones": [
+    "F3:R4:HC14"
+   ],
+   "life": 304,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    176,
+    288
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 26,
+     "name": "An Arrow",
+     "sites": [
+      {
+       "offset": 212,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(26) #0 @L236",
+       "at": 208
+      },
+      {
+       "offset": 222,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 26",
+       "at": 220
+      }
+     ]
+    },
+    {
+     "obj": 27,
+     "name": "An Arrow",
+     "sites": [
+      {
+       "offset": 226,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 27",
+       "at": 224
+      },
+      {
+       "offset": 240,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "L236: if_egal object(27) #0 @L260",
+       "at": 236
+      },
+      {
+       "offset": 250,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 27",
+       "at": 248
+      }
+     ]
+    },
+    {
+     "obj": 28,
+     "name": "An Arrow",
+     "sites": [
+      {
+       "offset": 230,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 28",
+       "at": 228
+      },
+      {
+       "offset": 254,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 28",
+       "at": 252
+      },
+      {
+       "offset": 264,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "L260: if_egal object(28) #0 @L280",
+       "at": 260
+      },
+      {
+       "offset": 274,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 28",
+       "at": 272
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@176 if_egal obj_1.anim #2 @L284",
+    "@188 if_egal obj_1.end_anim #1 @L284",
+    "@208 if_egal object(26) #0 @L236",
+    "@236 L236: if_egal object(27) #0 @L260",
+    "@260 L260: if_egal object(28) #0 @L280"
+   ]
+  },
+  {
+   "slot_id": "F3:R7:HC6",
+   "zones": [
+    "F3:R7:HC6"
+   ],
+   "life": 337,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    12,
+    60
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 167,
+     "name": "A Biscuit Box",
+     "sites": [
+      {
+       "offset": 40,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(167) #0 @L56",
+       "at": 36
+      },
+      {
+       "offset": 50,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 167",
+       "at": 48
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@12 if_egal obj_1.anim #2 @L60",
+    "@24 if_egal obj_1.end_anim #1 @L60",
+    "@36 if_egal object(167) #0 @L56"
+   ]
+  },
+  {
+   "slot_id": "F3:R7:HC5",
+   "zones": [
+    "F3:R7:HC5"
+   ],
+   "life": 337,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    72,
+    104
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 163,
+     "name": "A Key",
+     "sites": [
+      {
+       "offset": 74,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 163",
+       "at": 72
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@76 if_egal obj_1.anim #2 @L104",
+    "@88 if_egal obj_1.end_anim #1 @L104"
+   ]
+  },
+  {
+   "slot_id": "F3:R8:HC15",
+   "zones": [
+    "F3:R8:HC15"
+   ],
+   "life": 350,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    40,
+    76
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 171,
+     "name": "A Pot of Soup",
+     "sites": [
+      {
+       "offset": 42,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 171",
+       "at": 40
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@44 if_egal obj_1.anim #2 @L72",
+    "@56 if_egal obj_1.end_anim #1 @L72"
+   ]
+  },
+  {
+   "slot_id": "F3:R8:HC11",
+   "zones": [
+    "F3:R8:HC11"
+   ],
+   "life": 350,
+   "case_values": [
+    2
+   ],
+   "branch_bytes": [
+    120,
+    196
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 172,
+     "name": "A Knife",
+     "sites": [
+      {
+       "offset": 148,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(172) #0 @L168",
+       "at": 144
+      },
+      {
+       "offset": 158,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 172",
+       "at": 156
+      }
+     ]
+    },
+    {
+     "obj": 173,
+     "name": "A Knife",
+     "sites": [
+      {
+       "offset": 162,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 173",
+       "at": 160
+      },
+      {
+       "offset": 172,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "L168: if_egal object(173) #0 @L188",
+       "at": 168
+      },
+      {
+       "offset": 182,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 173",
+       "at": 180
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@120 if_egal obj_1.anim #2 @L192",
+    "@132 if_egal obj_1.end_anim #1 @L192",
+    "@144 if_egal object(172) #0 @L168",
+    "@168 L168: if_egal object(173) #0 @L188"
+   ]
+  },
+  {
+   "slot_id": "F3:R8:HC19",
+   "zones": [
+    "F3:R8:HC19"
+   ],
+   "life": 350,
+   "case_values": [
+    3
+   ],
+   "branch_bytes": [
+    202,
+    254
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 174,
+     "name": "A Matchbox",
+     "sites": [
+      {
+       "offset": 230,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(174) #0 @L246",
+       "at": 226
+      },
+      {
+       "offset": 240,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 174",
+       "at": 238
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@202 if_egal obj_1.anim #2 @L250",
+    "@214 if_egal obj_1.end_anim #1 @L250",
+    "@226 if_egal object(174) #0 @L246"
+   ]
+  },
+  {
+   "slot_id": "F3:R10:HC6",
+   "zones": [
+    "F3:R10:HC6"
+   ],
+   "life": 362,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    70,
+    122
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 181,
+     "name": "A Box of Shoes",
+     "sites": [
+      {
+       "offset": 98,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(181) #0 @L114",
+       "at": 94
+      },
+      {
+       "offset": 108,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 181",
+       "at": 106
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@70 if_egal obj_1.anim #2 @L118",
+    "@82 if_egal obj_1.end_anim #1 @L118",
+    "@94 if_egal object(181) #0 @L114"
+   ]
+  },
+  {
+   "slot_id": "F3:R11:HC6",
+   "zones": [
+    "F3:R11:HC6"
+   ],
+   "life": 378,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    12,
+    88
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 126,
+     "name": "A Record",
+     "sites": [
+      {
+       "offset": 40,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(126) #0 @L60",
+       "at": 36
+      },
+      {
+       "offset": 50,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 126",
+       "at": 48
+      }
+     ]
+    },
+    {
+     "obj": 185,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 54,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 185",
+       "at": 52
+      },
+      {
+       "offset": 64,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "L60: if_egal object(185) #0 @L80",
+       "at": 60
+      },
+      {
+       "offset": 74,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 185",
+       "at": 72
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@12 if_egal obj_1.anim #2 @L84",
+    "@24 if_egal obj_1.end_anim #1 @L84",
+    "@36 if_egal object(126) #0 @L60",
+    "@60 L60: if_egal object(185) #0 @L80"
+   ]
+  },
+  {
+   "slot_id": "F3:R13:HC13",
+   "zones": [
+    "F3:R13:HC13"
+   ],
+   "life": 428,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    72,
+    108
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 199,
+     "name": "A Lighter",
+     "sites": [
+      {
+       "offset": 74,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 199",
+       "at": 72
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@76 if_egal obj_1.anim #2 @L104",
+    "@88 if_egal obj_1.end_anim #1 @L104"
+   ]
+  },
+  {
+   "slot_id": "F3:R13:HC10",
+   "zones": [
+    "F3:R13:HC10"
+   ],
+   "life": 428,
+   "case_values": [
+    1
+   ],
+   "branch_bytes": [
+    114,
+    186
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 127,
+     "name": "A Record",
+     "sites": [
+      {
+       "offset": 142,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(127) #0 @L162",
+       "at": 138
+      },
+      {
+       "offset": 152,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 127",
+       "at": 150
+      }
+     ]
+    },
+    {
+     "obj": 200,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 156,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 200",
+       "at": 154
+      },
+      {
+       "offset": 166,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "L162: if_egal object(200) #0 @L182",
+       "at": 162
+      },
+      {
+       "offset": 176,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 200",
+       "at": 174
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@114 if_egal obj_1.anim #2 @L186",
+    "@126 if_egal obj_1.end_anim #1 @L186",
+    "@138 if_egal object(127) #0 @L162",
+    "@162 L162: if_egal object(200) #0 @L182"
+   ]
+  },
+  {
+   "slot_id": "F4:R0:HC21",
+   "zones": [
+    "F4:R0:HC21"
+   ],
+   "life": 436,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    58,
+    110
+   ],
+   "mechanism": "search",
+   "classifier_mechanism": [
+    "search"
+   ],
+   "items": [
+    {
+     "obj": 204,
+     "name": "A Book",
+     "sites": [
+      {
+       "offset": 86,
+       "kind": "expr_arg",
+       "detail": "object",
+       "instruction": "if_egal object(204) #0 @L102",
+       "at": 82
+      },
+      {
+       "offset": 96,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 204",
+       "at": 94
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@58 if_egal obj_1.anim #2 @L106",
+    "@70 if_egal obj_1.end_anim #1 @L106",
+    "@82 if_egal object(204) #0 @L102"
+   ]
+  },
+  {
+   "slot_id": "F4:R0:HC5",
+   "zones": [
+    "F4:R0:HC5"
+   ],
+   "life": 436,
+   "case_values": [
+    5
+   ],
+   "branch_bytes": [
+    116,
+    148
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 182,
+     "name": "Some Bullets",
+     "sites": [
+      {
+       "offset": 118,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 182",
+       "at": 116
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@120 if_egal obj_1.anim #2 @L148",
+    "@132 if_egal obj_1.end_anim #1 @L148"
+   ]
+  },
+  {
+   "slot_id": "F6:R6:HC81",
+   "zones": [
+    "F6:R6:HC81"
+   ],
+   "life": 514,
+   "case_values": [
+    0
+   ],
+   "branch_bytes": [
+    26,
+    42
+   ],
+   "mechanism": "contact",
+   "classifier_mechanism": [
+    "contact"
+   ],
+   "items": [
+    {
+     "obj": 232,
+     "name": "A Hook",
+     "sites": [
+      {
+       "offset": 40,
+       "kind": "word",
+       "detail": "found#0",
+       "instruction": "found 232",
+       "at": 38
+      }
+     ]
+    }
+   ],
+   "non_item_constants": [],
+   "conditions": [
+    "@26 if_egal posrel(1) #8 @L42"
+   ]
+  }
+ ],
+ "cross_check_problems": []
+}

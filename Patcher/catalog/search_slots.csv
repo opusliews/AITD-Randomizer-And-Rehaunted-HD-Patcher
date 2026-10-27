@@ -1,0 +1,37 @@
+slot_id,mechanism,life,case_values,items,item_sites,non_item_constants
+F0:R0:HC10,search,7,0,12:A Book,2,0
+F0:R0:HC25,contact,7,2,13:An Oil Lamp,1,0
+F0:R0:HC18,search,8,1,15:A Letter,2,0
+F1:R0:HC9,search,27,0,16:An Oil Can,2,0
+F1:R2:HC8,search,46,0,37:A Key,2,0
+F1:R4:HC5,search,66,1,54:A Small Mirror 55:A Small Mirror,7,0
+F1:R4:HC8,contact,66,3,56:A Vase,2,0
+F2:R0:HC16,search,115,1,71:A Book,2,0
+F2:R0:HC19,search,115,5,72:A Book,2,0
+F2:R0:HC14,search,116,10,74:A Book,2,0
+F2:R3:HC9,contact,138,0,86:A Notebook,2,0
+F2:R5:HC10,search,159,0,94:A First Aid Case,2,0
+F2:R6:HC6,search,172,0,101:Some Bullets,2,0
+F2:R6:HC8,contact,172,1,83:A Very Heavy Statuette 102:A Book,2,0
+F2:R7:HC7,contact,182,0,107:A Book,1,0
+F2:R7:HC9,search,182,1,108:A Key 109:A Parchment,5,0
+F2:R8:HC5,contact,186,0,110:A Talisman,4,0
+F2:R8:HC6,search,186,1,78:A Dagger 111:A Dagger 112:A Dagger 113:A Parchment 114:A Parchment 116:A Book 115:A Book,13,0
+F2:R10:HC10,contact,200,0,120:A Poker 121:A Matchbox,2,0
+F2:R10:HC7,search,201,1,18:A Box of Cartridges,2,0
+F2:R10:HC14,contact,201,2,123:A Gramophone,1,0
+F3:R3:HC10,contact,281,0,144:A Key,1,0
+F3:R3:HC14,contact,281,1,125:A Record,1,0
+F3:R4:HC14,search,304,0,26:An Arrow 27:An Arrow 28:An Arrow,9,0
+F3:R7:HC6,search,337,0,167:A Biscuit Box,2,0
+F3:R7:HC5,contact,337,1,163:A Key,1,0
+F3:R8:HC15,contact,350,0,171:A Pot of Soup,1,0
+F3:R8:HC11,search,350,2,172:A Knife 173:A Knife,5,0
+F3:R8:HC19,search,350,3,174:A Matchbox,2,0
+F3:R10:HC6,search,362,0,181:A Box of Shoes,2,0
+F3:R11:HC6,search,378,0,126:A Record 185:A Book,5,0
+F3:R13:HC13,contact,428,0,199:A Lighter,1,0
+F3:R13:HC10,search,428,1,127:A Record 200:A Book,5,0
+F4:R0:HC21,search,436,0,204:A Book,2,0
+F4:R0:HC5,contact,436,5,182:Some Bullets,1,0
+F6:R6:HC81,contact,514,0,232:A Hook,1,0

@@ -1,0 +1,94 @@
+{
+ "source copy LISTLIFE.PAK == OriginalGame": {
+  "ok": true
+ },
+ "source copy LISTTRAK.PAK == OriginalGame": {
+  "ok": true
+ },
+ "pak: LISTLIFE entries == PAKExtract": {
+  "ok": true,
+  "entries": 563,
+  "imploded": 213,
+  "mismatches": []
+ },
+ "pak: LISTTRAK entries == PAKExtract": {
+  "ok": true,
+  "entries": 45,
+  "mismatches": []
+ },
+ "pak: write_pak -> read_pak round trip": {
+  "ok": true
+ },
+ "life: byte round trip (563 scripts)": {
+  "ok": true,
+  "instructions": 11346,
+  "failures": []
+ },
+ "life: text round trip": {
+  "ok": true,
+  "failures": []
+ },
+ "life: every script ends with endlife": {
+  "ok": true,
+  "failures": []
+ },
+ "life: offsets == LifeDISA": {
+  "ok": true,
+  "lifedisa_instructions": 11346,
+  "failures": []
+ },
+ "life: branch targets == LifeDISA": {
+  "ok": true,
+  "failures": []
+ },
+ "life: ReHaunted native labels are branch targets": {
+  "ok": true,
+  "scripts_compared": 562,
+  "failures": []
+ },
+ "life: operand_sites positions match the raw bytes": {
+  "ok": true,
+  "sites": 16475
+ },
+ "switch: no backward case branches": {
+  "ok": true,
+  "anomalies": []
+ },
+ "vanilla_backward_branches": {
+  "count": 0,
+  "scripts": {}
+ },
+ "relocate: insertion at every point keeps all original flow": {
+  "ok": true,
+  "insertion_points": 11346,
+  "failures": []
+ },
+ "patchcheck: detects an undeclared retargeted branch": {
+  "ok": true
+ },
+ "patchcheck: rejects a new backward branch": {
+  "ok": true
+ },
+ "track: byte round trip (45 tracks)": {
+  "ok": true,
+  "instructions": 417,
+  "failures": []
+ },
+ "track: text round trip": {
+  "ok": true,
+  "failures": []
+ },
+ "track: offsets/mnemonics == TrackRooms parser": {
+  "ok": true,
+  "failures": []
+ },
+ "track: every track ends with trailer [20, 2]": {
+  "ok": true,
+  "trailers": [
+   [
+    20,
+    2
+   ]
+  ]
+ }
+}

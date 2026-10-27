@@ -1,0 +1,13 @@
+{
+ "_about": "Player-facing one-line instructions for the logic events, used by the spoiler walkthrough (Generated/Generator/walkthrough.py). {spot} etc. are filled by the generator. status: suggested = written by Claude from the logic evidence, awaiting user review.",
+ "events": {
+  "lamp_lit": {"text": "Light the Oil Lamp: fill it with an Oil Can, then light it with a Matchbox or the Lighter.", "status": "suggested"},
+  "jug_filled": {"text": "Fill the Jug with water: search the spot F3:R10:HC7 with the Jug in hand.", "status": "suggested"},
+  "knight_dead": {"text": "Kill the Knight: throw the Very Heavy Statuette at him.", "status": "suggested"},
+  "pirate_dead": {"text": "Kill the Pirate with the Sword.", "status": "suggested"},
+  "ghosts_dead": {"text": "Banish the Dancers: play Saint-Saëns' Dance of Death on the Gramophone.", "status": "suggested"},
+  "medusas_dead": {"text": "Defeat both Medusas with the two Small Mirrors.", "status": "suggested"},
+  "boss_defeated": {"text": "Final fight: defeat Pregzt (needs the Talisman and the lit Oil Lamp).", "status": "suggested"}
+ },
+ "useful_words": ["flask", "first aid", "rifle", "revolver", "bullets", "cartridges", "sword", "saber", "dagger"]
+}

@@ -1,0 +1,2 @@
+{"_why": "user rule (2026-10-15): the boss room needs the gem OR the hook. Hook 232 moved to the attic (F0:R0:HC10), the gem 268 locked inside the boss room (F6:R6:HC81), its chest gives book 12 instead. Only the 5/11 -> 6/6N -> hook gate -> 6/6S route can work -> must PASS",
+ "F0:R0:HC10": [232], "P:232": [], "F6:R6:HC81": [268], "C:267": [12, 269]}

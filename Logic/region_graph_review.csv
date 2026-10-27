@@ -1,0 +1,161 @@
+kind,from,to,zone,detail
+room,1/0,1/6,F1:R0:SZ0,type-0 scene zone
+room,1/0,1/1,F1:R0:SZ1,type-0 scene zone
+room,1/1,1/0,F1:R1:SZ0,type-0 scene zone
+room,1/1,1/4,F1:R1:SZ1,type-0 scene zone
+room,1/1,1/5,F1:R1:SZ2,type-0 scene zone
+room,1/1,1/2,F1:R1:SZ4,type-0 scene zone
+room,1/1,1/3,F1:R1:SZ5,type-0 scene zone
+room,1/1,1/7,F1:R1:SZ6,type-0 scene zone
+room,1/2,1/1,F1:R2:SZ0,type-0 scene zone
+room,1/3,1/1,F1:R3:SZ0,type-0 scene zone
+room,1/4,1/5,F1:R4:SZ0,type-0 scene zone
+room,1/4,1/1,F1:R4:SZ1,type-0 scene zone
+room,1/5,1/4,F1:R5:SZ0,type-0 scene zone
+room,1/5,1/1,F1:R5:SZ1,type-0 scene zone
+room,1/6,1/0,F1:R6:SZ0,type-0 scene zone
+room,1/7,1/1,F1:R7:SZ0,type-0 scene zone
+room,2/0,2/1,F2:R0:SZ0,type-0 scene zone
+room,2/0,2/2,F2:R0:SZ1,type-0 scene zone
+room,2/0,2/8,F2:R0:SZ2,type-0 scene zone
+room,2/1,2/4,F2:R1:SZ0,type-0 scene zone
+room,2/1,2/0,F2:R1:SZ1,type-0 scene zone
+room,2/1,2/7,F2:R1:SZ2,type-0 scene zone
+room,2/2,2/10,F2:R2:SZ0,type-0 scene zone
+room,2/2,2/0,F2:R2:SZ1,type-0 scene zone
+room,2/2,2/4,F2:R2:SZ2,type-0 scene zone
+room,2/3,2/4,F2:R3:SZ0,type-0 scene zone
+room,2/4,2/3,F2:R4:SZ0,type-0 scene zone
+room,2/4,2/5,F2:R4:SZ1,type-0 scene zone
+room,2/4,2/6,F2:R4:SZ2,type-0 scene zone
+room,2/4,2/1,F2:R4:SZ3,type-0 scene zone
+room,2/4,2/2,F2:R4:SZ4,type-0 scene zone
+room,2/5,2/4,F2:R5:SZ0,type-0 scene zone
+room,2/6,2/4,F2:R6:SZ0,type-0 scene zone
+room,2/7,2/1,F2:R7:SZ0,type-0 scene zone
+room,2/8,2/0,F2:R8:SZ0,type-0 scene zone
+room,2/10,2/2,F2:R10:SZ0,type-0 scene zone
+room,3/0,3/1,F3:R0:SZ0,type-0 scene zone
+room,3/0,3/12,F3:R0:SZ1,type-0 scene zone
+room,3/0,3/5,F3:R0:SZ2,type-0 scene zone
+room,3/1,3/2,F3:R1:SZ0,type-0 scene zone
+room,3/1,3/0,F3:R1:SZ1,type-0 scene zone
+room,3/1,3/13,F3:R1:SZ2,type-0 scene zone
+room,3/2,3/1,F3:R2:SZ0,type-0 scene zone
+room,3/2,3/3,F3:R2:SZ1,type-0 scene zone
+room,3/3,3/4,F3:R3:SZ0,type-0 scene zone
+room,3/3,3/2,F3:R3:SZ1,type-0 scene zone
+room,3/4,3/3,F3:R4:SZ0,type-0 scene zone
+room,3/4,3/5,F3:R4:SZ1,type-0 scene zone
+room,3/5,3/4,F3:R5:SZ0,type-0 scene zone
+room,3/5,3/0,F3:R5:SZ2,type-0 scene zone
+room,3/5,3/8,F3:R5:SZ3,type-0 scene zone
+room,3/5,3/9,F3:R5:SZ4,type-0 scene zone
+room,3/7,3/8,F3:R7:SZ0,type-0 scene zone
+room,3/8,3/7,F3:R8:SZ0,type-0 scene zone
+room,3/8,3/5,F3:R8:SZ1,type-0 scene zone
+room,3/8,3/9,F3:R8:SZ2,type-0 scene zone
+room,3/8,3/10,F3:R8:SZ3,type-0 scene zone
+room,3/9,3/5,F3:R9:SZ0,type-0 scene zone
+room,3/9,3/8,F3:R9:SZ1,type-0 scene zone
+room,3/9,3/12,F3:R9:SZ2,type-0 scene zone
+room,3/10,3/8,F3:R10:SZ0,type-0 scene zone
+room,3/11,3/13,F3:R11:SZ0,type-0 scene zone
+room,3/12,3/0,F3:R12:SZ0,type-0 scene zone
+room,3/12,3/13,F3:R12:SZ1,type-0 scene zone
+room,3/12,3/9,F3:R12:SZ2,type-0 scene zone
+room,3/13,3/1,F3:R13:SZ0,type-0 scene zone
+room,3/13,3/11,F3:R13:SZ1,type-0 scene zone
+room,3/13,3/12,F3:R13:SZ2,type-0 scene zone
+room,5/0,5/1,F5:R0:SZ0,type-0 scene zone
+room,5/1,5/0,F5:R1:SZ0,type-0 scene zone
+room,5/1,5/2,F5:R1:SZ1,type-0 scene zone
+room,5/2,5/1,F5:R2:SZ0,type-0 scene zone
+room,5/2,5/3,F5:R2:SZ1,type-0 scene zone
+room,5/2,5/4,F5:R2:SZ2,type-0 scene zone
+room,5/2,5/5,F5:R2:SZ3,type-0 scene zone
+room,5/3,5/2,F5:R3:SZ0,type-0 scene zone
+room,5/4,5/2,F5:R4:SZ0,type-0 scene zone
+room,5/4,5/7,F5:R4:SZ1,type-0 scene zone
+room,5/5,5/2,F5:R5:SZ0,type-0 scene zone
+room,5/5,5/6,F5:R5:SZ1,type-0 scene zone
+room,5/5,5/8,F5:R5:SZ2,type-0 scene zone
+room,5/6,5/5,F5:R6:SZ0,type-0 scene zone
+room,5/6,5/10,F5:R6:SZ1,type-0 scene zone
+room,5/7,5/4,F5:R7:SZ0,type-0 scene zone
+room,5/7,5/8,F5:R7:SZ1,type-0 scene zone
+room,5/7,5/9,F5:R7:SZ2,type-0 scene zone
+room,5/8,5/7,F5:R8:SZ0,type-0 scene zone
+room,5/8,5/5,F5:R8:SZ1,type-0 scene zone
+room,5/8,5/9,F5:R8:SZ2,type-0 scene zone
+room,5/8,5/10,F5:R8:SZ3,type-0 scene zone
+room,5/9,5/8,F5:R9:SZ0,type-0 scene zone
+room,5/9,5/7,F5:R9:SZ1,type-0 scene zone
+room,5/10,5/6,F5:R10:SZ0,type-0 scene zone
+room,5/10,5/8,F5:R10:SZ1,type-0 scene zone
+room,5/10,5/11,F5:R10:SZ2,type-0 scene zone
+room,5/11,5/10,F5:R11:SZ0,type-0 scene zone
+room,6/0,6/1,F6:R0:SZ0,type-0 scene zone
+room,6/0,6/6,F6:R0:SZ2,type-0 scene zone
+room,6/1,6/0,F6:R1:SZ0,type-0 scene zone
+room,6/1,6/2,F6:R1:SZ1,type-0 scene zone
+room,6/2,6/1,F6:R2:SZ0,type-0 scene zone
+room,6/2,6/3,F6:R2:SZ1,type-0 scene zone
+room,6/3,6/2,F6:R3:SZ0,type-0 scene zone
+room,6/3,6/4,F6:R3:SZ1,type-0 scene zone
+room,6/4,6/3,F6:R4:SZ0,type-0 scene zone
+room,6/4,6/5,F6:R4:SZ1,type-0 scene zone
+room,6/5,6/4,F6:R5:SZ0,type-0 scene zone
+room,6/5,6/6,F6:R5:SZ1,type-0 scene zone
+room,6/6,6/5,F6:R6:SZ0,type-0 scene zone
+room,6/6,6/0,F6:R6:SZ2,type-0 scene zone
+room,7/0,7/1,F7:R0:SZ0,type-0 scene zone
+room,7/1,7/0,F7:R1:SZ0,type-0 scene zone
+floor,0/0,1/6,F0:R0:SZ0,type-10 zone -> LIFE 550 hard_dec 0 -> track 31
+floor,1/6,0/0,F1:R6:SZ1,type-10 zone -> LIFE 550 hard_dec 1 -> track 32; guard if_egal mark #1 @L156
+floor,1/7,2/2,F1:R7:SZ1,type-10 zone -> LIFE 550 hard_dec 3 -> track 34; guard if_egal mark #1 @L248
+floor,1/7,2/2,F1:R7:SZ2,type-10 zone -> LIFE 550 hard_dec 2 -> track 33; guard if_egal mark #1 @L248
+floor,2/2,1/7,F2:R2:SZ3,type-10 zone -> LIFE 550 hard_dec 4 -> track 35; guard if_egal mark #1 @L418
+floor,2/2,3/5,F2:R2:SZ4,type-10 zone -> LIFE 550 hard_dec 6 -> track 36
+floor,2/2,3/5,F2:R2:SZ5,type-10 zone -> LIFE 550 hard_dec 5 -> track 36
+floor,3/1,,F3:R1:SZ3,type-10 zone -> LIFE 550 hard_dec 18
+floor,3/5,2/2,F3:R5:SZ1,type-10 zone -> LIFE 550 hard_dec 8 -> track 37; guard if_egal num_track #-1 @L636
+floor,3/5,4/0,F3:R5:SZ5,type-10 zone -> LIFE 550 hard_dec 7 -> track 38
+floor,3/11,5/0,F3:R11:SZ1,type-10 zone -> LIFE 550 hard_dec 9 -> track 42; guard if_egal num_track #-1 @L1250
+floor,4/0,3/5,F4:R0:SZ0,type-10 zone -> LIFE 550 hard_dec 10 -> track 39; guard if_egal num_track #-1 @L814
+floor,4/0,5/3,F4:R0:SZ1,type-10 zone -> LIFE 550 hard_dec 11 -> track 40; guard if_egal mark #1 @L858
+floor,5/0,3/11,F5:R0:SZ1,type-10 zone -> LIFE 550 hard_dec 13 -> track 43
+floor,5/3,4/0,F5:R3:SZ1,type-10 zone -> LIFE 550 hard_dec 12 -> track 41; guard switch mark; case 1 @L992
+floor,5/9,6/0,F5:R9:SZ2,type-10 zone -> LIFE 550 hard_dec 14
+floor,5/11,6/6,F5:R11:SZ1,type-10 zone -> LIFE 550 hard_dec 15
+floor,6/0,5/9,F6:R0:SZ1,type-10 zone -> LIFE 550 hard_dec 16
+floor,6/6,5/11,F6:R6:SZ1,type-10 zone -> LIFE 550 hard_dec 17
+gate?,1/2,1/1,F1:R2:SZ0,OBJ 36 lives [45] in_hand [37] vars [] dist 2798
+gate?,1/4,1/5,F1:R4:SZ0,"OBJ 52 lives [66] in_hand [53] vars ['33', '45'] dist 3396"
+gate?,2/0,2/2,F2:R0:SZ1,"OBJ 69 lives [115] in_hand [13] vars ['7', '70', '72'] dist 4234"
+gate?,2/0,2/1,F2:R0:SZ0,"OBJ 77 lives [122, 123] in_hand [78] vars [] dist 8095"
+gate?,2/6,2/4,F2:R6:SZ0,"OBJ 92 lives [172] in_hand [13] vars ['7', '85'] dist 3041"
+gate?,3/0,3/1,F3:R0:SZ0,OBJ 128 lives [208] in_hand [] vars [] dist 3099
+gate?,3/0,3/5,F3:R0:SZ2,OBJ 129 lives [209] in_hand [] vars [] dist 2841
+gate?,3/1,3/13,F3:R1:SZ2,"OBJ 134 lives [228, 229, 231, 232, 233] in_hand [] vars ['24', '102', '103', '104'] dist 1496"
+gate?,3/1,3/13,F3:R1:SZ2,"OBJ 135 lives [230, 234, 235, 236, 237] in_hand [] vars ['24', '102', '103', '104'] dist 1920"
+gate?,3/2,3/3,F3:R2:SZ1,"OBJ 139 lives [250, 251, 253, 254, 255] in_hand [141] vars ['24', '108', '109', '110'] dist 1394"
+gate?,3/2,3/3,F3:R2:SZ1,"OBJ 140 lives [252, 256, 257, 258, 259] in_hand [141] vars ['24', '108', '109', '110'] dist 1755"
+gate?,3/2,3/3,F3:R2:SZ1,"OBJ 149 lives [266, 267, 268] in_hand [38, 81] vars [] dist 3749"
+gate?,3/3,3/2,F3:R3:SZ1,OBJ 150 lives [269] in_hand [] vars [] dist 7418
+gate?,3/3,3/4,F3:R3:SZ0,OBJ 151 lives [270] in_hand [] vars [] dist 6340
+gate?,3/5,floor zone p7,F3:R5:SZ5,"OBJ 162 lives [326, 327, 328, 329, 330] in_hand [163] vars ['24', '124', '125'] dist 904"
+gate?,3/10,3/8,F3:R10:SZ0,"OBJ 179 lives [362] in_hand [96] vars ['33', '134'] dist 2071"
+gate?,3/11,3/13,F3:R11:SZ0,"OBJ 183 lives [367, 368, 370, 371, 372] in_hand [108] vars ['24', '137', '138', '139'] dist 1346"
+gate?,3/11,3/13,F3:R11:SZ0,"OBJ 184 lives [369, 373, 374, 375, 376] in_hand [108] vars ['24', '137', '138', '139'] dist 1254"
+gate?,3/12,3/0,F3:R12:SZ0,"OBJ 186 lives [381, 382, 384, 385, 386] in_hand [] vars ['24', '130', '140', '141'] dist 1600"
+gate?,3/12,3/0,F3:R12:SZ0,"OBJ 187 lives [383, 387, 388, 389, 390] in_hand [] vars ['24', '130', '140', '141'] dist 860"
+gate?,3/12,3/9,F3:R12:SZ2,"OBJ 188 lives [391, 392, 393, 394, 395] in_hand [] vars ['24', '130', '142'] dist 1085"
+gate?,3/13,3/12,F3:R13:SZ2,"OBJ 198 lives [422, 423, 424, 425, 426] in_hand [] vars ['24', '130', '159'] dist 1375"
+gate?,5/9,floor zone p14,F5:R9:SZ2,OBJ 231 lives [481] in_hand [232] vars [] dist 30
+gate?,6/0,floor zone p16,F6:R0:SZ1,OBJ 233 lives [508] in_hand [232] vars [] dist 10
+gate?,6/0,6/6,F6:R0:SZ2,"OBJ 235 lives [509] in_hand [13] vars ['7', '178'] dist 8966"
+gate?,5/11,5/10,F5:R11:SZ0,OBJ 267 lives [503] in_hand [144] vars [] dist 2328
+gate?,6/6,6/0,F6:R6:SZ2,"OBJ 273 lives [512, 513] in_hand [232] vars [] dist 7521"
+gate?,5/0,floor zone p13,F5:R0:SZ1,"OBJ 283 lives [533] in_hand [13] vars ['4', '7', '13', '20', '33'] dist 7131"
+gate?,6/0,6/6,F6:R0:SZ2,"OBJ 284 lives [534] in_hand [13] vars ['4', '7', '13', '20', '33'] dist 8966"
