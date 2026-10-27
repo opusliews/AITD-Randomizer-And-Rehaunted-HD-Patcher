@@ -17,7 +17,7 @@ from __future__ import annotations
 # paths stay relative to each other), so PyInstaller only sees these through this list.
 import argparse, bisect, collections, contextlib, copy, csv, ctypes, dataclasses, functools  # noqa: F401,E401
 import glob, hashlib, heapq, io, itertools, json, math, os, queue, random, re, shutil  # noqa: F401,E401
-import string, struct, sys, threading, time, traceback, typing, winreg  # noqa: F401,E401
+import string, struct, subprocess, sys, threading, time, traceback, typing, winreg  # noqa: F401,E401
 from pathlib import Path
 
 import tkinter as tk
@@ -226,6 +226,40 @@ def writable(folder: Path) -> None:
                       "Program Files, run this app as administrator.") from None
 
 
+def launch_target(folder: Path) -> tuple[str | None, dict | str]:
+    """How the Run game button starts the game in this folder: (what, {"cmd", "cwd"} or {"url"}),
+    or (None, why not).
+    - ReHaunted (also inside the GOG/Steam folder, where its DOSBox stub would start it anyway):
+      TatouHd.exe when the custom HD backgrounds are installed (custom_hd manifest), else Tatou.exe.
+    - Classic GOG: the primary play task of goggame-*.info (DOSBOX\\dosbox.exe with GOG's .conf
+      files, from the DOSBOX folder), as GOG Galaxy and the desktop shortcut start it.
+    - Classic Steam: steam://rungameid/548090, so Steam's own launch settings apply."""
+    try:
+        tatou = I.find(folder, "Tatou.exe")
+        if tatou:
+            hd = CH.find_ci(folder, "TatouHd.exe")
+            if hd and CH.load_manifest(folder) is not None:
+                return "ReHaunted with the custom HD backgrounds (TatouHd.exe)", {"cmd": f'"{hd}"', "cwd": folder}
+            return "ReHaunted (Tatou.exe)", {"cmd": f'"{tatou}"', "cwd": folder}
+        if not I.find(folder, "INDARK.EXE"):
+            return None, "No game program here (INDARK.EXE or Tatou.exe)."
+        for base in (folder.parent, folder):
+            for info in sorted(base.glob("goggame-*.info")):
+                tasks = json.loads(info.read_text(encoding="utf-8")).get("playTasks", [])
+                task = next((t for t in tasks if t.get("isPrimary") and t.get("type") == "FileTask"), None)
+                if task:
+                    exe = base / task["path"]
+                    if exe.is_file():
+                        return ("the original game in DOSBox (GOG)",
+                                {"cmd": f'"{exe}" {task.get("arguments", "")}'.strip(),
+                                 "cwd": base / task.get("workingDir", "")})
+        if any(p.lower() == "steamapps" for p in folder.resolve().parts):
+            return "the original game through Steam", {"url": f"steam://rungameid/{I.STEAM_APP_ID}"}
+    except (OSError, ValueError, KeyError) as e:
+        return None, f"Can't tell how to start the game here: {e}"
+    return None, "No GOG or Steam launcher found here: start the game the way you usually do."
+
+
 def describe(folder: Path) -> tuple[str, dict | None]:
     """A short, plain account of what is in the folder."""
     if not folder.is_dir():
@@ -405,6 +439,10 @@ class App:
         self.undo = ttk.Button(a, text="Uninstall seed", command=self.uninstall)
         self.undo.pack(side="left", padx=6)
         Tip(self.undo, "Restores every file the randomizer changed, and checks each one.")
+        self.play = ttk.Button(a, text="Run game", command=self.run_game)
+        self.play.pack(side="left")
+        self.play_tip = Tip(self.play, "")
+        self.launch = (None, "")
         ttk.Button(a, text="About", command=self.about).pack(side="right")
         ttk.Button(a, text="Seed folder", command=self.open_seeds).pack(side="right", padx=6)
         sp = ttk.Button(a, text="Spoiler...", command=self.spoiler)
@@ -515,6 +553,9 @@ class App:
         self.go.state(["!disabled"] if idle and self.data_ok and not self.hd_blocks() else ["disabled"])
         self.undo.state(["!disabled"] if idle and self.info and self.info["installed_seed"] is not None
                         else ["disabled"])
+        what, how = self.launch
+        self.play.state(["!disabled"] if idle and what else ["disabled"])
+        self.play_tip.text = f"Starts {what}." if what else how
 
     def sync_hd(self):
         """Custom HD backgrounds: ReHaunted 2.4 folders only (custom_hd.detect); the row is hidden
@@ -621,6 +662,8 @@ class App:
             except OSError as e:
                 self.hd_problem = str(e)
         self.found = I.search_game_data() if self.has_rehaunted() else []
+        self.launch = launch_target(Path(f)) if self.info is not None else (
+            None, "Choose the game directory first.")
         self.refresh_data()
 
     def refresh_data(self):
@@ -914,6 +957,28 @@ class App:
         t.pack(fill="both", expand=True)
         t.insert("1.0", path.read_text(encoding="utf-8"))
         t.config(state="disabled")
+
+    def run_game(self):
+        self.refresh()                       # what is installed now, e.g. after a manual change
+        what, how = self.launch
+        if not what:
+            messagebox.showerror(APP_NAME, how)
+            return
+        if self.info["installed_seed"] is None and not messagebox.askyesno(
+                APP_NAME, "No seed is installed in this folder, so this starts the unchanged game. "
+                          "Start it anyway?"):
+            return
+        try:
+            if "url" in how:
+                os.startfile(how["url"])
+            else:
+                subprocess.Popen(how["cmd"], cwd=how["cwd"], stdin=subprocess.DEVNULL,
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                 creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+        except OSError as e:
+            messagebox.showerror(APP_NAME, f"Could not start {what}: {e}")
+            return
+        self.say(f"Started {what}.\n")
 
     def open_seeds(self):
         SEEDS.mkdir(parents=True, exist_ok=True)
