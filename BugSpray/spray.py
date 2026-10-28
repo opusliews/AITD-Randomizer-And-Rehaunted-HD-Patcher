@@ -44,6 +44,16 @@ DEATH_SOUND = 6                         # the monster death sound (giant spider,
 SPRAY_SOUND = 101                       # appended to LISTSAMP.PAK (101 entries): the user's recording
 SOUND_FILE = HERE / "spray_sound.voc"   # References/Spray.wav at 11025 Hz (make_spray_sound.py; user pick)
 PLAYER_LIFE, IDLE_ANIM, BODY_VAR = 549, 4, 204
+# Enemy drop (user, 2026-10-28): the six spiders are one drop slot, DROP_SLOT (Logic/logic_manual.json).
+# The items land on the floor in front of the Staircase door, inside the Garden. The door (OBJ 154,
+# hinge at x -1200, z -2490; ETAGE03 room 4 hard zone 6: x -1200..-200 at z -2600..-2500) opens onto
+# a path between two flower beds (hard zones 10 and 12, z -2500..-1500). DROP_SPOT is the end of that
+# path, 1100 in from the wall and more than a door width (1000) from the hinge, so the leaf can't
+# reach it whichever way it swings. Room-local, floor y 0. The first spider's DIE life warps it there
+# with the drop TRACK after its burst (the giant spider's pattern: trackmode 3 + do_move), then
+# `put_at ITEM 156` drops the items at it (put_at also makes them foundable).
+DROP_SLOT, DROP_SPIDER = "E:156", 156
+DROP_SPOT = (-700, 0, -1400)
 
 
 def record(objs: list[dict]) -> dict:
@@ -95,10 +105,22 @@ def _assemble(L, text: str, what: str) -> bytes:
     return data
 
 
-def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict) -> dict:
+def drop_track() -> bytes:
+    """The TRACK that warps the first spider to DROP_SPOT: WARP room x y z, END (+ the usual
+    [20, 2] trailer, as the giant spider's TRACK 45)."""
+    import struct
+    words = [0, int(GARDEN.split("/")[1]), *DROP_SPOT, 2, 20, 2]
+    return struct.pack(f"<{len(words)}h", *words)
+
+
+def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict, drop=(),
+                drop_track_no: int | None = None) -> dict:
     """Appends the spray's scripts to `entries` (before the padding entry) and sets the record's
-    found_life. Returns a report."""
+    found_life. `drop`: the items of the spiders' enemy drop (DROP_SLOT), dropped at DROP_SPOT
+    through TRACK `drop_track_no`. Returns a report."""
     rep = {}
+    if drop and drop_track_no is None:
+        raise SystemExit("bug spray: a spider drop needs its TRACK")
 
     def add(name, text):
         n = len(entries)
@@ -110,7 +132,11 @@ def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict) -> dict:
     die = {}
     for k, sp in enumerate(SPIDERS):
         sound = f"sound #{DEATH_SOUND}\n" if k == 0 else ""
-        die[sp] = add(f"die_{sp}", f"do_real_zv\nspecial 0\n{sound}delete {sp}\nendlife")
+        put = "".join(f"put_at {i} {sp}\n" for i in drop) if sp == DROP_SPIDER else ""
+        warp = f"trackmode 3 {drop_track_no}\ndo_move\n" if put else ""
+        die[sp] = add(f"die_{sp}", f"do_real_zv\nspecial 0\n{sound}{warp}{put}delete {sp}\nendlife")
+    if drop:
+        rep["drop"] = {"slot": DROP_SLOT, "items": list(drop), "spot": DROP_SPOT, "track": drop_track_no}
     froze = "\n".join(f"obj_{sp}.life {freeze}" for sp in SPIDERS)
     kill = "\n".join(f"obj_{sp}.life {die[sp]}" for sp in SPIDERS)
     player = add("player", "\n".join([

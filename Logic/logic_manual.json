@@ -434,6 +434,12 @@
    "region": "5/6",
    "requires": "true",
    "spawn": "Giant Spider Lair, when camera 27 first shows it (LIFE 469); killed only by luring it into its hole (LIFE 471), which needs nothing; the drop lands on the ledge (-5087, -4010, 6781) (user, 2026-10-27)"
+  },
+  "E:156": {
+   "enemy": 156,
+   "region": "3/4",
+   "requires": "event:spiders_sprayed",
+   "spawn": "the six Garden spiders (OBJ 156-161) as one drop (user, 2026-10-28): they drop in when the Center Bed is searched (LIFE 304) and die only to the Bug Spray (event spiders_sprayed, randomized seeds only); the drop lands in front of the Staircase door inside the Garden (BugSpray/spray.py DROP_SPOT)"
   }
  }
 }
