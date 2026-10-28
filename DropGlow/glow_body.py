@@ -51,6 +51,7 @@ BOX = (-1, 1, -1990, -1980, -1, 1)
 # 0x100 goes forward, and the loop from 0x300 back to keyframe 0 is +0x100 too), so the beam turns
 # evenly. Angle units: 0x400 = a full turn; time in timer ticks (60 per second in DOS).
 INFO_TRI, INFO_ANIM = 1, 2
+SCRATCH = 10             # animation scratch bytes, as in all 107 animated vanilla bodies
 SPIN_TICKS = 60          # per quarter turn: one turn in 4 s
 
 
@@ -83,7 +84,10 @@ def glow_body(height: int = HEIGHT, bottom: int = BOTTOM, top: int = TOP, color:
     verts = [(0, 0, 0)] + verts                           # vertex 0: the pivot on the beam's axis
     out = bytearray(struct.pack("<H", INFO_TRI | INFO_ANIM))   # as the 107 animated vanilla bodies
     out += struct.pack("<6h", *BOX)
-    out += struct.pack("<H", 0)                           # no scratch bytes
+    # The animation scratch area: every animated vanilla body has 10 zero bytes here (static ones
+    # none); the engine keeps the animation's state in it (FITD anim.cpp: the keyframe start time at
+    # +4). The first spinning build had none, and the game froze (user, DOS, 2026-10-28).
+    out += struct.pack("<H", SCRATCH) + bytes(SCRATCH)
     out += struct.pack("<H", len(verts)) + b"".join(struct.pack("<3h", *v) for v in verts)
     # Two groups (records: start*6, count, pivot vertex*6, parent, number, type 0 = rotation,
     # angles). The engine turns the root group by the object's own angles, not the animation's
