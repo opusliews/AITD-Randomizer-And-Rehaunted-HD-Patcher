@@ -21,3 +21,14 @@ dist/
 # HD images: they ship in the HD pack, not in source (several GB)
 /HDRepaint/*/
 !/HDRepaint/tools/
+
+# Sound browser: the script is source; the WAVs and page are original game data
+!/Sounds/
+/Sounds/wav/
+/Sounds/index.html
+
+# Bug Spray item and the model library it uses (out/ = preview images)
+!/BugSpray/
+/BugSpray/out/
+!/AnimExport/
+/AnimExport/out/

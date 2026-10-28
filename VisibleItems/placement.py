@@ -55,15 +55,18 @@ COVER, COVER_BODY, COVER_SOURCE_BODY = 5, 272, 19
 # jointed) so ReHaunted draws no constant shadow (scale_body._strip_single_group)
 CUSTOM_BODIES = {272: (19, 1 / 4),                         # new model -> (vanilla source, scale)
                  273: (162, "cross"),                     # the cross arrow (scale_body.cross_body)
-                 274: (None, "glow")}                     # the drop glow beam (DropGlow/glow_body.py)
+                 274: (None, "glow"),                     # the drop glow beam (DropGlow/glow_body.py)
+                 275: (None, "spray_can"),                # the Bug Spray can (BugSpray/spray_assets.py)
+                 276: (None, "spray_held")}               # the player holding it (per model file)
 # Arrows placed at a world location show the cross arrow (two fins at 90 degrees, readable from any
 # side); picked up, their found-life switches back to the plain arrow, so drops and throws look
 # vanilla (user idea, 2026-10-17; mechanics.py).
 ARROW_BODY, CROSS_ARROW_BODY = 162, 273
 
 
-def custom_body(body: int) -> bytes | None:
-    """Raw data of a model the randomizer adds (not in the extracted vanilla LISTBODY)."""
+def custom_body(body: int, pak: str = "LISTBODY.PAK") -> bytes | None:
+    """Raw data of a model the randomizer adds (not in the extracted vanilla LISTBODY). `pak`
+    matters only for models built from the player (Edward in LISTBODY, Emily in LISTBOD2)."""
     if body in CUSTOM_BODIES:
         import scale_body
         src, factor = CUSTOM_BODIES[body]
@@ -71,6 +74,12 @@ def custom_body(body: int) -> bytes | None:
             sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "DropGlow"))
             import glow_body
             return glow_body.glow_body()
+        if factor in ("spray_can", "spray_held"):
+            sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "BugSpray"))
+            import spray_assets
+            if factor == "spray_can":
+                return spray_assets.can_body()
+            return spray_assets.held_body(gamedata.pak_entries(pak)[12])
         raw = gamedata.body(src)
         if factor == "cross":
             return scale_body.cross_body(raw)

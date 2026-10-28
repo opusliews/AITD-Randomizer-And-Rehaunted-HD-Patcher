@@ -1,0 +1,444 @@
+F5:R0: areas [(0, 1973), (1, 1160)]  exits {'SZ1->F13': [0], 'SZ0->R1': [1]}
+   a0: floor y -4000..-4000, x -800..700, z 2500..7200
+   a1: floor y -4000..-4000, x -700..700, z -7450..-5500
+   a0<->a1: gap ~8000 around (-700,-1500); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+F5:R2: areas [(0, 6838), (1, 120)]  exits {'SZ0->R1': [0], 'SZ1->R3': [0], 'SZ2->R4': [0], 'SZ3->R5': []}
+   a0: floor y -4000..-4000, x -7150..-4200, z -5750..4750
+   a1: floor y -4000..-4000, x -4300..-3850, z 2800..3900
+   a0<->a1: gap ~950 around (-4750,2800); floor block there: [-4000]; wall boxes: [28]; edge heights -4000 / -4000
+   SZ3->R5 UNREACHED: exit x 9100..11680 y -6000..0 z -1090..4140; floor blocks touching it (tops): NONE
+F5:R7: areas [(0, 1260), (1, 615), (2, 8505), (3, 441), (4, 3015), (5, 174)]  exits {'SZ0->R4': [0], 'SZ2->R9': [5], 'SZ1->R8': []}
+   a0: floor y -4000..-4000, x -7650..-6700, z 3300..6700
+   a1: floor y -2000..-2000, x -6400..-4700, z -5700..-4300
+   a2: floor y -2000..-2000, x -6400..6000, z 300..5700
+   a3: floor y -2000..-2000, x 1300..2300, z -2000..-1000
+   a4: floor y -2000..-2000, x 4600..7000, z -5700..0
+   a5: floor y -4000..-4000, x 7300..7550, z -5700..-4300
+   a0<->a1: gap ~9000 around (-6050,-500); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a2: gap ~350 around (-6550,3300); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -2000
+   a0<->a3: gap ~12450 around (-2700,1100); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a4: gap ~15450 around (-700,1600); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a5: gap ~21700 around (300,-500); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a2: gap ~4600 around (-5350,-2000); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a1<->a3: gap ~8350 around (-1750,-3150); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a1<->a4: gap ~9350 around (-50,-5600); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a1<->a5: gap ~12050 around (1300,-5600); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a2<->a3: gap ~4100 around (1300,950); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a2<->a4: gap ~2050 around (5400,1000); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a2<->a5: gap ~7700 around (6650,-1150); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -4000
+   a3<->a4: gap ~3100 around (3800,-1050); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a3<->a5: gap ~7350 around (4800,-3200); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a4<->a5: gap ~300 around (7150,-5700); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -4000
+   SZ1->R8 UNREACHED: exit x 600..7260 y -6000..0 z 5300..7700; floor blocks touching it (tops): NONE
+F5:R8: areas [(0, 174), (1, 441), (2, 441), (3, 441), (4, 315), (5, 384), (6, 441), (7, 174), (8, 441)]  exits {'SZ1->R5': [0], 'SZ2->R9': [7], 'SZ0->R7': [], 'SZ3->R10': []}
+   a0: floor y -4000..-4000, x -5000..-3600, z 8200..8450
+   a1: floor y -4000..-4000, x -4300..-3300, z 5200..6200
+   a2: floor y -4000..-4000, x -2300..-1300, z 200..1200
+   a3: floor y -4000..-4000, x -2300..-1300, z 4200..5200
+   a4: floor y -4000..-4000, x -1300..-300, z -1500..-800
+   a5: floor y -4000..-4000, x 750..1700, z 4200..5200
+   a6: floor y -4000..-4000, x 1700..2700, z 200..1200
+   a7: floor y -4000..-4000, x 2000..3400, z -2050..-1800
+   a8: floor y -4000..-4000, x 2700..3700, z 2200..3200
+   a0<->a1: gap ~2100 around (-4300,7150); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a2: gap ~8400 around (-2950,4650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a3: gap ~4400 around (-2950,6650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a4: gap ~11400 around (-2450,3650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a5: gap ~7450 around (-1450,6650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a6: gap ~12400 around (-950,4650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a7: gap ~15700 around (-800,3150); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a8: gap ~11400 around (-450,5650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a2: gap ~5100 around (-2800,3150); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a3: gap ~1100 around (-2800,5150); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a4: gap ~8100 around (-2300,2150); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a5: gap ~4150 around (-1300,5150); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -4000
+   a1<->a6: gap ~9100 around (-800,3150); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a7: gap ~12400 around (-650,1650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a8: gap ~8100 around (-300,4150); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a2<->a3: gap ~3100 around (-2300,2650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a2<->a4: gap ~1100 around (-1300,-350); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a2<->a5: gap ~5150 around (-300,2650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a2<->a6: gap ~3000 around (200,200); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a2<->a7: gap ~5400 around (350,-850); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a2<->a8: gap ~5100 around (700,1650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a3<->a4: gap ~5100 around (-1300,1650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a3<->a5: gap ~2050 around (-300,4200); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a3<->a6: gap ~6100 around (200,2650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a3<->a7: gap ~9400 around (350,1150); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a3<->a8: gap ~5100 around (700,3650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a4<->a5: gap ~6150 around (200,1650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a4<->a6: gap ~3100 around (700,-350); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a4<->a7: gap ~2700 around (850,-1700); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a4<->a8: gap ~6100 around (1200,650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a5<->a6: gap ~3100 around (1700,2650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a5<->a7: gap ~6400 around (1850,1150); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -4000
+   a5<->a8: gap ~2100 around (2200,3650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a6<->a7: gap ~2100 around (2000,-850); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a6<->a8: gap ~1100 around (2700,1650); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a7<->a8: gap ~4100 around (2700,150); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   SZ0->R7 UNREACHED: exit x -10630..-2930 y -4000..0 z -11500..-8800; floor blocks touching it (tops): NONE
+   SZ3->R10 UNREACHED: exit x 7700..9840 y -2000..0 z -1480..5870; floor blocks touching it (tops): NONE
+F5:R10: areas [(0, 735), (1, 441), (2, 441), (3, 315), (4, 315), (5, 441), (6, 441), (7, 5914), (8, 1281), (9, 5914), (10, 441), (11, 315), (12, 315), (13, 441), (14, 579), (15, 315), (16, 861), (17, 705), (18, 441), (19, 315), (20, 315), (21, 441), (22, 315), (23, 441), (24, 441)]  exits {'SZ2->R11': [7], 'SZ0->R6': [9], 'SZ1->R8': []}
+   a0: floor y -4000..-4000, x -7000..-5300, z 1100..2100
+   a1: floor y -4000..-4000, x -7000..-6000, z 6100..7100
+   a2: floor y -6000..-6000, x -6000..-5000, z -7900..-6900
+   a3: floor y -2000..-2000, x -6000..-5000, z -6600..-5900
+   a4: floor y -2000..-2000, x -6000..-5300, z -3900..-2900
+   a5: floor y -6000..-6000, x -5000..-4000, z -3900..-2900
+   a6: floor y -6000..-6000, x -5000..-4000, z 1100..2100
+   a7: floor y -6000..-6000, x -3000..4000, z -15150..-12900
+   a8: floor y -4000..-4000, x -3000..-1000, z 6100..8100
+   a9: floor y -4000..-4000, x -3000..4000, z 13100..15350
+   a10: floor y -2000..-2000, x -2000..-1000, z -1900..-900
+   a11: floor y -2000..-2000, x -2000..-1000, z 5100..5800
+   a12: floor y -2000..-2000, x -700..0, z 6100..7100
+   a13: floor y -6000..-6000, x 0..1000, z -7900..-6900
+   a14: floor y -2000..-2000, x 3000..4000, z -1900..-200
+   a15: floor y -4000..-4000, x 3000..4000, z 100..800
+   a16: floor y -6000..-6000, x 3000..5000, z 1100..2100
+   a17: floor y -2000..-2000, x 3000..5000, z 9100..10100
+   a18: floor y -4000..-4000, x 3000..4000, z 10100..11100
+   a19: floor y -4000..-4000, x 4000..4700, z -1900..-900
+   a20: floor y -4000..-4000, x 4000..5000, z 2400..3100
+   a21: floor y -4000..-4000, x 4000..5000, z 5100..6100
+   a22: floor y -2000..-2000, x 4000..5000, z 6400..7100
+   a23: floor y -6000..-6000, x 5000..6000, z -7900..-6900
+   a24: floor y -6000..-6000, x 5000..6000, z -1900..-900
+   a0<->a1: gap ~4100 around (-7000,4050); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a2: gap ~8100 around (-6000,-2950); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -6000
+   a0<->a3: gap ~7100 around (-6000,-2450); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a4: gap ~4100 around (-6000,-950); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a5: gap ~4400 around (-5150,-950); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a0<->a6: gap ~300 around (-5150,1100); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -6000
+   a0<->a7: gap ~16350 around (-4150,-5950); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a0<->a8: gap ~6400 around (-4150,4050); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a9: gap ~13400 around (-4150,7550); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a10: gap ~5400 around (-3650,50); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a11: gap ~6400 around (-3650,3550); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a12: gap ~8700 around (-3000,4050); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a13: gap ~13400 around (-2650,-2950); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a0<->a14: gap ~9650 around (-1150,400); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a15: gap ~8700 around (-1150,900); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a16: gap ~8300 around (-1150,1100); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a0<->a17: gap ~15400 around (-1150,5550); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -2000
+   a0<->a18: gap ~16400 around (-1150,6050); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -4000
+   a0<->a19: gap ~11400 around (-650,50); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a20: gap ~9700 around (-650,2200); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a21: gap ~12400 around (-650,3550); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a22: gap ~13700 around (-650,4200); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a23: gap ~18400 around (-150,-2950); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a0<->a24: gap ~12400 around (-150,50); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a1<->a2: gap ~13100 around (-6000,-450); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a1<->a3: gap ~12100 around (-6000,50); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a1<->a4: gap ~9100 around (-6000,1550); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -2000
+   a1<->a5: gap ~10100 around (-5500,1550); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -6000
+   a1<->a6: gap ~5100 around (-5500,4050); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a1<->a7: gap ~22050 around (-4500,-3450); floor block there: [-6000]; wall boxes: none; edge heights -4000 / -6000
+   a1<->a8: gap ~3000 around (-4500,6100); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a9: gap ~9100 around (-4500,10050); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a10: gap ~11100 around (-4000,2550); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a1<->a11: gap ~4400 around (-4000,5900); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a1<->a12: gap ~5300 around (-3350,6100); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a1<->a13: gap ~19100 around (-3000,-450); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a1<->a14: gap ~15350 around (-1500,2900); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a1<->a15: gap ~14400 around (-1500,3400); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a16: gap ~13100 around (-1500,4050); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a1<->a17: gap ~11100 around (-1500,8050); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -2000
+   a1<->a18: gap ~12100 around (-1500,8550); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a19: gap ~17100 around (-1000,2550); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a20: gap ~13100 around (-1000,4550); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a1<->a21: gap ~10100 around (-1000,6050); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -4000
+   a1<->a22: gap ~10000 around (-1000,6400); floor block there: [-4000, -2000]; wall boxes: none; edge heights -4000 / -2000
+   a1<->a23: gap ~24100 around (-500,-450); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a1<->a24: gap ~18100 around (-500,2550); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a2<->a3: gap ~400 around (-6000,-6800); floor block there: [-2000]; wall boxes: none; edge heights -6000 / -2000
+   a2<->a4: gap ~3100 around (-6000,-5450); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a2<->a5: gap ~3100 around (-5000,-5450); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a2<->a6: gap ~8100 around (-5000,-2950); floor block there: [-2000, -6000]; wall boxes: none; edge heights -6000 / -6000
+   a2<->a7: gap ~7050 around (-4000,-10450); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a2<->a8: gap ~15100 around (-4000,-450); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a2<->a9: gap ~22100 around (-4000,3050); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a2<->a10: gap ~8100 around (-3500,-4450); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a2<->a11: gap ~15100 around (-3500,-950); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a2<->a12: gap ~17400 around (-2850,-450); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a2<->a13: gap ~5000 around (-2500,-7900); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a2<->a14: gap ~13100 around (-1000,-4450); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a2<->a15: gap ~15100 around (-1000,-3450); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a2<->a16: gap ~16100 around (-1000,-2950); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a2<->a17: gap ~24100 around (-1000,1050); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a2<->a18: gap ~25100 around (-1000,1550); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a2<->a19: gap ~14100 around (-500,-4450); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a2<->a20: gap ~18400 around (-500,-2300); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a2<->a21: gap ~21100 around (-500,-950); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a2<->a22: gap ~22400 around (-500,-300); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a2<->a23: gap ~10000 around (0,-7900); floor block there: [-6000]; wall boxes: none; edge heights -6000 / -6000
+   a2<->a24: gap ~15100 around (0,-4450); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a3<->a4: gap ~2100 around (-6000,-4950); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a3<->a5: gap ~2100 around (-5000,-4950); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a3<->a6: gap ~7100 around (-5000,-2450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a3<->a7: gap ~8350 around (-4000,-9800); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a3<->a8: gap ~14100 around (-4000,50); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a3<->a9: gap ~21100 around (-4000,3550); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a3<->a10: gap ~7100 around (-3500,-3950); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a3<->a11: gap ~14100 around (-3500,-450); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a3<->a12: gap ~16400 around (-2850,50); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a3<->a13: gap ~5400 around (-2500,-6800); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a3<->a14: gap ~12100 around (-1000,-3950); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a3<->a15: gap ~14100 around (-1000,-2950); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a3<->a16: gap ~15100 around (-1000,-2450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a3<->a17: gap ~23100 around (-1000,1550); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a3<->a18: gap ~24100 around (-1000,2050); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a3<->a19: gap ~13100 around (-500,-3950); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a3<->a20: gap ~17400 around (-500,-1800); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a3<->a21: gap ~20100 around (-500,-450); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a3<->a22: gap ~21400 around (-500,200); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a3<->a23: gap ~10400 around (0,-6800); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a3<->a24: gap ~14100 around (0,-3950); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a4<->a5: gap ~300 around (-5150,-3900); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -6000
+   a4<->a6: gap ~4400 around (-5150,-950); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a4<->a7: gap ~11350 around (-4150,-8450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a4<->a8: gap ~11400 around (-4150,1550); floor block there: [-6000]; wall boxes: none; edge heights -2000 / -4000
+   a4<->a9: gap ~18400 around (-4150,5050); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a4<->a10: gap ~4400 around (-3650,-2450); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a4<->a11: gap ~11400 around (-3650,1050); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a4<->a12: gap ~13700 around (-3000,1550); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a4<->a13: gap ~8400 around (-2650,-5450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a4<->a14: gap ~9400 around (-1150,-2450); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a4<->a15: gap ~11400 around (-1150,-1450); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -4000
+   a4<->a16: gap ~12400 around (-1150,-950); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -6000
+   a4<->a17: gap ~20400 around (-1150,3050); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a4<->a18: gap ~21400 around (-1150,3550); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a4<->a19: gap ~10400 around (-650,-2450); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a4<->a20: gap ~14700 around (-650,-300); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a4<->a21: gap ~17400 around (-650,1050); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a4<->a22: gap ~18700 around (-650,1700); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a4<->a23: gap ~13400 around (-150,-5450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a4<->a24: gap ~11400 around (-150,-2450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a5<->a6: gap ~4100 around (-5000,-950); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a5<->a7: gap ~10050 around (-3500,-8450); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a5<->a8: gap ~10100 around (-3500,1550); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a5<->a9: gap ~17100 around (-3500,5050); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a5<->a10: gap ~3100 around (-3000,-2450); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a5<->a11: gap ~10100 around (-3000,1050); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a5<->a12: gap ~12400 around (-2350,1550); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a5<->a13: gap ~7100 around (-2000,-5450); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a5<->a14: gap ~8100 around (-500,-2450); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a5<->a15: gap ~10100 around (-500,-1450); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a5<->a16: gap ~11100 around (-500,-950); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a5<->a17: gap ~19100 around (-500,3050); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a5<->a18: gap ~20100 around (-500,3550); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a5<->a19: gap ~9100 around (0,-2450); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a5<->a20: gap ~13400 around (0,-300); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a5<->a21: gap ~16100 around (0,1050); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a5<->a22: gap ~17400 around (0,1700); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a5<->a23: gap ~12100 around (500,-5450); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a5<->a24: gap ~10100 around (500,-2450); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a6<->a7: gap ~15050 around (-3500,-5950); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a6<->a8: gap ~5100 around (-3500,4050); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a6<->a9: gap ~12100 around (-3500,7550); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a6<->a10: gap ~4100 around (-3000,50); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a6<->a11: gap ~5100 around (-3000,3550); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a6<->a12: gap ~7400 around (-2350,4050); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a6<->a13: gap ~12100 around (-2000,-2950); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a6<->a14: gap ~8350 around (-500,400); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a6<->a15: gap ~7400 around (-500,900); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a6<->a16: gap ~7000 around (-500,1100); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a6<->a17: gap ~14100 around (-500,5550); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a6<->a18: gap ~15100 around (-500,6050); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a6<->a19: gap ~10100 around (0,50); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a6<->a20: gap ~8400 around (0,2200); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a6<->a21: gap ~11100 around (0,3550); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a6<->a22: gap ~12400 around (0,4200); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a6<->a23: gap ~17100 around (500,-2950); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a6<->a24: gap ~11100 around (500,50); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a7<->a8: gap ~19000 around (-2950,-3400); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a7<->a9: gap ~26000 around (-1600,100); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a7<->a10: gap ~11000 around (-1900,-7400); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a7<->a11: gap ~18000 around (-1900,-3900); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a7<->a12: gap ~19000 around (-700,-3400); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a7<->a13: gap ~5000 around (50,-10400); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a7<->a14: gap ~11050 around (2950,-7400); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a7<->a15: gap ~13000 around (3100,-6400); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a7<->a16: gap ~14000 around (3100,-5900); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a7<->a17: gap ~22000 around (3100,-1900); floor block there: [-2000]; wall boxes: none; edge heights -6000 / -2000
+   a7<->a18: gap ~23000 around (3100,-1400); floor block there: [-2000]; wall boxes: none; edge heights -6000 / -4000
+   a7<->a19: gap ~11000 around (4000,-7400); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a7<->a20: gap ~15300 around (4000,-5250); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a7<->a21: gap ~18000 around (4000,-3900); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a7<->a22: gap ~19300 around (4000,-3250); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a7<->a23: gap ~6000 around (4500,-10400); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a7<->a24: gap ~12000 around (4500,-7400); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a8<->a9: gap ~5000 around (-1950,10600); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a8<->a10: gap ~7100 around (-2000,2550); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a8<->a11: gap ~400 around (-2000,5900); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -2000
+   a8<->a12: gap ~350 around (-850,6200); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -2000
+   a8<->a13: gap ~14200 around (-550,-450); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a8<->a14: gap ~10450 around (950,2900); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a8<->a15: gap ~9500 around (950,3400); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a8<->a16: gap ~8200 around (950,4050); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a8<->a17: gap ~5050 around (950,8600); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a8<->a18: gap ~6050 around (950,9100); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a8<->a19: gap ~12200 around (1450,2550); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a8<->a20: gap ~8200 around (1450,4550); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a8<->a21: gap ~5200 around (1450,6050); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a8<->a22: gap ~5050 around (1500,6350); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a8<->a23: gap ~19200 around (1950,-450); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a8<->a24: gap ~13200 around (1950,2550); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a9<->a10: gap ~14100 around (-1950,6050); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -2000
+   a9<->a11: gap ~7400 around (-1950,9400); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a9<->a12: gap ~6100 around (-700,10050); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a9<->a13: gap ~20100 around (50,3050); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a9<->a14: gap ~13300 around (3050,6450); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a9<->a15: gap ~12400 around (3050,6900); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a9<->a16: gap ~11100 around (3050,7550); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a9<->a17: gap ~3400 around (3050,11400); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a9<->a18: gap ~2100 around (3050,12050); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a9<->a19: gap ~14150 around (3950,6050); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a9<->a20: gap ~10150 around (3950,8050); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a9<->a21: gap ~7150 around (3950,9550); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -4000
+   a9<->a22: gap ~6150 around (3950,10050); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -2000
+   a9<->a23: gap ~21150 around (4450,3050); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -6000
+   a9<->a24: gap ~15150 around (4450,6050); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -6000
+   a10<->a11: gap ~6100 around (-2000,2050); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a10<->a12: gap ~7400 around (-850,2550); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a10<->a13: gap ~6100 around (-500,-4450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a10<->a14: gap ~4000 around (1000,-1900); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a10<->a15: gap ~5100 around (1000,-450); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a10<->a16: gap ~6100 around (1000,50); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a10<->a17: gap ~14100 around (1000,4050); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a10<->a18: gap ~15100 around (1000,4550); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a10<->a19: gap ~5000 around (1500,-1900); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a10<->a20: gap ~8400 around (1500,700); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a10<->a21: gap ~11100 around (1500,2050); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a10<->a22: gap ~12400 around (1500,2700); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a10<->a23: gap ~11100 around (2000,-4450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a10<->a24: gap ~6000 around (2000,-1900); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a11<->a12: gap ~700 around (-850,5900); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a11<->a13: gap ~13100 around (-500,-950); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a11<->a14: gap ~9350 around (1000,2400); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a11<->a15: gap ~8400 around (1000,2900); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a11<->a16: gap ~7100 around (1000,3550); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a11<->a17: gap ~7400 around (1000,7400); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a11<->a18: gap ~8400 around (1000,7900); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a11<->a19: gap ~11100 around (1500,2050); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a11<->a20: gap ~7100 around (1500,4050); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a11<->a21: gap ~5000 around (1500,5100); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a11<->a22: gap ~5700 around (1500,6050); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a11<->a23: gap ~18100 around (2000,-950); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a11<->a24: gap ~12100 around (2000,2050); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a12<->a13: gap ~13100 around (0,-450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a12<->a14: gap ~9350 around (1500,2900); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a12<->a15: gap ~8400 around (1500,3400); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a12<->a16: gap ~7100 around (1500,4050); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a12<->a17: gap ~5100 around (1500,8050); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a12<->a18: gap ~6100 around (1500,8550); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a12<->a19: gap ~11100 around (2000,2550); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a12<->a20: gap ~7100 around (2000,4550); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a12<->a21: gap ~4100 around (2000,6050); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a12<->a22: gap ~4000 around (2000,6400); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a12<->a23: gap ~18100 around (2500,-450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a12<->a24: gap ~12100 around (2500,2550); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a13<->a14: gap ~7100 around (2000,-4450); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a13<->a15: gap ~9100 around (2000,-3450); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a13<->a16: gap ~10100 around (2000,-2950); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a13<->a17: gap ~18100 around (2000,1050); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a13<->a18: gap ~19100 around (2000,1550); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a13<->a19: gap ~8100 around (2500,-4450); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a13<->a20: gap ~12400 around (2500,-2300); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a13<->a21: gap ~15100 around (2500,-950); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a13<->a22: gap ~16400 around (2500,-300); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a13<->a23: gap ~4000 around (3000,-7900); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a13<->a24: gap ~9100 around (3000,-4450); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a14<->a15: gap ~300 around (3050,-50); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -4000
+   a14<->a16: gap ~1300 around (3050,450); floor block there: [-4000]; wall boxes: none; edge heights -2000 / -6000
+   a14<->a17: gap ~9300 around (3050,4450); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a14<->a18: gap ~10300 around (3050,4950); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a14<->a19: gap ~350 around (3850,-1800); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -4000
+   a14<->a20: gap ~2700 around (4000,1050); floor block there: [-4000]; wall boxes: none; edge heights -2000 / -4000
+   a14<->a21: gap ~5400 around (4000,2400); floor block there: [-4000]; wall boxes: none; edge heights -2000 / -4000
+   a14<->a22: gap ~6700 around (4000,3050); floor block there: [-4000]; wall boxes: none; edge heights -2000 / -2000
+   a14<->a23: gap ~6500 around (4300,-4450); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a14<->a24: gap ~1350 around (4350,-1800); floor block there: [-4000]; wall boxes: none; edge heights -2000 / -6000
+   a15<->a16: gap ~400 around (3000,900); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -6000
+   a15<->a17: gap ~8400 around (3000,4900); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a15<->a18: gap ~9400 around (3000,5400); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a15<->a19: gap ~1100 around (4000,-450); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -4000
+   a15<->a20: gap ~1700 around (4000,1550); floor block there: [-6000]; wall boxes: none; edge heights -4000 / -4000
+   a15<->a21: gap ~4400 around (4000,2900); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -4000
+   a15<->a22: gap ~5700 around (4000,3550); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a15<->a23: gap ~8100 around (4500,-3450); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a15<->a24: gap ~2100 around (4500,-450); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a16<->a17: gap ~7100 around (3000,5550); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a16<->a18: gap ~8100 around (3000,6050); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a16<->a19: gap ~2100 around (4000,50); floor block there: [-2000]; wall boxes: none; edge heights -6000 / -4000
+   a16<->a20: gap ~400 around (4000,2200); floor block there: [-4000]; wall boxes: none; edge heights -6000 / -4000
+   a16<->a21: gap ~3100 around (4000,3550); floor block there: NONE; wall boxes: none; edge heights -6000 / -4000
+   a16<->a22: gap ~4400 around (4000,4200); floor block there: NONE; wall boxes: none; edge heights -6000 / -2000
+   a16<->a23: gap ~8100 around (5000,-2950); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a16<->a24: gap ~2100 around (5000,50); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   a17<->a18: gap ~400 around (3000,9900); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -4000
+   a17<->a19: gap ~10100 around (4000,4050); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a17<->a20: gap ~6100 around (4000,6050); floor block there: [-4000]; wall boxes: none; edge heights -2000 / -4000
+   a17<->a21: gap ~3100 around (4000,7550); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a17<->a22: gap ~2100 around (4000,8050); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a17<->a23: gap ~16100 around (5000,1050); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a17<->a24: gap ~10100 around (5000,4050); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a18<->a19: gap ~11100 around (4000,4550); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a18<->a20: gap ~7100 around (4000,6550); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -4000
+   a18<->a21: gap ~4100 around (4000,8050); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a18<->a22: gap ~3100 around (4000,8550); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a18<->a23: gap ~18100 around (4500,1550); floor block there: [-6000]; wall boxes: none; edge heights -4000 / -6000
+   a18<->a24: gap ~12100 around (4500,4550); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a19<->a20: gap ~3400 around (4000,700); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -4000
+   a19<->a21: gap ~6100 around (4000,2050); floor block there: [-6000]; wall boxes: none; edge heights -4000 / -4000
+   a19<->a22: gap ~7400 around (4000,2700); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -2000
+   a19<->a23: gap ~5400 around (4850,-4450); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a19<->a24: gap ~300 around (4850,-1900); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -6000
+   a20<->a21: gap ~2100 around (4000,4050); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a20<->a22: gap ~3400 around (4000,4700); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a20<->a23: gap ~9400 around (5000,-2300); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a20<->a24: gap ~3400 around (5000,700); floor block there: NONE; wall boxes: none; edge heights -4000 / -6000
+   a21<->a22: gap ~400 around (4000,6200); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -2000
+   a21<->a23: gap ~12100 around (5000,-950); floor block there: [-4000, -6000]; wall boxes: none; edge heights -4000 / -6000
+   a21<->a24: gap ~6100 around (5000,2050); floor block there: [-6000]; wall boxes: none; edge heights -4000 / -6000
+   a22<->a23: gap ~13400 around (5000,-300); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a22<->a24: gap ~7400 around (5000,2700); floor block there: [-4000]; wall boxes: none; edge heights -2000 / -6000
+   a23<->a24: gap ~5100 around (5000,-4450); floor block there: NONE; wall boxes: none; edge heights -6000 / -6000
+   SZ1->R8 UNREACHED: exit x -8600..-8300 y -2000..0 z 7100..8100; floor blocks touching it (tops): NONE
+F6:R6: areas [(0, 10114), (1, 4815), (2, 441), (3, 4930), (4, 7553), (5, 2974), (6, 4359), (7, 8785)]  exits {'SZ0->R5': [0], 'SZ2->R0': [3], 'SZ1->F17': [7]}
+   a0: floor y -4000..-4000, x -13750..-8500, z -7600..-600
+   a1: floor y -2000..-2000, x -13200..-7500, z -8600..-600
+   a2: floor y -2000..-2000, x -11500..-10500, z 400..1400
+   a3: floor y -4000..-4000, x -9450..-1800, z 9900..12100
+   a4: floor y -2000..-2000, x -6500..-1500, z -1600..4200
+   a5: floor y -4000..-4000, x -4200..-2800, z 4500..9600
+   a6: floor y -6000..-6000, x -1500..2000, z 6700..12100
+   a7: floor y -6000..-6000, x 2600..8200, z 5700..11250
+   a0<->a1: gap ~300 around (-10450,-1450); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -2000
+   a0<->a2: gap ~1000 around (-11500,-100); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a3: gap ~12400 around (-9500,4550); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a4: gap ~4050 around (-8050,-1100); floor block there: NONE; wall boxes: none; edge heights -4000 / -2000
+   a0<->a5: gap ~11450 around (-6900,1450); floor block there: NONE; wall boxes: none; edge heights -4000 / -4000
+   a0<->a6: gap ~17750 around (-4900,2600); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -6000
+   a0<->a7: gap ~20600 around (-3400,2550); floor block there: [-2000]; wall boxes: none; edge heights -4000 / -6000
+   a1<->a2: gap ~1000 around (-11150,-100); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a1<->a3: gap ~11400 around (-9450,5000); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a1<->a4: gap ~2100 around (-7500,-650); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a1<->a5: gap ~9500 around (-6350,1900); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -4000
+   a1<->a6: gap ~15800 around (-4350,3050); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -6000
+   a1<->a7: gap ~18650 around (-2900,3000); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -6000
+   a2<->a3: gap ~10450 around (-10000,6000); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a2<->a4: gap ~4050 around (-8500,400); floor block there: NONE; wall boxes: none; edge heights -2000 / -2000
+   a2<->a5: gap ~9500 around (-7350,2900); floor block there: NONE; wall boxes: none; edge heights -2000 / -4000
+   a2<->a6: gap ~15800 around (-5350,4050); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a2<->a7: gap ~18650 around (-3900,4000); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -6000
+   a3<->a4: gap ~5700 around (-4150,7050); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -2000
+   a3<->a5: gap ~300 around (-3550,9750); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -4000
+   a3<->a6: gap ~350 around (-1700,10700); floor block there: [-4000]; wall boxes: none; edge heights -4000 / -6000
+   a3<->a7: gap ~6300 around (950,10350); floor block there: [-6000]; wall boxes: none; edge heights -4000 / -6000
+   a4<->a5: gap ~300 around (-4150,4350); floor block there: [-2000]; wall boxes: none; edge heights -2000 / -4000
+   a4<->a6: gap ~5050 around (-850,4900); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a4<->a7: gap ~7900 around (600,4850); floor block there: NONE; wall boxes: none; edge heights -2000 / -6000
+   a5<->a6: gap ~2400 around (-2150,10150); floor block there: NONE; wall boxes: [18]; edge heights -4000 / -6000
+   a5<->a7: gap ~5450 around (-100,7350); floor block there: [-6000]; wall boxes: none; edge heights -4000 / -6000
+   a6<->a7: gap ~700 around (2250,8000); floor block there: [-6000]; wall boxes: none; edge heights -6000 / -6000

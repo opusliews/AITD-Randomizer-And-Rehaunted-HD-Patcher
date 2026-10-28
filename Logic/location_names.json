@@ -225,6 +225,11 @@
   "6/6": {
    "name": "Pregzt's Tomb",
    "status": "decided"
+  },
+  "1/1W": {
+   "name": "Corridor",
+   "status": "decided",
+   "note": "virtual node: the corridor beyond the floor hole; same label, players know the side (user, 2026-10-28)"
   }
  }
 }

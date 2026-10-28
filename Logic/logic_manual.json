@@ -4,6 +4,10 @@
   "6/6N": {
    "status": "verified",
    "evidence": "RandomizerPlan rule 'Boss room 6/6S needs gem (from 6/5) or hook (from 6/6N)'; AnnotationReview section 4: F6:R6 is divided by gate OBJ 273 (LIFE 512->513, hook in hand). Node 6/6 = the south/altar part (gem door side), 6/6N = the 6/0 doorway part.; confirmed by the user map References/map.png (2026-10-15): 6/6-N (5/11 arrival, 6/0 doorway, 5/9 corridor side) and 6/6-S (boss room)"
+  },
+  "1/1W": {
+   "status": "verified",
+   "evidence": "3rd-floor corridor hole (LIFE 38, OBJ 31; scene zone F1:R1:SZ3, x 1300..1800 across the corridor's full width) kills the player, and jumping is not available there (user, 2026-10-28). It splits F1:R1: node 1/1 = the attic side (Storage Closet, Study, Dressing Room doors), 1/1W = the stairwell side (Master Bedroom, Master Bathroom, Stairwell doors). The only way between them is Dressing Room <-> Master Bedroom (no door). Found by Generated/Logic/audit/room_walk.py and confirmed by the user (Research/LogicAudit_2026-10-27.md)."
   }
  },
  "reroute": [
@@ -30,6 +34,42 @@
    "from": "6/6N",
    "status": "verified",
    "evidence": "the 5/11 exit is on the same side as the arrival; confirmed by the user map References/map.png (2026-10-15)"
+  },
+  {
+   "zone": "F1:R1:SZ1",
+   "from": "1/1W",
+   "status": "verified",
+   "evidence": "corridor split at the floor hole (virtual node 1/1W): this door is on the stairwell side (to the Master Bedroom)"
+  },
+  {
+   "zone": "F1:R1:SZ5",
+   "from": "1/1W",
+   "status": "verified",
+   "evidence": "corridor split at the floor hole (virtual node 1/1W): this door is on the stairwell side (to the Master Bathroom)"
+  },
+  {
+   "zone": "F1:R1:SZ6",
+   "from": "1/1W",
+   "status": "verified",
+   "evidence": "corridor split at the floor hole (virtual node 1/1W): this door is on the stairwell side (to the Stairwell)"
+  },
+  {
+   "zone": "F1:R4:SZ1",
+   "to": "1/1W",
+   "status": "verified",
+   "evidence": "corridor split at the floor hole (virtual node 1/1W): this door is on the stairwell side (from the Master Bedroom)"
+  },
+  {
+   "zone": "F1:R3:SZ0",
+   "to": "1/1W",
+   "status": "verified",
+   "evidence": "corridor split at the floor hole (virtual node 1/1W): this door is on the stairwell side (from the Master Bathroom)"
+  },
+  {
+   "zone": "F1:R7:SZ0",
+   "to": "1/1W",
+   "status": "verified",
+   "evidence": "corridor split at the floor hole (virtual node 1/1W): this door is on the stairwell side (from the Stairwell)"
   }
  ],
  "extra_edges": [

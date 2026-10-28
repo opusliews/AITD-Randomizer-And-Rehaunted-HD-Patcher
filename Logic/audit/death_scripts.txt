@@ -1,0 +1,168 @@
+LIFE 9  run by: (assigned by scripts)
+    obj_1.life 11    ; @122
+LIFE 12  run by: (assigned by scripts)
+    obj_1.life 11    ; @64
+LIFE 13  run by: OBJ 3 (F-1:R-1, floor_life)
+    obj_1.life 11    ; @18
+LIFE 14  run by: (assigned by scripts)
+    obj_1.life 11    ; @72
+LIFE 15  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 28  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 29  run by: (assigned by scripts)
+    obj_1.life 11    ; @376
+LIFE 38  run by: OBJ 31 (F1:R1, life)
+    obj_1.life 39    ; @130
+LIFE 39  run by: (assigned by scripts)
+    game_over    ; @110
+    L294: game_over    ; @294
+    L370: game_over    ; @370
+    L444: game_over    ; @444
+    L514: game_over    ; @514
+    L612: game_over    ; @612
+LIFE 47  run by: (assigned by scripts)
+    obj_1.life 11    ; @106
+LIFE 49  run by: (assigned by scripts)
+    obj_1.life 11    ; @184
+LIFE 50  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 57  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 58  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+    obj_1.life 59    ; @126
+LIFE 67  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 69  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 70  run by: (assigned by scripts)
+    obj_1.life 11    ; @162
+LIFE 71  run by: (assigned by scripts)
+    obj_1.life 11    ; @162
+LIFE 118  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 119  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 120  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 121  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 130  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 140  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 160  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 161  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+    obj_1.life 59    ; @126
+LIFE 162  run by: (assigned by scripts)
+    obj_1.life 11    ; @162
+    obj_1.life 164    ; @396
+LIFE 173  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 174  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 175  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 183  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 184  run by: (assigned by scripts)
+    obj_1.life 11    ; @64
+LIFE 185  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 187  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 188  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 189  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 190  run by: (assigned by scripts)
+    obj_1.life 11    ; @110
+LIFE 191  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 192  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 193  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 194  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+    obj_1.life 39    ; @130
+LIFE 203  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 204  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 205  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 206  run by: (assigned by scripts)
+    obj_1.life 11    ; @72
+LIFE 218  run by: (assigned by scripts)
+    game_over    ; @76
+LIFE 239  run by: (assigned by scripts)
+    obj_1.life 39    ; @250
+LIFE 264  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 265  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 282  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 283  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 305  run by: (assigned by scripts)
+    obj_1.life 11    ; @66
+LIFE 306  run by: (assigned by scripts)
+    obj_1.life 11    ; @66
+LIFE 307  run by: (assigned by scripts)
+    obj_1.life 11    ; @66
+LIFE 338  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 339  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 351  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 352  run by: (assigned by scripts)
+    obj_1.life 11    ; @154
+LIFE 354  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 355  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 363  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 364  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 365  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 379  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 380  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 429  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 430  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 431  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 437  run by: (assigned by scripts)
+    obj_1.life 11    ; @84
+LIFE 438  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 439  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 505  run by: (assigned by scripts)
+    obj_1.life 11    ; @80
+LIFE 507  run by: (assigned by scripts)
+    obj_1.life 11    ; @26
+LIFE 516  run by: (assigned by scripts)
+    obj_1.life 11    ; @18
+LIFE 539  run by: (assigned by scripts)
+    game_over    ; @60
+LIFE 548  run by: (assigned by scripts)
+    wait_game_over    ; @18
+LIFE 549  run by: OBJ 1 (F0:R0, life)
+    life 39    ; @1048
+    life 39    ; @1152
+LIFE 554  run by: (assigned by scripts)
+    game_over    ; @38
+LIFE 557  run by: (assigned by scripts)
+    obj_1.life 554    ; @84

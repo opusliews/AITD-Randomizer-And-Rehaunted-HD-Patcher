@@ -1,0 +1,36 @@
+OBJ  22 F1:R0 LIFE 22: standard
+OBJ  29 F1:R1 LIFE 33: standard
+OBJ  33 F1:R2 LIFE 40: standard
+OBJ  47 F1:R3 LIFE 56: egal var_42 #1; different var_4 #32
+OBJ  50 F1:R4 LIFE 60: standard
+OBJ  59 F1:R5 LIFE 75: standard
+OBJ  63 F1:R7 LIFE 85: standard
+OBJ  66 F2:R0 LIFE 105: egal var_67 #0
+OBJ  67 F2:R0 LIFE 111: egal var_66 #0
+OBJ  84 F2:R3 LIFE 133: standard
+OBJ  88 F2:R4 LIFE 143: standard
+OBJ  89 F2:R4 LIFE 148: standard
+OBJ  93 F2:R5 LIFE 154: standard
+OBJ 100 F2:R6 LIFE 167: standard
+OBJ 104 F2:R7 LIFE 176: standard
+OBJ 118 F2:R10 LIFE 195: standard
+OBJ 134 F3:R1 LIFE 228: egal var_104 #0; egal var_103 #1
+OBJ 135 F3:R1 LIFE 234: egal var_102 #0; egal var_103 #1
+OBJ 137 F3:R2 LIFE 240: egal var_107 #0
+OBJ 138 F3:R2 LIFE 246: egal var_106 #0
+OBJ 139 F3:R2 LIFE 250: egal var_109 #1; egal var_110 #0; egal in_hand #141; egal var_110 #0
+OBJ 140 F3:R2 LIFE 256: egal var_109 #1; egal var_108 #0; egal in_hand #141; egal var_108 #0
+OBJ 152 F3:R3 LIFE 271: egal var_117 #0
+OBJ 153 F3:R3 LIFE 277: egal var_116 #0
+OBJ 154 F3:R4 LIFE 299: standard
+OBJ 162 F3:R5 LIFE 326: egal var_125 #1; egal in_hand #163
+OBJ 164 F3:R5 LIFE 331: standard
+OBJ 168 F3:R8 LIFE 340: standard
+OBJ 169 F3:R8 LIFE 345: standard
+OBJ 177 F3:R9 LIFE 356: standard
+OBJ 183 F3:R11 LIFE 367: egal var_138 #1; egal var_139 #0; egal in_hand #108; egal var_139 #0
+OBJ 184 F3:R11 LIFE 373: egal var_138 #1; egal var_137 #0; egal in_hand #108; egal var_137 #0
+OBJ 186 F3:R12 LIFE 381: egal obj_1.room #12; egal var_130 #0; egal var_141 #0
+OBJ 187 F3:R12 LIFE 387: egal obj_1.room #12; egal var_130 #0; egal var_140 #0
+OBJ 188 F3:R12 LIFE 391: egal obj_1.room #12; egal var_130 #0
+OBJ 198 F3:R13 LIFE 423: egal obj_1.room #12; egal var_130 #0

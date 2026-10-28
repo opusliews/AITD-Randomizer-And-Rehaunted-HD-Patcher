@@ -54,11 +54,13 @@ from aitd_pak import read_pak, write_pak   # noqa: E402
 import logic_check as C          # noqa: E402
 import locked_doors               # noqa: E402
 import gamedata                   # noqa: E402
+sys.path.insert(0, str(GEN / "BugSpray"))
+import spray as SPRAY             # noqa: E402  (the Bug Spray item, every randomized seed)
 
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v17 (2026-10-18)"
+VERSION = "v18 (2026-10-28)"   # corridor split, E:87, enemy triggers, Bug Spray
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -83,7 +85,8 @@ DUD = 2                    # OBJ 2 "Actions" is always held: found 2 is a no-op 
 EVENT_LABEL = {"lamp_lit": "the lamp can be lit", "jug_filled": "the jug can be filled with water",
                "knight_dead": "the knight can be defeated", "pirate_dead": "the pirate can be defeated",
                "ghosts_dead": "the ghosts can be banished", "medusas_dead": "the medusas can be defeated",
-               "boss_defeated": "Pregzt can be defeated (goal)"}
+               "boss_defeated": "Pregzt can be defeated (goal)",
+               "spiders_sprayed": "the Garden spiders can be sprayed"}
 
 
 STATE_WORDS = ("empty", "broken", "wet")
@@ -366,7 +369,7 @@ def enemy_death_sites(lives, enemy):
 
 
 def patch(slots, placement, key_names_objs=None, doors=None, visible=None, saber_broken=False,
-          whole_mirrors=False, glow_objs=None):
+          whole_mirrors=False, glow_objs=None, spray=None):
     entries = [bytearray(e.data) for e in read_pak(SRC / "LISTLIFE.PAK").entries]
     # base patch for every seed (vanilla flaw): the broken vase drops its contents at the player
     vase_report = [VIS_MECH().vase_contents_at_player(entries), VIS_MECH().vase_breaks_at_feet(entries)]
@@ -646,10 +649,12 @@ def patch(slots, placement, key_names_objs=None, doors=None, visible=None, saber
         report["saber_pieces"] = break_saber_at_new_game(entries)
     if whole_mirrors:
         report[HIT_LIFE] = keep_mirrors_whole(entries)
+    if spray is not None:                 # the Bug Spray's scripts (before the padding entry)
+        report["bug_spray"] = SPRAY.add_scripts(L, entries, *spray)
     if doors is not None:                 # More Locked Doors: key and lock scripts are appended
         keys, key_recs, door_objs = doors
         report["locked_doors"] = locked_doors.add_scripts(L, entries, key_recs, keys, door_objs)
-    elif visible is not None or report.get("drop_glow"):   # appended scripts need the padding entry
+    elif visible is not None or report.get("drop_glow") or spray is not None:   # appended scripts need the padding entry
         entries.append(bytearray(L.encode(L.parse_script("endlife\n"))))
     if key_names_objs is not None:
         report[NEW_GAME_LIFE] = add_key_names(entries, key_names_objs)
@@ -1177,6 +1182,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--whole-mirrors", action="store_true",
                     help="option Prevent Mirrors From Breaking: being hit no longer breaks a carried "
                          "mirror (vanilla: a broken mirror can't kill a medusa, a soft-lock)")
+    ap.add_argument("--check-placement", type=Path, default=None, metavar="PLACEMENT_JSON",
+                    help="no fill and no output: build this seed's world (same seed and options) and "
+                         "check the given placement.json against today's logic; exit 0 if the goal "
+                         "is reachable (e.g. does an older seed still pass?)")
     a = ap.parse_args(argv)
     vanilla = a.seed == VANILLA_SEED
     if vanilla:
@@ -1221,6 +1230,12 @@ def main(argv: list[str] | None = None) -> int:
             if e["from"] == "4/0" and e["to"] == "5/3" and "item:205" in e["requires"]:
                 e["requires"] = e["requires"].replace("item:205", "true")
                 e["expr"] = C.Expr(e["requires"])
+        # the Bedroom 1 werewolf (E:87): taking whatever lies on the fireplace releases it
+        # (mechanics.py retargets LIFE 138), not the notebook (Research/LogicAndChecker.md audit)
+        for s in wslots:
+            if s["id"] == "E:87":
+                s["requires"] = "true"
+                s["expr"] = C.Expr("true")
     if a.enemy_drops:          # the rolls are part of the seed, independent of fill retries
         slots = slots + enemy_drop_slots(man, random.Random(f"{a.seed}:drops"), a.drop_chance)
     spots_used = 0
@@ -1258,6 +1273,30 @@ def main(argv: list[str] | None = None) -> int:
                     e["requires"] = f"({e['requires']}) & item:{k['obj']}"
                     e["expr"] = C.Expr(e["requires"])
         doors = (keys, key_recs, objs)
+
+    spray = None
+    if not vanilla:
+        # the Bug Spray (user, 2026-10-28; BugSpray/spray.py): every randomized seed, never seed 0.
+        # Appended after the keys, so key object numbers stay as before.
+        spray_obj = len(objs)
+        spray_rec = SPRAY.record(objs)
+        objs.append(spray_rec)
+        pool.append(spray_obj)
+        prog.add(spray_obj)
+        SPRAY.logic(edges, wslots, events, man, spray_obj, C.Expr)
+        spray = (spray_obj, spray_rec)
+
+    if a.check_placement:
+        given = {k: v for k, v in json.loads(a.check_placement.read_text(encoding="utf-8")).items()
+                 if not k.startswith("_")}
+        unknown = sorted(set(given) - {s["id"] for s in wslots})
+        if unknown:
+            raise SystemExit(f"placement names slots this seed's world doesn't have: {unknown}")
+        ok, st, spheres, got = C.sweep(nodes, edges, wslots, events, man, given)
+        print(f"seed {a.seed}: {a.check_placement}: goal {'REACHED' if ok else 'NOT REACHED'}; "
+              f"{len(st['reached'])}/{len(nodes)} regions, {len(spheres)} spheres; "
+              f"unreached: {sorted(set(nodes) - st['reached'])}")
+        return 0 if ok else 1
 
     # User fallback rule (2026-10-15): every location holds at most 2 items; only when the items
     # do not all fit (or no valid placement exists) the seed is filled again with at most 3.
@@ -1324,7 +1363,7 @@ def main(argv: list[str] | None = None) -> int:
         displaced = {i for s in slots if s["family"] == "world" for i in s["items"]} - set(assignment.values())
         visible = (assignment, displaced, objs)
     pak, report = patch(slots, placement, objs if a.key_names else None, doors, visible, saber_broken,
-                        a.whole_mirrors, objs if a.drop_glow else None)
+                        a.whole_mirrors, objs if a.drop_glow else None, spray)
     (out / "patchset" / "LISTLIFE.PAK").write_bytes(pak)
     src_hash = hashlib.sha256((SRC / "LISTLIFE.PAK").read_bytes()).hexdigest()
     files = {"LISTLIFE.PAK": {"source_sha256": src_hash, "sha256": hashlib.sha256(pak).hexdigest()}}
@@ -1333,13 +1372,19 @@ def main(argv: list[str] | None = None) -> int:
     files["LISTTRAK.PAK"] = {"source_sha256": hashlib.sha256((SRC / "LISTTRAK.PAK").read_bytes()).hexdigest(),
                              "sha256": hashlib.sha256(trak).hexdigest()}
     key_texts = {k["text"]: label for label, k in doors[0].items()} if doors else {}
+    if spray:                                            # the Bug Spray's name and message
+        key_texts.update(SPRAY.TEXTS)
+        for name, data in SPRAY.anim_paks().items():     # Edward's and Emily's spray animation
+            (out / "patchset" / name).write_bytes(data)
+            files[name] = {"source_sha256": hashlib.sha256((SRC / name).read_bytes()).hexdigest(),
+                           "sha256": hashlib.sha256(data).hexdigest()}
     glows = report.get("drop_glow") or {}
     if doors or a.visible_items or glows:                # new key records, door leaves, moved items, glows
         objets = O.write_objets(objs, 400)
         (out / "patchset" / "OBJETS.ITD").write_bytes(objets)
         files["OBJETS.ITD"] = {"source_sha256": hashlib.sha256((SRC / "OBJETS.ITD").read_bytes()).hexdigest(),
                                "sha256": hashlib.sha256(objets).hexdigest(), "objects": len(objs)}
-    if a.visible_items or glows:                         # the randomizer's models (cover, arrow, glow)
+    if a.visible_items or glows or spray:                # the randomizer's models (cover, arrow, glow, spray)
         for name, data in VIS_MECH().listbodies().items():   # Edward's and Emily's model files
             (out / "patchset" / name).write_bytes(data)
             files[name] = {"source_sha256": hashlib.sha256((SRC / name).read_bytes()).hexdigest(),
@@ -1374,6 +1419,8 @@ def main(argv: list[str] | None = None) -> int:
     nice = friendly_names(objs, a.key_names)
     if doors:
         nice.update({k["obj"]: label for label, k in doors[0].items()})
+    if spray:
+        nice[spray[0]] = SPRAY.TEXTS[SPRAY.TEXT_NAME]
     label = location_labels()
     fmt = lambda xs: ", ".join(nice.get(x, f"object {x}") for x in xs if x is not None) or "nothing"
     region = {s["id"]: s["region"] for s in wslots}
@@ -1392,7 +1439,8 @@ def main(argv: list[str] | None = None) -> int:
         if x["family"] == "enemy_drop":
             e = enemies[str(x["enemy"])]
             region[x["id"]] = e["location"]
-            special[x["id"]] = f"dropped by the {e['name']}"
+            # "how": what makes a trigger-spawned enemy appear, or how a special one dies
+            special[x["id"]] = f"dropped by the {e['name']}" + (f" ({e['how']})" if e.get("how") else "")
 
     def where(sid):
         extra = special.get(sid)

@@ -36,14 +36,15 @@ KEY_FOUND_LIFE = 50            # key 37's found-LIFE: the template for every new
 FIRST_KEY_TEXT = 1151          # text ids 1151-1299 = new key names (RandomizerPlan.md)
 LOCKED_MESSAGE = 101           # "It's locked!"
 
-# (door leaves, rooms (engine floor/room), key label)
+# (door leaves, rooms (engine floor/room), key label). 1/1W: the corridor beyond the floor hole
+# (logic_manual.json virtual node, 2026-10-28); doors 29, 50 and 63 open onto that side.
 DOORS = [
     ((22,), ("1/0", "1/1"), "Key to the Storage Closet (3rd Floor)"),
-    ((29,), ("1/1", "1/3"), "Key to the Master Bathroom (3rd Floor)"),
+    ((29,), ("1/1W", "1/3"), "Key to the Master Bathroom (3rd Floor)"),
     ((33,), ("1/1", "1/2"), "Key to the Study (3rd Floor)"),
-    ((50,), ("1/1", "1/4"), "Key to the Master Bedroom (3rd Floor)"),
+    ((50,), ("1/1W", "1/4"), "Key to the Master Bedroom (3rd Floor)"),
     ((59,), ("1/1", "1/5"), "Key to the Dressing Room (3rd Floor)"),
-    ((63,), ("1/1", "1/7"), "Key to the Stairwell (3rd Floor)"),
+    ((63,), ("1/1W", "1/7"), "Key to the Stairwell (3rd Floor)"),
     ((66, 67), ("2/1", "2/0"), "Key to the Library"),
     ((84,), ("2/4", "2/3"), "Key to Bedroom 1 (2nd Floor)"),
     ((88,), ("2/2", "2/4"), "Key to the Corridor (2nd Floor)"),

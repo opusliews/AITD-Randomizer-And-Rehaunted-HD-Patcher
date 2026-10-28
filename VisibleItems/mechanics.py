@@ -147,7 +147,7 @@ def listbody(name: str = "LISTBODY.PAK") -> bytes:
     entries = P.gamedata.pak_entries(name)          # the original file (project copy, or the player's)
     if len(entries) != P.COVER_BODY:
         raise SystemExit(f"{name} has {len(entries)} entries, expected {P.COVER_BODY}")
-    added = [P.custom_body(b) for b in sorted(P.CUSTOM_BODIES)]
+    added = [P.custom_body(b, name) for b in sorted(P.CUSTOM_BODIES)]
     return write_pak(entries + added + [added[-1]])     # the last one again as padding
 
 
