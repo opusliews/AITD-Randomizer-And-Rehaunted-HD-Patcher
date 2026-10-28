@@ -30,6 +30,7 @@ HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parent / "Patcher"), str(HERE.parent / "Generator")]
 
 CAN_BODY, HELD_BODY = 275, 276          # VisibleItems/placement.CUSTOM_BODIES (both model files)
+CAN_INVENTORY_BODY = 277                # the can at spray_assets.INVENTORY_SCALE (found_body)
 SPRAY_ANIM = 305                        # appended to LISTANIM.PAK and LISTANI2.PAK (305 entries each)
 TEXT_NAME, TEXT_NOTHING = 1310, 1311
 TEXTS = {TEXT_NAME: "A Can of Bug Spray", TEXT_NOTHING: "There is nothing here to spray."}
@@ -45,7 +46,7 @@ PLAYER_LIFE, IDLE_ANIM, BODY_VAR = 549, 4, 204
 def record(objs: list[dict]) -> dict:
     """The can's OBJETS record; found_life is set by add_scripts."""
     rec = dict(objs[MODEL_KEY])
-    rec.update(body=CAN_BODY, found_body=CAN_BODY, found_name=TEXT_NAME, found_flag=0x601)
+    rec.update(body=CAN_BODY, found_body=CAN_INVENTORY_BODY, found_name=TEXT_NAME, found_flag=0x601)
     return rec
 
 

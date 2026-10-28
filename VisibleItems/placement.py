@@ -57,7 +57,8 @@ CUSTOM_BODIES = {272: (19, 1 / 4),                         # new model -> (vanil
                  273: (162, "cross"),                     # the cross arrow (scale_body.cross_body)
                  274: (None, "glow"),                     # the drop glow beam (DropGlow/glow_body.py)
                  275: (None, "spray_can"),                # the Bug Spray can (BugSpray/spray_assets.py)
-                 276: (None, "spray_held")}               # the player holding it (per model file)
+                 276: (None, "spray_held"),               # the player holding it (per model file)
+                 277: (None, "spray_can_inventory")}      # the can's inventory model (10x)
 # Arrows placed at a world location show the cross arrow (two fins at 90 degrees, readable from any
 # side); picked up, their found-life switches back to the plain arrow, so drops and throws look
 # vanilla (user idea, 2026-10-17; mechanics.py).
@@ -74,11 +75,13 @@ def custom_body(body: int, pak: str = "LISTBODY.PAK") -> bytes | None:
             sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "DropGlow"))
             import glow_body
             return glow_body.glow_body()
-        if factor in ("spray_can", "spray_held"):
+        if factor in ("spray_can", "spray_held", "spray_can_inventory"):
             sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "BugSpray"))
             import spray_assets
             if factor == "spray_can":
                 return spray_assets.can_body()
+            if factor == "spray_can_inventory":
+                return spray_assets.can_body(spray_assets.INVENTORY_SCALE)
             return spray_assets.held_body(gamedata.pak_entries(pak)[12])
         raw = gamedata.body(src)
         if factor == "cross":

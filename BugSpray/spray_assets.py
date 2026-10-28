@@ -101,11 +101,18 @@ def can_mesh(origin, axis, side):
     return [tuple(round(c) for c in v) for v in verts], out
 
 
-def can_body() -> bytes:
-    """World and inventory model: standing on the floor (y negative = up), nozzle towards -z."""
+INVENTORY_SCALE = 10      # user (DOS test T14, 2026-10-28): 1:1 was tiny in the inventory; vanilla
+                          # inventory models are 2400-4000 units, 6-25x their world models
+
+
+def can_body(scale: int = 1) -> bytes:
+    """Standing on the floor (y negative = up), nozzle towards -z. scale 1: the world model;
+    INVENTORY_SCALE: the inventory / pickup-screen model (found_body)."""
     verts, polys = can_mesh((0, 0, 0), (0, -1, 0), (0, 0, -1))
+    verts = [tuple(c * scale for c in v) for v in verts]
     ys = [v[1] for v in verts]
-    zv = (-RADIUS, RADIUS, min(ys), 0, -RADIUS - NOZZLE[1], RADIUS)
+    zv = tuple(c * scale for c in (-RADIUS, RADIUS)) + (min(ys), 0) + tuple(
+        c * scale for c in (-RADIUS - NOZZLE[1], RADIUS))
     out = bytearray(struct.pack("<H", 0)) + struct.pack("<6h", *zv) + struct.pack("<H", 0)
     out += struct.pack("<H", len(verts)) + b"".join(struct.pack("<3h", *v) for v in verts)
     out += struct.pack("<H", len(polys))
@@ -141,6 +148,9 @@ def held_body(player: bytes) -> bytes:
 POSE = {"LISTANIM.PAK": dict(arm=-45.0, fore=-20.0), "LISTANI2.PAK": dict(arm=-45.0, fore=46.0)}
 
 
+SLOWDOWN = 2              # user (DOS test T14, 2026-10-28): the arm motion at half speed (6.4 s)
+
+
 def spray_anim(idle: bytes, arm=-45.0, fore=-20.0, head=30.0, chest=8.0) -> bytes:
     """Spraying, from the idle animation's frame 0 (17 groups kept). Angles in degrees:
     arm = upper arm, fore = forearm (negative = forward), head/chest (positive = down)."""
@@ -153,11 +163,11 @@ def spray_anim(idle: bytes, arm=-45.0, fore=-20.0, head=30.0, chest=8.0) -> byte
             t, (x, y, z) = g[i]
             g[i] = (0, ((x + round(dx * DEG)) & 0x3FF, y, (z + round(dz * DEG)) & 0x3FF))
         put(11, arm); put(12, fore); put(13, hand[0], hand[1]); put(7, head); put(6, chest)
-        return M.Frame(time, (0, 0, 0), g)
+        return M.Frame(time * SLOWDOWN, (0, 0, 0), g)
 
-    frames = [frame(12, arm, fore, (0, 0), head, chest),       # raise (0.5 s)
+    frames = [frame(12, arm, fore, (0, 0), head, chest),       # raise (0.5 s at SLOWDOWN 1)
               frame(6, arm, fore, (0, 0), head, chest)]        # settle
-    for k in range(6):                                         # spraying motions (about 2 s)
+    for k in range(6):                                         # spraying motions (about 2 s at 1)
         s = 1 if k % 2 == 0 else -1
         frames.append(frame(8, arm + 2 * s, fore + 3 * s, (6 * s, 4 * s), head, chest))
     frames.append(frame(14, 0, 0, (0, 0), 0, 0))               # back to rest
