@@ -105,13 +105,18 @@ INVENTORY_SCALE = 10      # user (DOS test T14, 2026-10-28): 1:1 was tiny in the
                           # inventory models are 2400-4000 units, 6-25x their world models
 
 
-def can_body(scale: int = 1) -> bytes:
+def can_body(scale: int = 1, centred: bool = False) -> bytes:
     """Standing on the floor (y negative = up), nozzle towards -z. scale 1: the world model;
-    INVENTORY_SCALE: the inventory / pickup-screen model (found_body)."""
+    INVENTORY_SCALE + centred: the inventory / pickup-screen model (found_body). The inventory
+    draws the model around its origin and vanilla inventory models are centred on it, so the
+    centred can is lowered by half its height (user, DOS test T14: it sat in the top half)."""
     verts, polys = can_mesh((0, 0, 0), (0, -1, 0), (0, 0, -1))
     verts = [tuple(c * scale for c in v) for v in verts]
+    if centred:
+        half = -min(v[1] for v in verts) // 2
+        verts = [(x, y + half, z) for x, y, z in verts]
     ys = [v[1] for v in verts]
-    zv = tuple(c * scale for c in (-RADIUS, RADIUS)) + (min(ys), 0) + tuple(
+    zv = tuple(c * scale for c in (-RADIUS, RADIUS)) + (min(ys), max(ys)) + tuple(
         c * scale for c in (-RADIUS - NOZZLE[1], RADIUS))
     out = bytearray(struct.pack("<H", 0)) + struct.pack("<6h", *zv) + struct.pack("<H", 0)
     out += struct.pack("<H", len(verts)) + b"".join(struct.pack("<3h", *v) for v in verts)
@@ -165,7 +170,11 @@ def spray_anim(idle: bytes, arm=-45.0, fore=-20.0, head=30.0, chest=8.0) -> byte
         put(11, arm); put(12, fore); put(13, hand[0], hand[1]); put(7, head); put(6, chest)
         return M.Frame(time * SLOWDOWN, (0, 0, 0), g)
 
-    frames = [frame(12, arm, fore, (0, 0), head, chest),       # raise (0.5 s at SLOWDOWN 1)
+    # keyframe 0 = the rest pose: at the animation's end the engine resets the frame to 0 and
+    # only queues idle; the body swap back (LM_BODY -> SetInterAnimObjet(frame 0)) then blends to
+    # this keyframe, so it must not be the raised arm (user, DOS test T14: arm and head replayed)
+    frames = [frame(1, 0, 0, (0, 0), 0, 0),                    # rest
+              frame(12, arm, fore, (0, 0), head, chest),       # raise (0.5 s at SLOWDOWN 1)
               frame(6, arm, fore, (0, 0), head, chest)]        # settle
     for k in range(6):                                         # spraying motions (about 2 s at 1)
         s = 1 if k % 2 == 0 else -1

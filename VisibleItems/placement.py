@@ -81,7 +81,7 @@ def custom_body(body: int, pak: str = "LISTBODY.PAK") -> bytes | None:
             if factor == "spray_can":
                 return spray_assets.can_body()
             if factor == "spray_can_inventory":
-                return spray_assets.can_body(spray_assets.INVENTORY_SCALE)
+                return spray_assets.can_body(spray_assets.INVENTORY_SCALE, centred=True)
             return spray_assets.held_body(gamedata.pak_entries(pak)[12])
         raw = gamedata.body(src)
         if factor == "cross":
