@@ -5,7 +5,7 @@ its items have been taken.
 Record: as an item lying in the world (OBJ 13, the lamp: flags 0, life_mode 0, so its script
 runs while it has an actor in the camera's room), but not foundable (found_flag 0, no found
 body/name/life), so it can't be picked up, and type_zv 1 (the collision box is the model's
-header box, below the floor). The script, per item:
+header box: a point above the players' heads since 2026-10-28, glow_body.BOX). The script, per item:
     if_egal isfound(#ITEM) #1 @Lend      ; not taken yet -> stop
     ...
     delete GLOW

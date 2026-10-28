@@ -27,9 +27,23 @@ HEIGHT = 2800            # the player is about 2000 tall (y negative = up); 1400
 BOTTOM = 220             # radius at the floor
 TOP = 60                 # radius at the top
 SIDES = 8
-COLOR = 0xB0             # palette bank 11 (grey ramp), lightest shade c3c3b3 (white, user 2026-10-18; was 0x70 gold)
+# Crimson since 2026-10-28 (user: the grey beam barely showed in DOS, which recolours the background
+# into the polygon's palette bank, so grey over a grey floor changes nothing). 0x51 = b32747, bank 5
+# (crimson ramp cb3353..27000f); not 0x50, which body 124 uses for its one transparent polygon, so
+# the ReHaunted edition can tell the glow by its exact colour. Was 0xB0 grey (2026-10-18), 0x70 gold.
+COLOR = 0x51
 MATERIAL_TRANS = 2
-BOX = (-1, 1, 4000, 4001, -1, 1)     # x1 x2 y1 y2 z1 z2: unreachable, below the floor
+# A solid outline (user 2026-10-28: "no discernible outline"): line primitives (type 0, material 0,
+# as in 178 vanilla bodies) along the 8 vertical edges and both rings, in the bright crimson 0x50.
+LINE_COLOR = 0x50
+MATERIAL_FLAT = 0
+# Collision and draw-order box (x1 x2 y1 y2 z1 z2). DOS sorts actors by height band first, the band
+# of the box's middle y (FITD actorList.cpp sortCompareFunction: ((mid - 2000) / 2000) * 2000); the
+# old box below the floor (y 4000..4001) put the glow in its own band, drawn before everything, so
+# doors and the player always covered it (user 2026-10-28). This box's middle (-1985) is in the
+# players' band (-2000), so the glow is sorted by distance like any object. It is a point above the
+# players' heads (Edward's box tops out at -1777, Emily's at -1761), so it never touches them.
+BOX = (-1, 1, -1990, -1980, -1, 1)
 
 
 def _sub(a, b):
@@ -49,7 +63,8 @@ def _wound(face: list[int], verts, centre) -> list[int]:
     return face if sum(x * y for x, y in zip(n, out)) < 0 else face[::-1]
 
 
-def glow_body(height: int = HEIGHT, bottom: int = BOTTOM, top: int = TOP, color: int = COLOR) -> bytes:
+def glow_body(height: int = HEIGHT, bottom: int = BOTTOM, top: int = TOP, color: int = COLOR,
+              line_color: int | None = LINE_COLOR) -> bytes:
     ring = lambda r, y: [(round(r * math.cos(2 * math.pi * k / SIDES)), y,
                           round(r * math.sin(2 * math.pi * k / SIDES))) for k in range(SIDES)]
     verts = ring(bottom, 0) + ring(top, -height)              # 0..SIDES-1 floor, SIDES.. top
@@ -61,9 +76,15 @@ def glow_body(height: int = HEIGHT, bottom: int = BOTTOM, top: int = TOP, color:
     out += struct.pack("<6h", *BOX)
     out += struct.pack("<H", 0)                           # no scratch bytes
     out += struct.pack("<H", len(verts)) + b"".join(struct.pack("<3h", *v) for v in verts)
-    out += struct.pack("<H", len(polys))
+    lines = [] if line_color is None else (
+        [(k, SIDES + k) for k in range(SIDES)]                                 # vertical edges
+        + [(k, (k + 1) % SIDES) for k in range(SIDES)]                         # floor ring
+        + [(SIDES + k, SIDES + (k + 1) % SIDES) for k in range(SIDES)])        # top ring
+    out += struct.pack("<H", len(polys) + len(lines))
     for p in polys:                                       # poly: type 1, n, material, colour, offsets
         out += bytes([1, len(p), MATERIAL_TRANS, color]) + b"".join(struct.pack("<H", 6 * i) for i in p)
+    for a, b in lines:                                    # line: type 0, material, colour, pad, 2 offsets
+        out += bytes([0, MATERIAL_FLAT, line_color, 0]) + struct.pack("<2H", 6 * a, 6 * b)
     return bytes(out)
 
 
