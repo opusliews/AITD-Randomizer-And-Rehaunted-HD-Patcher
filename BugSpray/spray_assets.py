@@ -11,7 +11,7 @@
 - spray_anim(idle): the spraying animation built from the player's idle (anim 4) frame 0: right
   arm raised forward to about 45 degrees below horizontal, elbow slightly bent, head and chest
   tilted down, then small spraying motions of the hand and forearm, then back to the idle pose.
-  17 groups (the held body has no prop bones). 25 ticks per second.
+  17 groups (the held body has no prop bones). Keyframe times are game timer ticks: 60 per second in DOS.
 
 Palette (ITD_RESS entry 3): no saturated yellow exists; 0x0E (255,255,135) is the only clear
 yellow, 0xD6 (75,95,35) the most saturated green, 0x6F near-black. Material 0 = flat.
@@ -153,7 +153,7 @@ def held_body(player: bytes) -> bytes:
 POSE = {"LISTANIM.PAK": dict(arm=-45.0, fore=-20.0), "LISTANI2.PAK": dict(arm=-45.0, fore=46.0)}
 
 
-SLOWDOWN = 2              # user (DOS test T14, 2026-10-28): the arm motion at half speed (6.4 s)
+SLOWDOWN = 2              # user (DOS test T14, 2026-10-28): the arm motion at half speed (162 ticks, about 2.7 s)
 
 
 def spray_anim(idle: bytes, arm=-45.0, fore=-20.0, head=30.0, chest=8.0) -> bytes:
