@@ -6,7 +6,9 @@ Record: as an item lying in the world (OBJ 13, the lamp: flags 0, life_mode 0, s
 runs while it has an actor in the camera's room), but not foundable (found_flag 0, no found
 body/name/life), so it can't be picked up, and type_zv 1 (the collision box is the model's
 header box: a point above the players' heads since 2026-10-28, glow_body.BOX). The script, per item:
-    if_egal isfound(#ITEM) #1 @Lend      ; not taken yet -> stop
+    if_different anim #GLOW_ANIM @Lspin  ; start the spin once
+    anim_repeat GLOW_ANIM
+    Lspin: if_egal isfound(#ITEM) #1 @Lend      ; not taken yet -> stop
     ...
     delete GLOW
     Lend: endlife
@@ -17,6 +19,9 @@ from __future__ import annotations
 import aitd_life as L
 
 GLOW_BODY = 274
+# The spin (user 2026-10-28; glow_body.spin_anim): appended to LISTANIM and LISTANI2 right after the
+# Bug Spray's animation 305 (BugSpray/spray.anim_paks), so it exists in every randomized seed.
+GLOW_ANIM = 306
 
 
 def glow_object(index: int, items: list[int]) -> tuple[dict, list]:
@@ -28,5 +33,8 @@ def glow_object(index: int, items: list[int]) -> tuple[dict, list]:
            "alpha": 0, "beta": 0, "gamma": 0, "stage": -1, "room": -1, "life_mode": 0, "life": -1,
            "floor_life": -1, "anim": -1, "frame": 0, "anim_type": 0, "anim_info": -1,
            "track_mode": 0, "track_number": -1, "position_in_track": 0}
-    lines = [f"if_egal isfound(#{i}) #1 @Lend" for i in items] + [f"delete {index}", "Lend: endlife"]
+    # start the spin once (the script runs every frame; if_different continues when different)
+    lines = [f"if_different anim #{GLOW_ANIM} @Lspin", f"anim_repeat {GLOW_ANIM}"]
+    lines += [("Lspin: " if k == 0 else "") + f"if_egal isfound(#{i}) #1 @Lend" for k, i in enumerate(items)]
+    lines += [f"delete {index}", "Lend: endlife"]
     return rec, L.parse_script("\n".join(lines) + "\n")

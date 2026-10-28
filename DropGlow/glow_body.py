@@ -45,6 +45,13 @@ MATERIAL_FLAT = 0
 # players' band (-2000), so the glow is sorted by distance like any object. It is a point above the
 # players' heads (Edward's box tops out at -1777, Emily's at -1761), so it never touches them.
 BOX = (-1, 1, -1990, -1980, -1, 1)
+# Spinning (user 2026-10-28: "rotate it as is, no stripes"): the body has one bone (INFO_ANIM) and
+# the glow plays spin_anim() on repeat (DropGlow/glow.py). Four keyframes a quarter turn apart; the
+# engine interpolates group angles the short way round (FITD anim.cpp PatchInterAngle: a step of
+# 0x100 goes forward, and the loop from 0x300 back to keyframe 0 is +0x100 too), so the beam turns
+# evenly. Angle units: 0x400 = a full turn; time in timer ticks (60 per second in DOS).
+INFO_TRI, INFO_ANIM = 1, 2
+SPIN_TICKS = 60          # per quarter turn: one turn in 4 s
 
 
 def _sub(a, b):
@@ -72,11 +79,19 @@ def glow_body(height: int = HEIGHT, bottom: int = BOTTOM, top: int = TOP, color:
     centre = (0, -height / 2, 0)
     faces = [[k, (k + 1) % SIDES, SIDES + (k + 1) % SIDES, SIDES + k] for k in range(SIDES)]
     faces += [list(range(SIDES)), list(range(SIDES, 2 * SIDES))]   # floor and top caps
-    polys = [_wound(f, verts, centre) for f in faces]
-    out = bytearray(struct.pack("<H", 0))                 # flags: plain model
+    polys = [[i + 1 for i in _wound(f, verts, centre)] for f in faces]
+    verts = [(0, 0, 0)] + verts                           # vertex 0: the pivot on the beam's axis
+    out = bytearray(struct.pack("<H", INFO_TRI | INFO_ANIM))   # as the 107 animated vanilla bodies
     out += struct.pack("<6h", *BOX)
     out += struct.pack("<H", 0)                           # no scratch bytes
     out += struct.pack("<H", len(verts)) + b"".join(struct.pack("<3h", *v) for v in verts)
+    # Two groups (records: start*6, count, pivot vertex*6, parent, number, type 0 = rotation,
+    # angles). The engine turns the root group by the object's own angles, not the animation's
+    # (FITD AnimNuage; AnimExport/aitd_model.pose), so the root holds only the pivot and the beam
+    # is its child, group 1, which spin_anim() turns around y.
+    out += struct.pack("<H", 2) + struct.pack("<2H", 0, 0x10)   # 2 groups; order 0, 1 (offset / 0x10)
+    out += struct.pack("<3h", 0, 1, 0) + struct.pack("<2b", -1, 0) + struct.pack("<h3h", 0, 0, 0, 0)
+    out += struct.pack("<3h", 6, len(verts) - 1, 0) + struct.pack("<2b", 0, 1) + struct.pack("<h3h", 0, 0, 0, 0)
     lines = [] if line_color is None else (
         [(k, SIDES + k) for k in range(SIDES)]                                 # vertical edges
         + [(k, (k + 1) % SIDES) for k in range(SIDES)]                         # floor ring
@@ -85,11 +100,23 @@ def glow_body(height: int = HEIGHT, bottom: int = BOTTOM, top: int = TOP, color:
     for p in polys:                                       # poly: type 1, n, material, colour, offsets
         out += bytes([1, len(p), MATERIAL_TRANS, color]) + b"".join(struct.pack("<H", 6 * i) for i in p)
     for a, b in lines:                                    # line: type 0, material, colour, pad, 2 offsets
-        out += bytes([0, MATERIAL_FLAT, line_color, 0]) + struct.pack("<2H", 6 * a, 6 * b)
+        out += bytes([0, MATERIAL_FLAT, line_color, 0]) + struct.pack("<2H", 6 * (a + 1), 6 * (b + 1))
+    return bytes(out)
+
+
+def spin_anim(ticks: int = SPIN_TICKS) -> bytes:
+    """The glow's animation (2 groups: the root stays, group 1 = the beam): a full turn around y
+    in four quarter-turn keyframes. Format as AnimExport/aitd_model.write_anim: frames, groups;
+    per frame time + step, then per group type (0 = rotation) and angles (x, y, z)."""
+    out = bytearray(struct.pack("<HH", 4, 2))
+    for k in range(4):
+        out += struct.pack("<H3h", ticks, 0, 0, 0) + struct.pack("<4h", 0, 0, 0, 0)
+        out += struct.pack("<4h", 0, 0, 0x100 * k, 0)
     return bytes(out)
 
 
 if __name__ == "__main__":
     import hashlib
-    d = glow_body()
+    d, a = glow_body(), spin_anim()
     print(len(d), "bytes", hashlib.sha256(d).hexdigest())
+    print("spin anim", len(a), "bytes", hashlib.sha256(a).hexdigest())

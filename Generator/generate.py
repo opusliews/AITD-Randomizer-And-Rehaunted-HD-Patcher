@@ -1389,7 +1389,11 @@ def main(argv: list[str] | None = None) -> int:
     key_texts = {k["text"]: label for label, k in doors[0].items()} if doors else {}
     if spray:                                            # the Bug Spray's name and message
         key_texts.update(SPRAY.TEXTS)
-        for name, data in SPRAY.anim_paks().items():     # Edward's and Emily's spray animation
+        sys.path.insert(0, str(GEN / "DropGlow"))
+        import glow as GLOW, glow_body as GLOW_BODY     # the drop glow's spin, right after the spray's
+        if GLOW.GLOW_ANIM != SPRAY.SPRAY_ANIM + 1:
+            raise SystemExit("the glow's spin must follow the spray animation")
+        for name, data in SPRAY.anim_paks([GLOW_BODY.spin_anim()]).items():   # spray + glow spin
             (out / "patchset" / name).write_bytes(data)
             files[name] = {"source_sha256": hashlib.sha256((SRC / name).read_bytes()).hexdigest(),
                            "sha256": hashlib.sha256(data).hexdigest()}

@@ -189,9 +189,10 @@ def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict, drop=(),
     return rep
 
 
-def anim_paks() -> dict[str, bytes]:
+def anim_paks(extra: list[bytes] = ()) -> dict[str, bytes]:
     """LISTANIM.PAK (Edward) and LISTANI2.PAK (Emily) with the spray animation appended as
-    SPRAY_ANIM, then one padding entry (the engine reads one entry fewer, as LISTLIFE)."""
+    SPRAY_ANIM, then `extra` (SPRAY_ANIM + 1, ...; e.g. the drop glow's spin), then one padding
+    entry (the engine reads one entry fewer, as LISTLIFE)."""
     import gamedata, spray_assets as S
     from aitd_pak import write_pak
     out = {}
@@ -199,8 +200,8 @@ def anim_paks() -> dict[str, bytes]:
         ents = gamedata.pak_entries(name)
         if len(ents) != SPRAY_ANIM:
             raise SystemExit(f"{name} has {len(ents)} entries, expected {SPRAY_ANIM}")
-        anim = S.spray_anim(ents[IDLE_ANIM], **S.POSE[name])
-        out[name] = write_pak(list(ents) + [anim, anim])
+        added = [S.spray_anim(ents[IDLE_ANIM], **S.POSE[name])] + list(extra)
+        out[name] = write_pak(list(ents) + added + added[-1:])
     return out
 
 
