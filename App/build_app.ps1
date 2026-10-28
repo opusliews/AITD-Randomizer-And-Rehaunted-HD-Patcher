@@ -17,7 +17,7 @@ $files = @(
     "Logic\logic_check.py",
     "VisibleItems\placement.py", "VisibleItems\mechanics.py", "VisibleItems\scale_body.py",
     "DropGlow\glow.py", "DropGlow\glow_body.py",
-    "BugSpray\spray.py", "BugSpray\spray_assets.py", "BugSpray\body_io.py", "AnimExport\aitd_model.py",
+    "BugSpray\spray.py", "BugSpray\spray_assets.py", "BugSpray\spray_sound.voc", "BugSpray\body_io.py", "AnimExport\aitd_model.py",
     "HDRepaint\custom_hd.py"
 )
 $files += Get-ChildItem (Join-Path $Gen "Patcher\catalog\*.json") | ForEach-Object { "Patcher\catalog\" + $_.Name }

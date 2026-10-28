@@ -21,7 +21,8 @@ body (HELD_BODY), play the spray animation (SPRAY_ANIM, then idle 4); at the sam
 spider switches to FREEZE (no movement, no bite: the player is immune while spraying). When the
 animation ends each spider runs its DIE life (the usual monster death: do_real_zv + special 0,
 the particle burst), the can is deleted (LM_DELETE also clears the in-inventory flag 0x8000),
-the body comes back and the player returns to LIFE 549.
+the body comes back and the player returns to LIFE 549. The spray sound (SPRAY_SOUND, the user's
+recording) plays once when the spray starts.
 """
 from __future__ import annotations
 import re, sys
@@ -40,6 +41,8 @@ GARDEN, BALLROOM = "3/4", "3/3"
 ARROW_SPOT = "F3:R4:HC14"               # searching it is what drops the spiders
 SPIDERS_DOWN = 122                      # var_122: set once by LIFE 304 when the spiders drop in
 DEATH_SOUND = 6                         # the monster death sound (giant spider, zombies)
+SPRAY_SOUND = 101                       # appended to LISTSAMP.PAK (101 entries): the user's recording
+SOUND_FILE = HERE / "spray_sound.voc"   # References/Spray.wav at 11025 Hz (make_spray_sound.py; user pick)
 PLAYER_LIFE, IDLE_ANIM, BODY_VAR = 549, 4, 204
 
 
@@ -115,6 +118,7 @@ def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict) -> dict:
         f"var {BODY_VAR} body",
         f"body #{HELD_BODY}",
         f"anim_once {SPRAY_ANIM} {IDLE_ANIM}",
+        f"sound #{SPRAY_SOUND}",
         froze,
         "goto @Lend",
         "Lspraying: if_egal end_anim #1 @Lend",
@@ -159,3 +163,17 @@ def anim_paks() -> dict[str, bytes]:
         anim = S.spray_anim(ents[IDLE_ANIM], **S.POSE[name])
         out[name] = write_pak(list(ents) + [anim, anim])
     return out
+
+
+def sample_pak() -> bytes:
+    """LISTSAMP.PAK with the spray sound appended as SPRAY_SOUND, then one padding entry (ReHaunted's
+    PAK_getNumFiles also counts one entry fewer). Each entry must fit the DOS 64000-byte buffer."""
+    import gamedata
+    from aitd_pak import write_pak
+    ents = gamedata.pak_entries("LISTSAMP.PAK")
+    if len(ents) != SPRAY_SOUND:
+        raise SystemExit(f"LISTSAMP.PAK has {len(ents)} entries, expected {SPRAY_SOUND}")
+    voc = SOUND_FILE.read_bytes()
+    if not voc.startswith(b"Creative Voice File\x1a") or len(voc) > 64000:
+        raise SystemExit(f"{SOUND_FILE}: not a VOC of at most 64000 bytes")
+    return write_pak(list(ents) + [voc, voc])

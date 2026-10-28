@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v19 (2026-10-28)"   # boss needs the lighter (cave water ruins matches)
+VERSION = "v20 (2026-10-28)"   # spray sound (sample 101); v19: boss needs the lighter
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -1378,6 +1378,10 @@ def main(argv: list[str] | None = None) -> int:
             (out / "patchset" / name).write_bytes(data)
             files[name] = {"source_sha256": hashlib.sha256((SRC / name).read_bytes()).hexdigest(),
                            "sha256": hashlib.sha256(data).hexdigest()}
+        samp = SPRAY.sample_pak()                         # the spray sound (sample 101)
+        (out / "patchset" / "LISTSAMP.PAK").write_bytes(samp)
+        files["LISTSAMP.PAK"] = {"source_sha256": hashlib.sha256((SRC / "LISTSAMP.PAK").read_bytes()).hexdigest(),
+                                 "sha256": hashlib.sha256(samp).hexdigest()}
     glows = report.get("drop_glow") or {}
     if doors or a.visible_items or glows:                # new key records, door leaves, moved items, glows
         objets = O.write_objets(objs, 400)
