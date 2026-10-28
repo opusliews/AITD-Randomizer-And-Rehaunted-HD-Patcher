@@ -72,11 +72,16 @@ def verify(seed_dir) -> tuple[int, list[str]]:
     for sid,items in pl.items():
         if sid in zones:                                   # Many Search Places: new founds in the controller
             for it in items: expect[zones[sid]["controller_life"]][("found",it)] += 1
+    man = P / "patchset" / "manifest.json"
+    scripts = json.loads(man.read_text(encoding="utf-8")).get("scripts", {}) if man.exists() else {}
+    can_kill = scripts.get(str(G.SPIDER_LIFE), {}).get("giant_spider_can_kill") is not None
     for sid,items in pl.items():
         if sid.startswith("E:"):
             e=int(sid[2:])
             for l in G.life_owners_map(van).get(e,()):
                 n=sum(1 for i in van[l] if i.name=="delete" and i.args[0]==e)
+                if l == G.SPIDER_LIFE and e == G.SPIDER and can_kill:
+                    n += 1                                 # the Bug Spray can kill: its own delete 224
                 for it in items: expect[l][("put_at",it)]+=n
     bad, lines = 0, []
     glow_errs = glow_check(P, new)

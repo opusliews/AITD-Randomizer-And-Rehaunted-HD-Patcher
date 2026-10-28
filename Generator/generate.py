@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v21 (2026-10-28)"   # Garden spiders drop slot E:156; v20 spray sound; v19 boss needs the lighter
+VERSION = "v22 (2026-10-28)"   # can empties, thrown can kills the giant spider; spinning crimson glow; v21 spider drop E:156
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -597,7 +597,7 @@ def patch(slots, placement, key_names_objs=None, doors=None, visible=None, saber
         entries[life] = bytearray(data)
         report[life] = dict(report.get(life, {}), ok=True, extra_spots=len(ops),
                             sha256=hashlib.sha256(data).hexdigest())
-    report[SPIDER_LIFE] = giant_spider_death(entries)    # every seed; before the drops below
+    report[SPIDER_LIFE] = giant_spider_death(entries, spray[0] if spray else None)   # every seed; before the drops below
     # Enemy drops: insert "put_at ITEM ENEMY" before each "delete ENEMY" (PoC E pattern).
     lives_now = [L.decode(bytes(e)) for e in entries]
     inserts = defaultdict(list)
@@ -893,9 +893,11 @@ SPIDER_PATH_FROM_5 = ((-5600, 3100), SPIDER_DROP_SPOT[::2])
 SPIDER_PATH_FROM_10 = ((3400, -6900), (2400, -3900), (2400, -1400), (-5100, -1400), SPIDER_DROP_SPOT[::2])
 
 
-def giant_spider_death(entries) -> dict:
+def giant_spider_death(entries, can: int | None = None) -> dict:
     """LIFE 471: the leash in front of the fall test, and the death effect in front of
-    `delete 224` (insertions; the leash's new jumps are its own)."""
+    `delete 224` (insertions; the leash's new jumps are its own). With `can` (the Bug Spray's
+    object, randomized seeds): a hit by the thrown can kills it on the spot (SPRAY.giant_spider_kill),
+    a second way besides the hole; its own `delete 224` gets the enemy drop there."""
     if bytes(entries[SPIDER_LIFE]) != SPIDER_LIFE_ORIGINAL:
         raise SystemExit(f"LIFE {SPIDER_LIFE}: not the vanilla giant spider script")
     before = L.decode(bytes(entries[SPIDER_LIFE]))
@@ -913,15 +915,18 @@ def giant_spider_death(entries) -> dict:
     i = next(k for k, x in enumerate(lines) if x.split("    ; @")[0] == f"delete {SPIDER}")
     death = ["do_real_zv", f"trackmode 3 {SPIDER_TRACK}", "do_move", "special 0", "do_move", "special 0", "sound #6"]
     lines[i:i] = death
+    kill = []
+    if can is not None:
+        kill, lines = SPRAY.giant_spider_kill(lines, can, SPIDER)
     patched = L.parse_script("\n".join(lines) + "\n")
     chk = L.check_text_patch(before, patched, set())
     data = L.encode(patched)
     L.decode(data)
-    if not chk.ok or chk.added != len(leash) - 1 + len(death) or chk.removed:
+    if not chk.ok or chk.added != len(leash) - 1 + len(death) + len(kill) or chk.removed:
         raise SystemExit(f"LIFE {SPIDER_LIFE}: giant spider patch failed the flow check {chk}")
     entries[SPIDER_LIFE] = bytearray(data)
     return {"ok": True, "giant_spider_death": True, "giant_spider_leash": True,
-            "sha256": hashlib.sha256(data).hexdigest()}
+            "giant_spider_can_kill": can, "sha256": hashlib.sha256(data).hexdigest()}
 
 
 def spider_track() -> bytes:

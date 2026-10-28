@@ -33,8 +33,22 @@ sys.path[:0] = [str(HERE), str(HERE.parent / "Patcher"), str(HERE.parent / "Gene
 CAN_BODY, HELD_BODY = 275, 276          # VisibleItems/placement.CUSTOM_BODIES (both model files)
 CAN_INVENTORY_BODY = 277                # the can at spray_assets.INVENTORY_SCALE (found_body)
 SPRAY_ANIM = 305                        # appended to LISTANIM.PAK and LISTANI2.PAK (305 entries each)
-TEXT_NAME, TEXT_NOTHING = 1310, 1311
-TEXTS = {TEXT_NAME: "A Can of Bug Spray", TEXT_NOTHING: "There is nothing here to spray."}
+TEXT_NAME, TEXT_NOTHING, TEXT_EMPTY = 1310, 1311, 1312
+TEXTS = {TEXT_NAME: "A Can of Bug Spray", TEXT_NOTHING: "There is nothing here to spray.",
+         TEXT_EMPTY: "An Empty Can of Bug Spray"}
+# Spraying empties the can instead of deleting it (user, 2026-10-28), so it can still be thrown at
+# the giant spider: it is renamed TEXT_EMPTY and loses "Use" (found flag 0x600: Throw + Drop), as
+# the vanilla oil cans when poured (LIFE 28: obj_17.found_name 561 / obj_17.found_flag 1536).
+# LM_FOUND_FLAG keeps the status bits (& 0xE000). No variable is needed: an empty can offers no Use.
+EMPTY_FLAG = 0x600
+# Giant spider (OBJ 224, LIFE 471): a hit by the thrown can (full or empty) kills it where it is.
+# A thrown object flies straight at the thrower's hand height and hits what overlaps a +-200 box
+# around it (FITD animAction.cpp, case 9); the target's script sees the thrower's object in
+# `hit_by` (world index; cleared each frame before animations run). The spider's box is only
+# 1000 tall (LIFE 471 def_zv), so a throw from hand height could pass over it: the box top is raised
+# to SPIDER_BOX_TOP (user). The thrown can stops just before the spider and lands on the floor
+# there (throwStoppedAt). If it lands out of reach, that is player error (user).
+SPIDER_BOX_TOP = -1800
 MODEL_KEY = 37                          # the record and found-LIFE (LIFE 50) the can is cloned from
 SPIDERS = range(156, 162)
 GARDEN, BALLROOM = "3/4", "3/3"
@@ -172,7 +186,8 @@ def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict, drop=(),
         "goto @Lend",
         "Lspraying: if_egal end_anim #1 @Lend",
         kill,
-        f"delete {spray_obj}",
+        f"obj_{spray_obj}.found_name {TEXT_EMPTY}",       # empty: kept, renamed, no more Use
+        f"obj_{spray_obj}.found_flag {EMPTY_FLAG}",
         f"body var_{BODY_VAR}",
         f"life {PLAYER_LIFE}",
         "allow_inventory 1",
@@ -197,6 +212,27 @@ def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict, drop=(),
     rec["found_life"] = add("found", "\n".join(lines))
     rep["object"] = spray_obj
     return rep
+
+
+def giant_spider_kill(lines: list[str], can: int, spider: int) -> tuple[list[str], list[str]]:
+    """The giant spider's LIFE 471 (formatted lines, after the generator's leash and death edits)
+    with the can kill at the top and a taller box after its def_zv. Returns (inserted, lines);
+    insertions only. The kill's `delete` is the spider's own, so the enemy drop and its glow are
+    put there too (generate.py inserts `put_at ITEM 224` before every `delete 224`)."""
+    body = lambda x: re.sub(r"^L\w+: ", "", x.split("    ; @")[0])
+    i = next(k for k, x in enumerate(lines) if body(x).startswith("def_zv "))
+    zv = body(lines[i]).split()[1:]
+    if zv[2:4] != ["-1000", "0"]:
+        raise SystemExit(f"giant spider: unexpected def_zv {zv}")
+    taller = "def_zv " + " ".join(zv[:2] + [str(SPIDER_BOX_TOP), "0"] + zv[4:])
+    lines = lines[:i + 1] + [taller] + lines[i + 1:]
+    kill = [f"if_egal hit_by #{can} @Lsp_alive", "do_real_zv", "special 0", f"sound #{DEATH_SOUND}",
+            f"delete {spider}"]
+    first = lines[0].split("    ; @")[0]
+    if first.startswith("L"):
+        raise SystemExit(f"giant spider: first line has a label {first!r}")
+    lines = kill + ["Lsp_alive: " + lines[0]] + lines[1:]
+    return kill + [taller], lines
 
 
 def anim_paks(extra: list[bytes] = ()) -> dict[str, bytes]:
