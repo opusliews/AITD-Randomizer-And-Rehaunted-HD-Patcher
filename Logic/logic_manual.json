@@ -439,7 +439,7 @@
    "enemy": 156,
    "region": "3/4",
    "requires": "event:spiders_sprayed",
-   "spawn": "the six Garden spiders (OBJ 156-161) as one drop (user, 2026-10-28): they drop in when the Center Bed is searched (LIFE 304) and die only to the Bug Spray (event spiders_sprayed, randomized seeds only); the drop lands in front of the Staircase door inside the Garden (BugSpray/spray.py DROP_SPOT)"
+   "spawn": "the six Garden spiders (OBJ 156-161) as one drop (user, 2026-10-28): they drop in when the Center Bed is searched (LIFE 304) and die only to the Bug Spray (event spiders_sprayed, randomized seeds only); the drop lands in front of the Ballroom door inside the Garden (BugSpray/spray.py DROP_SPOT; moved there from the Staircase door, user 2026-10-28)"
   }
  }
 }

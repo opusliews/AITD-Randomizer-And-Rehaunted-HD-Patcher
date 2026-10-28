@@ -45,15 +45,18 @@ SPRAY_SOUND = 101                       # appended to LISTSAMP.PAK (101 entries)
 SOUND_FILE = HERE / "spray_sound.voc"   # References/Spray.wav at 11025 Hz (make_spray_sound.py; user pick)
 PLAYER_LIFE, IDLE_ANIM, BODY_VAR = 549, 4, 204
 # Enemy drop (user, 2026-10-28): the six spiders are one drop slot, DROP_SLOT (Logic/logic_manual.json).
-# The items land on the floor in front of the Staircase door, inside the Garden. The door (OBJ 154,
-# hinge at x -1200, z -2490; ETAGE03 room 4 hard zone 6: x -1200..-200 at z -2600..-2500) opens onto
-# a path between two flower beds (hard zones 10 and 12, z -2500..-1500). DROP_SPOT is the end of that
-# path, 1100 in from the wall and more than a door width (1000) from the hinge, so the leaf can't
-# reach it whichever way it swings. Room-local, floor y 0. The first spider's DIE life warps it there
+# The items land on the floor in front of the Ballroom door, inside the Garden: the user's choice
+# (2026-10-28), because every Garden camera shows that door (the first spot, in front of the
+# Staircase door, was hidden behind a statue). The door is ETAGE03 room 4 hard zone 0
+# (x 2300..2400, z 0..2000), a double door whose leaves are the Ballroom's OBJ 152/153 (hinged at the
+# wall, at Garden z 10 and 2000, each about 1000 wide). It opens onto a path between two flower beds
+# (hard zones 11 and 13, x 1300..2300, z > 2000 and z < 0). DROP_SPOT is just past the end of that
+# path, on the door's axis, 1200 in from the wall and about 1500 from either hinge, so neither leaf
+# can reach it whichever way it swings. Room-local, floor y 0. The first spider's DIE life warps it there
 # with the drop TRACK after its burst (the giant spider's pattern: trackmode 3 + do_move), then
 # `put_at ITEM 156` drops the items at it (put_at also makes them foundable).
 DROP_SLOT, DROP_SPIDER = "E:156", 156
-DROP_SPOT = (-700, 0, -1400)
+DROP_SPOT = (1200, 0, 1000)
 
 
 def record(objs: list[dict]) -> dict:
