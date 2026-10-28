@@ -132,12 +132,22 @@ def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict, drop=(),
         return n
 
     freeze = add("freeze", "anim_once -1 -1\ntrackmode 0 -1\nendlife")
+    # The drop needs a full redraw in DOS (user test 2026-10-28: the item showed only where the
+    # player walked, and its glow not at all). DOS bakes static actors into the background and
+    # redraws the screen only in the boxes of things that move or are deleted; a normal drop is
+    # revealed by its monster's box, but the warped spider is never drawn at the spot. A body
+    # change of a static actor sets FlagInitView (FITD LM_BODY), which redraws the whole view; the
+    # frozen spider is static (`anim_once -1` bakes it). So the first spider drops the items, then
+    # switches to REFRESH, which next frame (the drop and its glow are actors by then) changes its
+    # body and deletes it.
+    refresh = add("refresh", f"body #{CAN_BODY}\ndelete {DROP_SPIDER}\nendlife") if drop else None
     die = {}
     for k, sp in enumerate(SPIDERS):
         sound = f"sound #{DEATH_SOUND}\n" if k == 0 else ""
         put = "".join(f"put_at {i} {sp}\n" for i in drop) if sp == DROP_SPIDER else ""
         warp = f"trackmode 3 {drop_track_no}\ndo_move\n" if put else ""
-        die[sp] = add(f"die_{sp}", f"do_real_zv\nspecial 0\n{sound}{warp}{put}delete {sp}\nendlife")
+        end = f"life {refresh}" if put else f"delete {sp}"
+        die[sp] = add(f"die_{sp}", f"do_real_zv\nspecial 0\n{sound}{warp}{put}{end}\nendlife")
     if drop:
         rep["drop"] = {"slot": DROP_SLOT, "items": list(drop), "spot": DROP_SPOT, "track": drop_track_no}
     froze = "\n".join(f"obj_{sp}.life {freeze}" for sp in SPIDERS)
