@@ -57,6 +57,10 @@ PLAYER_LIFE, IDLE_ANIM, BODY_VAR = 549, 4, 204
 # `put_at ITEM 156` drops the items at it (put_at also makes them foundable).
 DROP_SLOT, DROP_SPIDER = "E:156", 156
 DROP_SPOT = (1200, 0, 1000)
+# The death bursts (user, 2026-10-28): six bursts at once (30 particles each, one per spider) slowed
+# DOS down, so only two play, at these Garden points (room-local, given by the user). The first
+# spider is warped to each in turn (DIE_TRACK) and bursts there; the other five just vanish.
+BURSTS = ((-1726, 0, 1100), (686, 0, 847))
 
 
 def record(objs: list[dict]) -> dict:
@@ -108,22 +112,24 @@ def _assemble(L, text: str, what: str) -> bytes:
     return data
 
 
-def drop_track() -> bytes:
-    """The TRACK that warps the first spider to DROP_SPOT: WARP room x y z, END (+ the usual
-    [20, 2] trailer, as the giant spider's TRACK 45)."""
+def die_track() -> bytes:
+    """The TRACK the first spider follows when it dies: WARP to each of BURSTS, then to DROP_SPOT,
+    END (+ the usual [20, 2] trailer, as the giant spider's TRACK 45). Each `do_move` of its DIE
+    life runs one WARP."""
     import struct
-    words = [0, int(GARDEN.split("/")[1]), *DROP_SPOT, 2, 20, 2]
+    room = int(GARDEN.split("/")[1])
+    words = [w for p in BURSTS + (DROP_SPOT,) for w in (0, room, *p)] + [2, 20, 2]
     return struct.pack(f"<{len(words)}h", *words)
 
 
 def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict, drop=(),
-                drop_track_no: int | None = None) -> dict:
+                track_no: int | None = None) -> dict:
     """Appends the spray's scripts to `entries` (before the padding entry) and sets the record's
-    found_life. `drop`: the items of the spiders' enemy drop (DROP_SLOT), dropped at DROP_SPOT
-    through TRACK `drop_track_no`. Returns a report."""
+    found_life. `track_no`: the number of die_track() in LISTTRAK. `drop`: the items of the
+    spiders' enemy drop (DROP_SLOT), dropped at DROP_SPOT. Returns a report."""
     rep = {}
-    if drop and drop_track_no is None:
-        raise SystemExit("bug spray: a spider drop needs its TRACK")
+    if track_no is None:
+        raise SystemExit("bug spray: the spiders' death needs its TRACK")
 
     def add(name, text):
         n = len(entries)
@@ -132,24 +138,28 @@ def add_scripts(L, entries: list[bytearray], spray_obj: int, rec: dict, drop=(),
         return n
 
     freeze = add("freeze", "anim_once -1 -1\ntrackmode 0 -1\nendlife")
-    # The drop needs a full redraw in DOS (user test 2026-10-28: the item showed only where the
-    # player walked, and its glow not at all). DOS bakes static actors into the background and
-    # redraws the screen only in the boxes of things that move or are deleted; a normal drop is
-    # revealed by its monster's box, but the warped spider is never drawn at the spot. A body
-    # change of a static actor sets FlagInitView (FITD LM_BODY), which redraws the whole view; the
-    # frozen spider is static (`anim_once -1` bakes it). So the first spider drops the items, then
-    # switches to REFRESH, which next frame (the drop and its glow are actors by then) changes its
-    # body and deletes it.
-    refresh = add("refresh", f"body #{CAN_BODY}\ndelete {DROP_SPIDER}\nendlife") if drop else None
+    # A full redraw after the first spider's death, in DOS (user test 2026-10-28: the drop showed
+    # only where the player walked, and its glow not at all). DOS bakes static actors into the
+    # background and redraws the screen only in the boxes of things that move or are deleted; a
+    # normal drop is revealed by its monster's box, but the warped spider is never drawn at the
+    # spot (and its baked image would stay where it froze). A body change of a static actor sets
+    # FlagInitView (FITD LM_BODY), which redraws the whole view; the frozen spider is static
+    # (`anim_once -1` bakes it). So the first spider bursts, drops the items, then switches to
+    # REFRESH, which next frame (the drop and its glow are actors by then) changes its body and
+    # deletes it.
+    refresh = add("refresh", f"body #{CAN_BODY}\ndelete {DROP_SPIDER}\nendlife")
     die = {}
-    for k, sp in enumerate(SPIDERS):
-        sound = f"sound #{DEATH_SOUND}\n" if k == 0 else ""
-        put = "".join(f"put_at {i} {sp}\n" for i in drop) if sp == DROP_SPIDER else ""
-        warp = f"trackmode 3 {drop_track_no}\ndo_move\n" if put else ""
-        end = f"life {refresh}" if put else f"delete {sp}"
-        die[sp] = add(f"die_{sp}", f"do_real_zv\nspecial 0\n{sound}{warp}{put}{end}\nendlife")
+    for sp in SPIDERS:
+        if sp != DROP_SPIDER:                             # vanishes: no burst
+            die[sp] = add(f"die_{sp}", f"delete {sp}\nendlife")
+            continue
+        bursts = "".join("do_move\nspecial 0\n" for _ in BURSTS)
+        to_drop = "do_move\n" + "".join(f"put_at {i} {sp}\n" for i in drop) if drop else ""
+        die[sp] = add(f"die_{sp}", f"do_real_zv\ntrackmode 3 {track_no}\n{bursts}sound #{DEATH_SOUND}\n"
+                                   f"{to_drop}life {refresh}\nendlife")
+    rep["bursts"] = {"spots": BURSTS, "track": track_no}
     if drop:
-        rep["drop"] = {"slot": DROP_SLOT, "items": list(drop), "spot": DROP_SPOT, "track": drop_track_no}
+        rep["drop"] = {"slot": DROP_SLOT, "items": list(drop), "spot": DROP_SPOT, "track": track_no}
     froze = "\n".join(f"obj_{sp}.life {freeze}" for sp in SPIDERS)
     kill = "\n".join(f"obj_{sp}.life {die[sp]}" for sp in SPIDERS)
     player = add("player", "\n".join([

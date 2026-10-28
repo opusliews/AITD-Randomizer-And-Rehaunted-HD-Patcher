@@ -642,8 +642,7 @@ def patch(slots, placement, key_names_objs=None, doors=None, visible=None, saber
     if spray is not None:                 # the Bug Spray's scripts (before the glows: they find the
         drop = [i for s in slots if s["id"] == SPRAY.DROP_SLOT           # spiders' put_at lines)
                 for i in placement[s["id"]] if i is not None]
-        report["bug_spray"] = SPRAY.add_scripts(L, entries, *spray, drop=drop,
-                                                drop_track_no=SPRAY_DROP_TRACK if drop else None)
+        report["bug_spray"] = SPRAY.add_scripts(L, entries, *spray, drop=drop, track_no=SPRAY_DIE_TRACK)
     if glow_objs is not None:             # before the appended key/lock scripts and the padding entry
         report["drop_glow"] = add_drop_glows(entries, slots, placement, glow_objs)
     report[TOILET_LIFE] = dict(report.get(TOILET_LIFE, {}), **add_toilet_message(entries))
@@ -889,7 +888,7 @@ SPIDER_DROP_SPOT = (-5087, -4010, 6781)
 # zones, Generated/ResearchRun/TrackRooms/datasets/rooms.json). Waypoints keep the spider's
 # box (+-250) off every wall.
 SPIDER_TRACK_FROM_5, SPIDER_TRACK_FROM_10 = 46, 47
-SPRAY_DROP_TRACK = 48      # the Garden spiders' drop (BugSpray/spray.py DROP_SPOT), when that slot holds items
+SPRAY_DIE_TRACK = 48       # the Garden spiders' death: bursts and drop spot (BugSpray/spray.py die_track)
 SPIDER_PATH_FROM_5 = ((-5600, 3100), SPIDER_DROP_SPOT[::2])
 SPIDER_PATH_FROM_10 = ((3400, -6900), (2400, -3900), (2400, -1400), (-5100, -1400), SPIDER_DROP_SPOT[::2])
 
@@ -937,10 +936,10 @@ def spider_walk_back(path) -> bytes:
     return struct.pack(f"<{len(words)}h", *words)
 
 
-def track_fixes(spider_drop: bool = False) -> tuple[bytes, dict]:
+def track_fixes(spray: bool = False) -> tuple[bytes, dict]:
     """LISTTRAK.PAK with TRACK 40/41 reordered (STOP before MARK 1, lengths unchanged) and the
-    giant spider's TRACK 45-47 appended; with `spider_drop`, also the Garden spiders' drop warp
-    (SPRAY_DROP_TRACK)."""
+    giant spider's TRACK 45-47 appended; with `spray` (randomized seeds), also the Garden spiders'
+    death track (SPRAY_DIE_TRACK: the two bursts and the drop spot)."""
     tracks = [bytearray(e.data) for e in read_pak(SRC / "LISTTRAK.PAK").entries]
     for n, (at, old, new) in TRACK_FIXES.items():
         if bytes(tracks[n][at:at + len(old)]) != old:
@@ -955,11 +954,11 @@ def track_fixes(spider_drop: bool = False) -> tuple[bytes, dict]:
     report[str(SPIDER_TRACK)] = "new: the giant spider's death puffs (hole centre, drop spot)"
     report[str(SPIDER_TRACK_FROM_5)] = "new: the giant spider walks back from the 5/5 door"
     report[str(SPIDER_TRACK_FROM_10)] = "new: the giant spider walks back from the 5/10 door"
-    if spider_drop:
-        if len(tracks) != SPRAY_DROP_TRACK:
-            raise SystemExit(f"LISTTRAK.PAK: {len(tracks)} tracks, expected {SPRAY_DROP_TRACK}")
-        tracks.append(bytearray(SPRAY.drop_track()))
-        report[str(SPRAY_DROP_TRACK)] = "new: the Garden spiders' drop spot (Bug Spray)"
+    if spray:
+        if len(tracks) != SPRAY_DIE_TRACK:
+            raise SystemExit(f"LISTTRAK.PAK: {len(tracks)} tracks, expected {SPRAY_DIE_TRACK}")
+        tracks.append(bytearray(SPRAY.die_track()))
+        report[str(SPRAY_DIE_TRACK)] = "new: the Garden spiders' death (two bursts, drop spot; Bug Spray)"
     return write_pak([bytes(t) for t in tracks]), report
 
 
@@ -1380,9 +1379,7 @@ def main(argv: list[str] | None = None) -> int:
     (out / "patchset" / "LISTLIFE.PAK").write_bytes(pak)
     src_hash = hashlib.sha256((SRC / "LISTLIFE.PAK").read_bytes()).hexdigest()
     files = {"LISTLIFE.PAK": {"source_sha256": src_hash, "sha256": hashlib.sha256(pak).hexdigest()}}
-    spider_drop = bool(spray) and any(s["id"] == SPRAY.DROP_SLOT and any(i is not None for i in placement[s["id"]])
-                                      for s in slots)
-    trak, report["tracks"] = track_fixes(spider_drop)  # every seed: the cellar <-> tunnel walks
+    trak, report["tracks"] = track_fixes(bool(spray))  # every seed: the cellar <-> tunnel walks
     (out / "patchset" / "LISTTRAK.PAK").write_bytes(trak)
     files["LISTTRAK.PAK"] = {"source_sha256": hashlib.sha256((SRC / "LISTTRAK.PAK").read_bytes()).hexdigest(),
                              "sha256": hashlib.sha256(trak).hexdigest()}
