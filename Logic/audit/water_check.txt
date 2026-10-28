@@ -1,0 +1,7 @@
+F5:R0: floor heights [-4000]; wet cells 0, dry cells 4013
+  SZ0->R1: y -6000..0; floor next to it [-4000]; dry areas [0]
+  SZ1->F13: y -5970..0; floor next to it [-4000]; dry areas [1]
+F6:R0: floor heights [-4000]; wet cells 0, dry cells 35450
+  SZ0->R1: y -6000..0; floor next to it [-4000]; dry areas [0]
+  SZ1->F16: y -5910..0; floor next to it [-4000]; dry areas [0]
+  SZ2->R6: y -5930..0; floor next to it [-4000]; dry areas [0]
