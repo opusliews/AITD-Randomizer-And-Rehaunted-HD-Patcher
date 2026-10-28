@@ -28,10 +28,12 @@ BOTTOM = 220             # radius at the floor
 TOP = 60                 # radius at the top
 SIDES = 8
 # Crimson since 2026-10-28 (user: the grey beam barely showed in DOS, which recolours the background
-# into the polygon's palette bank, so grey over a grey floor changes nothing). 0x51 = b32747, bank 5
-# (crimson ramp cb3353..27000f); not 0x50, which body 124 uses for its one transparent polygon, so
-# the ReHaunted edition can tell the glow by its exact colour. Was 0xB0 grey (2026-10-18), 0x70 gold.
-COLOR = 0x51
+# into the polygon's palette bank, so grey over a grey floor changes nothing). 0x50 = cb3353, the
+# start of bank 5 (crimson ramp cb3353..27000f). It must be a bank start: DOS adds the background
+# pixel's shade (0..15) to it, so the first try, 0x51, overflowed into bank 6 on the darkest pixels
+# and showed light blue dots (user, References/Halo2.png). The Talisman (body 124) uses 0x50 too,
+# so the ReHaunted edition tells the glow by its model number. Was 0xB0 grey (2026-10-18), 0x70 gold.
+COLOR = 0x50
 MATERIAL_TRANS = 2
 # Optional solid outline: line primitives (type 0, material 0, as in 178 vanilla bodies) along the
 # 8 vertical edges and both rings. Tried in 0x50 on 2026-10-28 and removed the same day (user: "the
