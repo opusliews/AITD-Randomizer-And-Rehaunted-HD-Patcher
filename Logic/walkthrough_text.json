@@ -8,7 +8,7 @@
   "ghosts_dead": {"text": "Banish the Dancers: play Saint-Saëns' Dance of Death on the Gramophone.", "status": "suggested"},
   "medusas_dead": {"text": "Defeat both Medusas with the two Small Mirrors.", "status": "suggested"},
   "spiders_sprayed": {"text": "Kill the Garden spiders: once they have dropped in (searching the Center Bed wakes them), use the Can of Bug Spray in the Garden.", "status": "suggested"},
-  "boss_defeated": {"text": "Final fight: defeat Pregzt (needs the Talisman and the lit Oil Lamp).", "status": "suggested"}
+  "boss_defeated": {"text": "Final fight: defeat Pregzt (needs the Talisman, the lit Oil Lamp and the Lighter: the water in the last room ruins matches).", "status": "suggested"}
  },
  "useful_words": ["flask", "first aid", "rifle", "revolver", "bullets", "cartridges", "sword", "saber", "dagger"]
 }

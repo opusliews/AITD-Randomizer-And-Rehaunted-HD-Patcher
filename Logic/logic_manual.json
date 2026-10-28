@@ -250,9 +250,9 @@
    "evidence": "gramophone + record 126 in the ballroom (LIFE 379)"
   },
   "boss_defeated": {
-   "requires": "reach:6/6 & item:110 & event:lamp_lit",
+   "requires": "reach:6/6 & item:110 & event:lamp_lit & item:199",
    "status": "rule",
-   "evidence": "talisman placed + lit lamp thrown (LIFE 518/521/522); user (play tests, 2026-10-15): the boss fight triggers on entering the boss room from either door"
+   "evidence": "talisman placed + lit lamp thrown (LIFE 518/521/522); user (play tests, 2026-10-15): the boss fight triggers on entering the boss room from either door; user (2026-10-28): the last room can't be done without getting into the water, which ruins both matchboxes (LIFE 534 found_flag 1536 on 121/174) but not the lighter, so the kill needs the lighter 199 (Research/LogicAssumptions.md 3.2)"
   },
   "medusas_dead": {
    "requires": "reach:1/7 & item:54 & item:55",
