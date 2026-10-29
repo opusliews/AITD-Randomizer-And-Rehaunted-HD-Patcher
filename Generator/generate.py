@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v23 (2026-10-28)"   # Master Bedroom werewolf always jumps (LIFE 73 mark >= 1); v22 can empties + giant spider can kill
+VERSION = "v22 (2026-10-28)"   # can empties, thrown can kills the giant spider; spinning crimson glow; v21 spider drop E:156
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -376,7 +376,6 @@ def patch(slots, placement, key_names_objs=None, doors=None, visible=None, saber
     # base patch for every seed (vanilla flaws), on the untouched scripts: LIFE 522 grows only at
     # its end and LIFE 550 keeps its size, so every later edit's offsets stay valid
     cellar_report = cellar_tunnel_fixes(entries)
-    cellar_report[WEREWOLF_LIFE] = werewolf_window_fix(entries)    # same size, any order
     vis_report = None
     if visible is not None:
         # Shuffle Visible Items first, on the untouched scripts: its patches use vanilla offsets and
@@ -827,32 +826,6 @@ TRACK_FIXES = {   # STOP moved in front of MARK 1: the player stops before the t
     41: (14, bytes.fromhex("04000100040002000400030013000000000300000700"),
          bytes.fromhex("07000400010004000200040003001300000000030000")),
 }
-
-
-# ---- vanilla flaw fixed for every seed: the Master Bedroom werewolf stuck in the window wall ---
-# OBJ 57 (F1:R4) walks in on TRACK 2: WARP outside the window (-750, 5000), COL_OFF, GOTO
-# (-750, 2500), MARK 1, MARK 2, GOTO (-750, 1800), COL_ON, END. LIFE 73 plays the jump through the
-# window (anim 47, 2177 forward) only while `mark == 1`. One TRACK instruction runs per
-# processTrack call, and there are two per frame (LIFE 73's own `do_move` and the animation pass,
-# FITD track.cpp): when the animation pass runs MARK 1, the next frame's `do_move` runs MARK 2
-# before the test, the jump never plays, and the werewolf walks to (-750, 1800) against the wall
-# (z 2000-2300) and waits there for good (user, 2026-10-28: "sometimes gets stuck in the wall").
-# Fix: the test becomes `mark >= 1` (if_egal -> if_sup_egal, same size), so the jump starts from
-# about z 2500 either way and lands around z 320, clear of the wall.
-WEREWOLF_LIFE, WEREWOLF_MARK_AT = 73, 44
-WEREWOLF_MARK_TEST = (bytes.fromhex("04000b00ffff01000200"), bytes.fromhex("06000b00ffff01000200"))
-
-
-def werewolf_window_fix(entries) -> dict:
-    """LIFE 73 @44: `if_egal mark #1` -> `if_sup_egal mark #1` (one word)."""
-    life = entries[WEREWOLF_LIFE]
-    old, new = WEREWOLF_MARK_TEST
-    if bytes(life[WEREWOLF_MARK_AT:WEREWOLF_MARK_AT + len(old)]) != old:
-        raise SystemExit(f"LIFE {WEREWOLF_LIFE} @{WEREWOLF_MARK_AT}: not the vanilla `if_egal mark #1`")
-    life[WEREWOLF_MARK_AT:WEREWOLF_MARK_AT + len(new)] = new
-    L.decode(bytes(life))
-    return {"ok": True, "werewolf_window_jump": "if_egal mark #1 -> if_sup_egal mark #1 (MARK 2 can come first)",
-            "sha256": hashlib.sha256(bytes(life)).hexdigest()}
 
 
 def cellar_tunnel_fixes(entries) -> dict:
