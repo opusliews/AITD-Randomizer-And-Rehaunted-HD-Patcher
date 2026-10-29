@@ -585,6 +585,7 @@ class App:
         self.info = None
         self.inst = ("none", None)   # installed_state of the game directory
         self.checks = {}             # check_key() -> update_check result ("checking" while it runs)
+        self.hd_pending = {}         # hd_key() -> CH.pending_update result, "checking", or None (no pack)
         self.status_base = ""
         self.hd_saved = None         # the player's (custom_hd) while the installed seed locks the box
         self.refresh()
@@ -612,6 +613,8 @@ class App:
         opt = self.options()
         if self.hd_saved is not None:
             opt["custom_hd"], opt["hd_keep"] = self.custom_hd.get(), True
+            if self.hd_outdated():
+                opt["hd_refresh"] = self.hd_assets.get().strip()
         return opt
 
     def install_change(self) -> str:
@@ -714,18 +717,21 @@ class App:
         check = self.checks.get(self.check_key()) if state == "incompatible" else None
         kind, detail = (check[0], check[1]) if check else (None, "")
         updatable = kind == "same"
-        self.go.config(text="Reinstall" if change == "setup" else
+        hd_out = self.hd_outdated() if state == "compatible" or updatable else ""
+        hd_note = f" Also brings the custom HD backgrounds up to date ({hd_out})." if hd_out else ""
+        self.go.config(text="Update HD" if change == "same" and hd_out else "Reinstall" if change == "setup" else
                        "Update to this version" if state == "incompatible" else
                        "Randomize Again" if state == "compatible" else "Randomize and install")
         self.go_tip.text = {
             "new": f"Replaces seed {seed} with this seed and these options (the game is unpatched first).",
             "setup": f"Installs seed {seed} again with the changed hints, controls or aspect. The seed "
                      "itself is the same, so its saves keep working.",
-            "same": f"Seed {seed} is already installed with these settings.",
-        }.get(change, "") if state != "incompatible" else {
+            "same": f"Seed {seed} is already installed with these settings." if not hd_out else
+                    f"Installs {hd_out} from the custom HD pack (only what changed). The seed is not touched.",
+        }.get(change, "") + (hd_note if change in ("new", "setup") else "") if state != "incompatible" else {
             "same": f"Seed {seed} was installed by another version of the AITD Randomizer. This version "
                     "makes exactly the same seed files, so updating keeps the seed and its saves; only "
-                    "the patcher's own files are brought up to date.",
+                    "the patcher's own files are brought up to date." + hd_note,
             "checking": "Checking whether this version changes the installed seed...",
             "different": f"This version of the AITD Randomizer would change seed {seed}'s game files "
                          f"({detail}). " + INCOMPATIBLE,
@@ -739,7 +745,7 @@ class App:
         }.get(kind, "\nPatched by another version of the AITD Randomizer: unpatch the game before "
                     "patching it again.") if state == "incompatible" else ""))
         go_ok = idle and not self.hd_blocks() and (
-            updatable if state == "incompatible" else self.data_ok and change != "same")
+            updatable if state == "incompatible" else self.data_ok and (change != "same" or bool(hd_out)))
         self.go.state(["!disabled"] if go_ok else ["disabled"])
         self.undo.state(["!disabled"] if idle and self.info and self.info["installed_seed"] is not None
                         and kind != "checking" else ["disabled"])
@@ -783,12 +789,21 @@ class App:
         for w in rows:
             w.grid()
         if self.hd_saved is not None:        # locked by the installed seed (lock_hd)
-            for w in (self.hd_cb, self.hd_entry, self.hd_browse):
-                w.state(["disabled"])
-            self.hd_status.config(fg=GREY, text=(
-                "Custom HD backgrounds: installed with this seed. To remove them, unpatch the game first."
-                if self.custom_hd.get() else
-                "Custom HD backgrounds: not installed. To add them, unpatch the game first."))
+            self.hd_cb.state(["disabled"])
+            on = self.custom_hd.get()        # installed: the pack folder may change (updates come from it)
+            for w in (self.hd_entry, self.hd_browse):
+                w.state(["!disabled"] if on else ["disabled"])
+            key = self.hd_key()
+            if key is not None and key not in self.hd_pending and not self.busy and self._focus() is not self.hd_entry:
+                self.start_hd_check()
+            pending, out = self.hd_pending.get(key), self.hd_outdated()
+            self.hd_status.config(fg=RED if out else GREY, text=(
+                "Custom HD backgrounds: not installed. To add them, unpatch the game first." if not on else
+                f"Custom HD backgrounds: the pack has {out}: Update HD installs them (only what changed)."
+                if out else
+                "Custom HD backgrounds: checking the pack for updates..." if pending == "checking" else
+                "Custom HD backgrounds: installed with this seed" + (", up to date with the pack" if pending else "")
+                + ". To remove them, unpatch the game first."))
             self.hd_ok = True
             return
         msg, ok = "", True
@@ -893,6 +908,8 @@ class App:
         if self.inst[0] == "incompatible" and self.check_key() not in self.checks and not self.busy:
             self.start_update_check()
         self.lock_hd()
+        if self.hd_key() is not None and self.hd_key() not in self.hd_pending and not self.busy:
+            self.start_hd_check()
         self.refresh_data()
 
     def check_key(self):
@@ -918,6 +935,44 @@ class App:
             threading.Thread(target=lambda: self.q.put(("update", (key, check()))), daemon=True).start()
         else:
             self.checks[key] = check()
+
+    def hd_key(self):
+        """The custom HD install the pack check is about, while a seed is installed with the
+        randomizer's custom HD and a pack folder is set; else None."""
+        if self.hd_saved is None or not self.custom_hd.get() or not self.hd_assets.get().strip():
+            return None
+        m = CH.load_manifest(Path(self.folder.get().strip()))
+        if not m or m.get("installed_by") != "randomizer":
+            return None
+        return (str(Path(self.folder.get().strip()).resolve()), m.get("installed"),
+                str(Path(self.hd_assets.get().strip()).resolve()))
+
+    def start_hd_check(self):
+        """Whether the pack holds a newer TatouHd.exe or changed backgrounds than the ones installed
+        (CH.pending_update; seconds: it reads the pack's image headers)."""
+        key = self.hd_key()
+        self.hd_pending[key] = "checking"
+
+        def check():
+            try:
+                self._check_pack(Path(key[2]))
+                return CH.pending_update(Path(key[0]), Path(key[2]))
+            except Exception:               # no usable pack there: nothing to offer
+                return None
+        if self.ASYNC_CHECKS:
+            threading.Thread(target=lambda: self.q.put(("hd", (key, check()))), daemon=True).start()
+        else:
+            self.hd_pending[key] = check()
+
+    def hd_outdated(self) -> str:
+        """What an HD refresh from the pack would change ("" when nothing, or when unknown)."""
+        r = self.hd_pending.get(self.hd_key())
+        if not isinstance(r, dict) or not (r["copy"] or r["remove"]):
+            return ""
+        images = len([x for x in r["copy"] if x != CH.EXE_NAME])
+        parts = (["a newer TatouHd.exe"] * r["exe"] + [f"{images} new or changed background file(s)"] * bool(images)
+                 + [f"{len(r['remove'])} background file(s) no longer in the pack"] * bool(r["remove"]))
+        return " and ".join(parts)
 
     def refresh_data(self):
         """The game data directory row: where the original files come from.
@@ -1000,6 +1055,10 @@ class App:
                 kind, payload = self.q.get_nowait()
                 if kind == "log":
                     self.say(payload)
+                elif kind == "hd":
+                    key, res = payload
+                    self.hd_pending[key] = res
+                    self.sync()
                 elif kind == "update":
                     key, res = payload
                     self.checks[key] = res
@@ -1083,9 +1142,18 @@ class App:
                                                  "settings and gives exactly the same seed files, so its "
                                                  "saves keep working."):
                 return
-            opt = {**check[2], "update": True, "hd_keep": True, "data_override": opt["data_override"]}
+            opt = {**check[2], "update": True, "hd_keep": True, "data_override": opt["data_override"],
+                   **({"hd_refresh": opt["hd_refresh"]} if opt.get("hd_refresh") else {})}
             self.say(f"\n=== Update seed {opt['seed']} ===\n")
             self.run(self._randomize, Path(opt["folder"]).resolve(), opt, self.has_rehaunted())
+            return
+        if change == "same" and opt.get("hd_refresh"):
+            if not messagebox.askyesno(APP_NAME, f"Update the custom HD backgrounds from the pack?\n\n"
+                                                 f"It installs {self.hd_outdated()} (only what changed). "
+                                                 "The seed is not touched."):
+                return
+            self.say("\n=== Update HD ===\n")
+            self.run(self._update_hd, Path(opt["folder"]).resolve(), opt["hd_refresh"])
             return
         if change == "setup":
             if not messagebox.askyesno(APP_NAME, f"Reinstall seed {self.info['installed_seed']} with the "
@@ -1149,6 +1217,8 @@ class App:
         if rc != 0:
             raise Refused("The seed was generated but not installed; see the log. Your game is unchanged.")
         if keep_hd:
+            if opt.get("hd_refresh") and opt.get("custom_hd"):
+                self._update_hd(folder, opt["hd_refresh"])
             hd_note = ("\n\nCustom HD backgrounds: start TatouHd.exe (not Tatou.exe) to play with them."
                        if opt.get("custom_hd") else "")
         else:
@@ -1164,6 +1234,18 @@ class App:
                 f". Difficulty: {diff['label']} (score {diff['score']}; the original game = 100)")
         return (APP_NAME, f"Seed {opt['seed']} is installed{what}.\n\nStart the game as usual and choose "
                           f"New Game.{hd_note}\n\n{SAVES}", True)
+
+    @staticmethod
+    def _update_hd(folder: Path, pack: str):
+        """Bring the randomizer's custom HD install up to date from the pack: a newer TatouHd.exe,
+        new or changed backgrounds (CH.install copies only what changed). The seed is not touched."""
+        writable(folder)
+        print("Updating the custom HD backgrounds from the pack...")
+        try:
+            CH.install(folder, Path(pack), installed_by="randomizer", require_flavor="edition")
+        except CH.Refused as e:
+            raise Refused(f"The custom HD backgrounds were not updated: {e}") from None
+        return (APP_NAME, "The custom HD backgrounds are up to date. Start TatouHd.exe to play with them.", True)
 
     @staticmethod
     def _custom_hd(folder: Path, opt: dict) -> str:

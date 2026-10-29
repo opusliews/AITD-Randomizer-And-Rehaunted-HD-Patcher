@@ -509,6 +509,29 @@ def install(game: Path, pack: Path, replace_unmanaged: bool = False, installed_b
     return new
 
 
+def pending_update(game: Path, pack: Path, files: dict[str, Path] | None = None) -> dict:
+    """What Install / Update from PACK would copy or remove in GAME, without writing: the same
+    decision as install(). Cheap: the exe is hashed (about 10 MB); an image whose size and time
+    match the last install keeps its recorded hash; installed files are checked by size and time.
+    FILES: scan_assets(pack)[0] when the caller already has it. Returns {"exe": the exe changed,
+    "copy": [relative paths], "remove": [relative paths]}."""
+    game, pack = game.resolve(), pack.resolve()
+    old = (load_manifest(game) or {"files": {}})["files"]
+    exe, _flavor, _desc = pack_exe(pack)
+    if files is None:
+        files = scan_assets(pack)[0]
+    want = {EXE_NAME: sha(exe)}
+    for rel, src in files.items():
+        rec, st = old.get(rel, {}), src.stat()
+        same_src = rec.get("src_size") == st.st_size and rec.get("src_mtime_ns") == st.st_mtime_ns
+        want[rel] = rec["sha256"] if same_src else sha(src)
+    def current(rel):
+        p = (find_ci(game, EXE_NAME) or game / EXE_NAME) if rel == EXE_NAME else game / rel
+        return rel in old and old[rel]["sha256"] == want[rel] and _unchanged(p, old[rel], full=False)
+    copy = [rel for rel in want if not current(rel)]
+    return {"exe": EXE_NAME in copy, "copy": copy, "remove": [rel for rel in old if rel not in want]}
+
+
 def verify(game: Path, full: bool = True, log=print) -> list[str]:
     """Problems with the installed files (empty: all present and unchanged)."""
     game = game.resolve()

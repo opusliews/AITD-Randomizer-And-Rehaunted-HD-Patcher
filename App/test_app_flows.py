@@ -28,7 +28,9 @@
      and a plain _randomize refuses. A missing backup -> unpatch refuses before restoring
      anything; an older app's install unpatches to the identical folder.
   S2 Custom HD locked while a seed is installed: the box shows what is installed, Randomize Again
-     leaves the HD files alone (no pack needed), Unpatch Game removes them and gives the box back.
+     leaves the HD files alone (no pack needed); with the pack folder set, a newer TatouHd.exe in the
+     pack shows "Update HD", which installs only that file (still the randomizer's install, the
+     seed untouched); Unpatch Game removes them and gives the box back.
 
 The ReHaunted Tatou.exe is a placeholder file (no ReHaunted release is in the project):
 install.py only needs a Tatou.exe that is not an edition build.
@@ -424,6 +426,30 @@ def main(work: Path):
     check(r[2] and CH.load_manifest(rs2) == hd_before and CH.verify(rs2, log=lambda s: None) == []
           and json.loads((rs2 / I.MARKER).read_text(encoding="utf-8"))["app"]["custom_hd"],
           "S2 Randomize Again while locked: the custom HD files are left as they are (no pack needed)")
+    app2.seed.set("77")
+    app2.hd_assets.set(str(assets))
+    app2.hd_pending.clear()
+    app2.refresh()
+    check(app2.hd_outdated() == "" and "up to date" in app2.hd_status.cget("text")
+          and app2.hd_entry.instate(["!disabled"]) and app2.hd_cb.instate(["disabled"]),
+          "S2 the pack holds what is installed: nothing to update (the pack folder stays editable)")
+    exe = assets / "TatouHd.exe"
+    exe_before = exe.read_bytes()
+    exe.write_bytes(exe_before + b"\0")          # a newer build of the same flavor
+    app2.hd_pending.clear()
+    app2.refresh()
+    check("TatouHd.exe" in app2.hd_outdated() and app2.go.cget("text") == "Update HD"
+          and app2.go.instate(["!disabled"]) and "TatouHd.exe" in app2.hd_status.cget("text"),
+          f"S2 a newer TatouHd.exe in the pack: \"Update HD\" on ({app2.hd_outdated()})")
+    r = A.App._update_hd(rs2, str(assets))
+    m = CH.load_manifest(rs2)
+    check(r[2] and I.sha(rs2 / "TatouHd.exe") == I.sha(exe) and m["installed_by"] == "randomizer"
+          and CH.verify(rs2, log=lambda s: None) == [] and I.detect(rs2)["installed_seed"] == 77,
+          "S2 Update HD: only the new TatouHd.exe installed, still the randomizer's, the seed untouched")
+    app2.refresh()
+    check(app2.hd_outdated() == "" and app2.go.instate(["disabled"]) and app2.go.cget("text") == "Randomize Again",
+          "S2 after Update HD: up to date, nothing to do")
+    exe.write_bytes(exe_before)
     r = A.App._uninstall(rs2)
     app2.refresh()
     check(r[2] and tree(rs2) == before and app2.hd_saved is None and not app2.custom_hd.get()
