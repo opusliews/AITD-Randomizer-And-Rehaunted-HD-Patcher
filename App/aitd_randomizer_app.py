@@ -180,6 +180,79 @@ INCOMPATIBLE = ("This game directory was patched by another version of the AITD 
                 "the game first (Unpatch Game restores the original files), then randomize.")
 
 
+def recover_settings(folder: Path, rec: dict) -> dict:
+    """The options an install made by another patcher was made with, from its record (seed, the
+    generator options, controls, aspect), the seed's manifest in SEEDS (the requested difficulty),
+    the installed INDARK.EXE (search hints) and the custom HD manifest. Raises Refused with the reason
+    when they can't all be recovered."""
+    o = rec.get("options")
+    if rec.get("seed") is None or not isinstance(o, dict):
+        raise Refused("its install record has no seed options")
+    if "forced_max_per_location" in o:
+        raise Refused("it was made with a generator option this app doesn't set")
+    try:
+        man = json.loads((SEEDS / str(rec.get("seed_dir")) / "patchset" / "manifest.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        raise Refused(f"the seed's folder ({SEEDS / str(rec.get('seed_dir'))}) is not on this computer") from None
+    requested = (man.get("difficulty") or {}).get("requested")
+    label = next((k for k, v in DIFFICULTIES.items() if v == requested), None)
+    if label is None:
+        raise Refused(f"its requested difficulty ({requested}) is unknown")
+    files = {n.upper(): f for n, f in rec.get("files", {}).items()}
+    exe = (files.get("INDARK.EXE") or {}).get("after")
+    m = CH.load_manifest(folder)
+    return {**DEFAULTS, "seed": str(rec["seed"]), "drops": bool(o.get("enemy_drops")),
+            "drop_chance": int(o.get("drop_chance") or 25), "spots_on": bool(o.get("extra_spots")),
+            "spots": int(o.get("extra_spots") or 0), "doors_on": bool(o.get("locked_doors")),
+            "doors": int(o.get("locked_doors") or 0), "keynames": bool(o.get("key_names")),
+            "mirrors": bool(o.get("whole_mirrors")), "difficulty": label,
+            "hints": exe in (I.INDARK_CLASSIC_HINT, I.INDARK_CLASSIC_HINT_CTRL),
+            "controls": bool(rec.get("modern_controls")), "keep_aspect": bool(rec.get("keep_aspect")),
+            "custom_hd": bool(m and m.get("installed_by") == "randomizer"), "folder": str(folder)}
+
+
+def update_check(folder: Path, rec: dict, work: Path) -> tuple[str, str, dict | None]:
+    """Would this patcher install exactly the same seed files as the one installed (by another
+    patcher)? Regenerates the seed with the recovered settings from the original files (the
+    install's backups plus the files it left alone) into `work`, and compares every .PAK/.ITD with
+    the hashes the record lists for the installed ones. The exe files are left out: they are what
+    an update may change. Returns ("same" | "different" | "unknown", detail, recovered options)."""
+    try:
+        opt = recover_settings(folder, rec)
+    except Refused as e:
+        return "unknown", str(e), None
+    shutil.rmtree(work, ignore_errors=True)
+    data = work / "data"
+    data.mkdir(parents=True)
+    files = {n.upper(): (n, f) for n, f in rec.get("files", {}).items()}
+    for name in I.VANILLA:
+        if name in files and files[name][1].get("backup"):
+            src = folder / I.BACKUP / files[name][0]
+        elif name in files:
+            continue                      # a file the seed added: not an original
+        else:
+            src = I.find(folder, name)
+        if src and Path(src).is_file():
+            shutil.copy2(src, data / name)
+    missing, different = I.check_game_data(data)
+    if missing or different:
+        return "unknown", "the original game files could not be rebuilt from the install's backups", opt
+    import generate as G
+    os.environ["AITD_RANDO_DATA"] = str(data)
+    G.SRC = data
+    args = generator_args(opt)
+    out = work / "seed"
+    if G.main(args[:2] + ["--out", str(out)] + args[2:]) != 0:
+        return "unknown", "this version could not generate the seed with its settings", opt
+    new = {p.name.upper(): I.sha(p) for p in (out / "patchset").iterdir() if p.suffix.upper() in (".PAK", ".ITD")}
+    old = {n: f[1].get("after") for n, f in files.items() if n.endswith((".PAK", ".ITD"))}
+    changed = sorted(n for n in set(new) | set(old) if new.get(n) != old.get(n))
+    shutil.rmtree(work, ignore_errors=True)
+    if changed:
+        return "different", ", ".join(changed), opt
+    return "same", "", opt
+
+
 def load_settings() -> dict:
     try:
         return {**DEFAULTS, **json.loads(SETTINGS.read_text(encoding="utf-8"))}
@@ -336,6 +409,8 @@ def describe(folder: Path) -> tuple[str, dict | None]:
 
 
 class App:
+    ASYNC_CHECKS = True              # the update check in a thread (test_app_flows: inline)
+
     def __init__(self, root: tk.Tk):
         self.root, self.q, self.busy = root, queue.Queue(), False
         self.s = load_settings()
@@ -509,6 +584,8 @@ class App:
         self.log.pack(fill="both", expand=True, pady=(10, 0))
         self.info = None
         self.inst = ("none", None)   # installed_state of the game directory
+        self.checks = {}             # check_key() -> update_check result ("checking" while it runs)
+        self.status_base = ""
         self.hd_saved = None         # the player's (custom_hd) while the installed seed locks the box
         self.refresh()
         self.sync()
@@ -633,21 +710,43 @@ class App:
         state, rec = self.inst
         change = self.install_change()
         seed = rec.get("seed") if rec else None
+        # another patcher's install: the update check says whether this one gives the same seed files
+        check = self.checks.get(self.check_key()) if state == "incompatible" else None
+        kind, detail = (check[0], check[1]) if check else (None, "")
+        updatable = kind == "same"
         self.go.config(text="Reinstall" if change == "setup" else
+                       "Update to this version" if state == "incompatible" else
                        "Randomize Again" if state == "compatible" else "Randomize and install")
         self.go_tip.text = {
             "new": f"Replaces seed {seed} with this seed and these options (the game is unpatched first).",
             "setup": f"Installs seed {seed} again with the changed hints, controls or aspect. The seed "
                      "itself is the same, so its saves keep working.",
             "same": f"Seed {seed} is already installed with these settings.",
-        }.get(change, INCOMPATIBLE if state == "incompatible" else "")
-        go_ok = idle and self.data_ok and not self.hd_blocks() and state != "incompatible" and change != "same"
+        }.get(change, "") if state != "incompatible" else {
+            "same": f"Seed {seed} was installed by another version of the AITD Randomizer. This version "
+                    "makes exactly the same seed files, so updating keeps the seed and its saves; only "
+                    "the patcher's own files are brought up to date.",
+            "checking": "Checking whether this version changes the installed seed...",
+            "different": f"This version of the AITD Randomizer would change seed {seed}'s game files "
+                         f"({detail}). " + INCOMPATIBLE,
+            "unknown": f"This version can't check the installed seed: {detail}. " + INCOMPATIBLE,
+        }.get(kind, INCOMPATIBLE)
+        self.status.config(text=self.status_base + ({
+            "same": "\nInstalled by another version of the AITD Randomizer; this version makes the same "
+                    "seed files: Update to this version keeps the seed and its saves.",
+            "checking": "\nInstalled by another version of the AITD Randomizer: checking whether this "
+                        "version changes the seed...",
+        }.get(kind, "\nPatched by another version of the AITD Randomizer: unpatch the game before "
+                    "patching it again.") if state == "incompatible" else ""))
+        go_ok = idle and not self.hd_blocks() and (
+            updatable if state == "incompatible" else self.data_ok and change != "same")
         self.go.state(["!disabled"] if go_ok else ["disabled"])
         self.undo.state(["!disabled"] if idle and self.info and self.info["installed_seed"] is not None
-                        else ["disabled"])
+                        and kind != "checking" else ["disabled"])
         what, how = self.launch
-        self.play.state(["!disabled"] if idle and what and state != "incompatible" else ["disabled"])
-        self.play_tip.text = INCOMPATIBLE if state == "incompatible" else f"Starts {what}." if what else how
+        blocked = state == "incompatible" and not updatable
+        self.play.state(["!disabled"] if idle and what and not blocked else ["disabled"])
+        self.play_tip.text = INCOMPATIBLE if blocked else f"Starts {what}." if what else how
         if state == "incompatible":           # only the game directory and Unpatch Game until unpatched
             for w in (self.seed_widgets + list(self.random_cbs.values()) + [self.drop_sb]
                       + list(self.number_sb.values()) + [self.hints_cb, self.controls_cb, self.keep_aspect_cb,
@@ -769,6 +868,7 @@ class App:
         text, self.info = describe(Path(f)) if f else (
             "Choose the game directory (the one holding INDARK.EXE or ReHaunted's Tatou.exe), or press "
             "Find.", None)
+        self.status_base = text
         self.status.config(text=text)
         if self.info is not None:
             # game files a ReHaunted install copied in are removed again before the next seed
@@ -790,11 +890,34 @@ class App:
         self.launch = launch_target(Path(f)) if self.info is not None else (
             None, "Choose the game directory first.")
         self.inst = installed_state(Path(f)) if self.info is not None else ("none", None)
-        if self.inst[0] == "incompatible":
-            self.status.config(text=text + "\nPatched by another version of the AITD Randomizer: "
-                                           "unpatch the game before patching it again.")
+        if self.inst[0] == "incompatible" and self.check_key() not in self.checks and not self.busy:
+            self.start_update_check()
         self.lock_hd()
         self.refresh_data()
+
+    def check_key(self):
+        """The installed seed the update check is about (an install's record is rewritten by every
+        install), and this patcher."""
+        rec = self.inst[1] or {}
+        return (str(Path(self.folder.get().strip()).resolve()), rec.get("installed"), patcher_id())
+
+    def start_update_check(self):
+        """update_check in a thread (it regenerates the seed: seconds, or a minute or two for a
+        requested difficulty); the result comes back through the queue (pump)."""
+        key, rec = self.check_key(), self.inst[1]
+        self.checks[key] = ("checking", "", None)
+        self.say("Checking whether this version changes the installed seed...\n")
+
+        def check():
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    return update_check(Path(key[0]), rec, USER_DIR / "UpdateCheck")
+            except BaseException as e:              # a bug: no update offered
+                return "unknown", f"the check failed ({e})", None
+        if self.ASYNC_CHECKS:
+            threading.Thread(target=lambda: self.q.put(("update", (key, check()))), daemon=True).start()
+        else:
+            self.checks[key] = check()
 
     def refresh_data(self):
         """The game data directory row: where the original files come from.
@@ -877,6 +1000,15 @@ class App:
                 kind, payload = self.q.get_nowait()
                 if kind == "log":
                     self.say(payload)
+                elif kind == "update":
+                    key, res = payload
+                    self.checks[key] = res
+                    self.say({"same": "This version makes the same seed files: Update to this version "
+                                      "is available.\n",
+                              "different": f"This version would change the seed ({res[1]}): unpatch "
+                                           "the game before patching it again.\n"}.get(
+                        res[0], f"The installed seed can't be checked: {res[1]}.\n"))
+                    self.sync()
                 elif kind == "pack":
                     key, res = payload
                     if key == self.pack_key:      # not a folder that was changed again meanwhile
@@ -925,11 +1057,13 @@ class App:
     def randomize(self):
         change = self.install_change()
         opt = self.effective()
-        if not opt["seed"].isdigit() or not VANILLA_SEED <= int(opt["seed"]) <= SEED_MAX:
+        updating = self.inst[0] == "incompatible"     # the window's seed field is locked: not used
+        if not updating and (not opt["seed"].isdigit() or not VANILLA_SEED <= int(opt["seed"]) <= SEED_MAX):
             messagebox.showerror(APP_NAME, f"The seed must be a number from {VANILLA_SEED} to {SEED_MAX} "
                                            f"({VANILLA_SEED} = the original item layout).")
             return
-        opt["seed"] = str(int(opt["seed"]))          # "00" is seed 0 too, in one seed folder
+        if not updating:
+            opt["seed"] = str(int(opt["seed"]))      # "00" is seed 0 too, in one seed folder
         self.refresh()
         if self.info is None:
             messagebox.showerror(APP_NAME, "Choose the game directory first.")
@@ -940,7 +1074,18 @@ class App:
         own = self.info["sentinel"] and not self.info["copied_data"]
         opt["data_override"] = None if own or self.data_path is None else str(self.data_path)
         if self.inst[0] == "incompatible":
-            messagebox.showerror(APP_NAME, INCOMPATIBLE)
+            check = self.checks.get(self.check_key())
+            if not check or check[0] != "same":
+                messagebox.showerror(APP_NAME, INCOMPATIBLE)
+                return
+            if not messagebox.askyesno(APP_NAME, f"Update seed {self.info['installed_seed']} to this version "
+                                                 "of the AITD Randomizer?\n\nIt is reinstalled with the same "
+                                                 "settings and gives exactly the same seed files, so its "
+                                                 "saves keep working."):
+                return
+            opt = {**check[2], "update": True, "hd_keep": True, "data_override": opt["data_override"]}
+            self.say(f"\n=== Update seed {opt['seed']} ===\n")
+            self.run(self._randomize, Path(opt["folder"]).resolve(), opt, self.has_rehaunted())
             return
         if change == "setup":
             if not messagebox.askyesno(APP_NAME, f"Reinstall seed {self.info['installed_seed']} with the "
@@ -958,8 +1103,8 @@ class App:
         """Generate and install the seed. opt["hd_keep"] (the window, while a seed is installed: the
         custom HD option is locked): leave the custom HD backgrounds as they are."""
         writable(folder)
-        if installed_state(folder)[0] == "incompatible":
-            raise Refused(INCOMPATIBLE)
+        if installed_state(folder)[0] == "incompatible" and not opt.get("update"):
+            raise Refused(INCOMPATIBLE)        # "update": update_check found the same seed files
         keep_hd = bool(opt.get("hd_keep"))
         if rehaunted and opt.get("custom_hd") and not keep_hd:   # every custom HD check that can refuse, before any write
             problems = CH.detect(folder)["problems"]

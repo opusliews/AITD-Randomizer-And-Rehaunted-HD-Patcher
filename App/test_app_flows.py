@@ -21,10 +21,12 @@
      remembered in the settings, never shown again.
   S  The installed-seed states (user, 2026-10-28): no seed -> "Randomize and install"; this
      patcher's seed with the same settings -> "Randomize Again" greyed out; another seed or seed
-     option -> "Randomize Again"; only controls/hints/aspect -> "Reinstall"; another patcher's
-     install, or a record from before the app block -> everything greyed out but the game
-     directory and "Unpatch Game", and _randomize refuses; a missing backup -> unpatch refuses
-     before restoring anything; an older app's install unpatches to the identical folder.
+     option -> "Randomize Again"; only controls/hints/aspect -> "Reinstall". Another patcher's
+     install: the update check regenerates the seed from the backups and compares the files ->
+     same: "Update to this version" (reinstalls the same files, record becomes this patcher's);
+     different, or can't check (seed folder gone): only the game directory and "Unpatch Game",
+     and a plain _randomize refuses. A missing backup -> unpatch refuses before restoring
+     anything; an older app's install unpatches to the identical folder.
   S2 Custom HD locked while a seed is installed: the box shows what is installed, Randomize Again
      leaves the HD files alone (no pack needed), Unpatch Game removes them and gives the box back.
 
@@ -345,21 +347,48 @@ def main(work: Path):
     app2.controls.set(not app2.controls.get())
     app2.controls_clicked()
     check(app2.go.instate(["disabled"]), "S controls back: greyed out again")
+    A.App.ASYNC_CHECKS = False              # the update check inline (no event loop here)
+    A.USER_DIR = work
+    installed = {n: f["after"] for n, f in rec["files"].items()}
+    original = dict(rec)
     rec["app"]["patcher"] = "0.9 (an older app) | generator v1 | edition none"
     (game / I.MARKER).write_text(json.dumps(rec, indent=1) + "\n", encoding="utf-8")
     app2.refresh()
+    kind = app2.checks[app2.check_key()][0]
     locked = all(w.instate(["disabled"]) for w in app2.seed_widgets + list(app2.random_cbs.values())
-                 + [app2.hints_cb, app2.controls_cb, app2.difficulty_cb, app2.go, app2.play])
-    check(locked and app2.undo.instate(["!disabled"]) and "another version" in app2.go_tip.text
-          and "another version" in app2.status.cget("text"),
-          "S another patcher's install: everything greyed out but the game directory and Unpatch Game")
+                 + [app2.hints_cb, app2.controls_cb, app2.difficulty_cb])
+    check(kind == "same" and app2.go.cget("text") == "Update to this version" and app2.go.instate(["!disabled"])
+          and locked and app2.undo.instate(["!disabled"]) and app2.play_tip.text != A.INCOMPATIBLE
+          and "same seed files" in app2.status.cget("text"),
+          "S another patcher's install, same seed files: \"Update to this version\" on, options locked")
     r = randomize(game, app2.effective(), False)
-    check(not r[2] and "another version" in r[1], "S randomize refused on another patcher's install")
+    check(not r[2] and "another version" in r[1], "S a plain randomize is still refused on another patcher's install")
+    r = randomize(game, {**app2.checks[app2.check_key()][2], "update": True, "hd_keep": True}, False)
+    rec2 = json.loads((game / I.MARKER).read_text(encoding="utf-8"))
+    check(r[2] and rec2["app"]["patcher"] == A.patcher_id()
+          and all(rec2["files"][n]["after"] == h for n, h in installed.items()),
+          "S Update to this version: the same seed files, the record now this patcher's")
+    app2.refresh()
+    check(app2.inst[0] == "compatible" and app2.go.cget("text") == "Randomize Again",
+          "S after the update: a normal install of this patcher")
+    rec = dict(original)
+    del rec["app"]
+    rec["files"] = {**rec["files"], "LISTLIFE.PAK": {**rec["files"]["LISTLIFE.PAK"], "after": "0" * 64}}
+    rec["installed"] = "test: different"
+    (game / I.MARKER).write_text(json.dumps(rec, indent=1) + "\n", encoding="utf-8")
+    app2.refresh()
+    check(app2.checks[app2.check_key()][0] == "different" and app2.go.instate(["disabled"])
+          and "LISTLIFE.PAK" in app2.go_tip.text and app2.undo.instate(["!disabled"])
+          and app2.play.instate(["disabled"]),
+          "S another patcher's install with other seed files: only Unpatch Game")
+    rec = {**dict(original), "seed_dir": "no_such_seed", "installed": "test: unknown"}
     del rec["app"]
     (game / I.MARKER).write_text(json.dumps(rec, indent=1) + "\n", encoding="utf-8")
     app2.refresh()
-    check(app2.inst[0] == "incompatible" and app2.go.instate(["disabled"]),
-          "S an install record from before this change (no app block): incompatible too")
+    check(app2.checks[app2.check_key()][0] == "unknown" and app2.go.instate(["disabled"])
+          and "not on this computer" in app2.go_tip.text,
+          "S the seed's folder gone (difficulty unknown): can't check, only Unpatch Game")
+    (game / I.MARKER).write_text(json.dumps(rec2, indent=1) + "\n", encoding="utf-8")
     bk = game / I.BACKUP / "LISTLIFE.PAK"
     saved = bk.read_bytes()
     bk.unlink()
