@@ -19,6 +19,14 @@
   H  The window's Very hard rules: More locked doors on at 60 %, Many search places down to 10;
      raising spots or lowering doors shows one warning,
      remembered in the settings, never shown again.
+  S  The installed-seed states (user, 2026-10-28): no seed -> "Randomize and install"; this
+     patcher's seed with the same settings -> "Randomize Again" greyed out; another seed or seed
+     option -> "Randomize Again"; only controls/hints/aspect -> "Reinstall"; another patcher's
+     install, or a record from before the app block -> everything greyed out but the game
+     directory and "Unpatch Game", and _randomize refuses; a missing backup -> unpatch refuses
+     before restoring anything; an older app's install unpatches to the identical folder.
+  S2 Custom HD locked while a seed is installed: the box shows what is installed, Randomize Again
+     leaves the HD files alone (no pack needed), Unpatch Game removes them and gives the box back.
 
 The ReHaunted Tatou.exe is a placeholder file (no ReHaunted release is in the project):
 install.py only needs a Tatou.exe that is not an edition build.
@@ -300,6 +308,99 @@ def main(work: Path):
     app2.seed.set("123")
     check(all(c.instate(["!disabled"]) for c in app2.random_cbs.values())
           and app2.difficulty_cb.instate(["!disabled"]), "V2 another seed: the options are back")
+
+    # S: the installed-seed states of the window (user, 2026-10-28; Research/PatcherApp.md "Planned")
+    gs = work / "S_states"
+    shutil.copytree(ORIG / "INDARK", gs / "INDARK")
+    game = gs / "INDARK"
+    before = tree(gs)
+    app2.folder.set(str(game))
+    app2.seed.set("4242")
+    app2.difficulty.set("Any")              # H left Very hard, which seed 4242 has no layout for
+    app2.refresh()
+    check(app2.go.cget("text") == "Randomize and install" and app2.go.instate(["!disabled"])
+          and app2.undo.instate(["disabled"]) and app2.undo.cget("text") == "Unpatch Game",
+          "S no seed: \"Randomize and install\" on, \"Unpatch Game\" off")
+    r = randomize(game, app2.effective(), False)
+    app2.refresh()
+    rec = json.loads((game / I.MARKER).read_text(encoding="utf-8"))
+    check(r[2] and rec["app"]["patcher"] == A.patcher_id() and rec["app"]["generator_args"][:2] == ["--seed", "4242"],
+          f"S install record has this patcher and its generator arguments ({rec['app']['patcher']})")
+    check(app2.go.cget("text") == "Randomize Again" and app2.go.instate(["disabled"])
+          and "already installed" in app2.go_tip.text and app2.undo.instate(["!disabled"]),
+          "S same seed and settings: \"Randomize Again\" greyed out, hover says already installed")
+    app2.seed.set("4243")
+    check(app2.go.cget("text") == "Randomize Again" and app2.go.instate(["!disabled"]),
+          "S another seed: \"Randomize Again\" on")
+    app2.seed.set("4242")
+    app2.drops.set(not app2.drops.get())
+    app2.sync()
+    check(app2.go.instate(["!disabled"]) and app2.go.cget("text") == "Randomize Again",
+          "S a seed option changed: \"Randomize Again\" on")
+    app2.drops.set(not app2.drops.get())
+    app2.controls.set(not app2.controls.get())
+    app2.controls_clicked()
+    check(app2.go.cget("text") == "Reinstall" and app2.go.instate(["!disabled"]),
+          "S only the controls changed: \"Reinstall\" on")
+    app2.controls.set(not app2.controls.get())
+    app2.controls_clicked()
+    check(app2.go.instate(["disabled"]), "S controls back: greyed out again")
+    rec["app"]["patcher"] = "0.9 (an older app) | generator v1 | edition none"
+    (game / I.MARKER).write_text(json.dumps(rec, indent=1) + "\n", encoding="utf-8")
+    app2.refresh()
+    locked = all(w.instate(["disabled"]) for w in app2.seed_widgets + list(app2.random_cbs.values())
+                 + [app2.hints_cb, app2.controls_cb, app2.difficulty_cb, app2.go, app2.play])
+    check(locked and app2.undo.instate(["!disabled"]) and "another version" in app2.go_tip.text
+          and "another version" in app2.status.cget("text"),
+          "S another patcher's install: everything greyed out but the game directory and Unpatch Game")
+    r = randomize(game, app2.effective(), False)
+    check(not r[2] and "another version" in r[1], "S randomize refused on another patcher's install")
+    del rec["app"]
+    (game / I.MARKER).write_text(json.dumps(rec, indent=1) + "\n", encoding="utf-8")
+    app2.refresh()
+    check(app2.inst[0] == "incompatible" and app2.go.instate(["disabled"]),
+          "S an install record from before this change (no app block): incompatible too")
+    bk = game / I.BACKUP / "LISTLIFE.PAK"
+    saved = bk.read_bytes()
+    bk.unlink()
+    check(I.unpatch(game) != 0 and (game / I.MARKER).exists(),
+          "S unpatch with a backup missing: refused, the install record kept")
+    bk.write_bytes(saved)
+    check(I.unpatch(game) == 0 and tree(gs) == before,
+          "S unpatch of an older app's install: folder identical to before")
+    app2.refresh()
+    check(app2.go.cget("text") == "Randomize and install" and app2.seed_widgets[0].instate(["!disabled"]),
+          "S after unpatching: everything back")
+
+    # S2: the custom HD option is locked while a seed is installed (ReHaunted 2.4 + the HD pack)
+    I.search_game_data = lambda: [("GOG", ORIG / "INDARK")]
+    rs2 = work / "S2_rehaunted24"
+    rs2.mkdir()
+    (rs2 / "Tatou.exe").write_bytes(b"placeholder ReHaunted exe")
+    (rs2 / "version.txt").write_text("2.4.0.1008\n")
+    before = tree(rs2)
+    app2.folder.set(str(rs2))
+    app2.custom_hd.set(True)
+    app2.hd_assets.set(str(assets))
+    app2.refresh()
+    r = randomize(rs2, {**app2.effective(), "custom_hd": True, "hd_assets": str(assets)}, True)
+    app2.custom_hd.set(False)                # the player's own choice, while installed
+    app2.hd_saved = None
+    app2.refresh()
+    check(r[2] and app2.hd_cb.instate(["disabled"]) and app2.custom_hd.get() and app2.hd_saved is False
+          and "unpatch" in app2.hd_status.cget("text"),
+          "S2 seed + custom HD installed: the HD box shows it, locked; the player's choice is kept aside")
+    hd_before = CH.load_manifest(rs2)
+    r = randomize(rs2, {**app2.effective(), "seed": "77", "hd_assets": str(work / "no_such_pack")}, True)
+    check(r[2] and CH.load_manifest(rs2) == hd_before and CH.verify(rs2, log=lambda s: None) == []
+          and json.loads((rs2 / I.MARKER).read_text(encoding="utf-8"))["app"]["custom_hd"],
+          "S2 Randomize Again while locked: the custom HD files are left as they are (no pack needed)")
+    r = A.App._uninstall(rs2)
+    app2.refresh()
+    check(r[2] and tree(rs2) == before and app2.hd_saved is None and not app2.custom_hd.get()
+          and app2.hd_cb.instate(["!disabled"]),
+          "S2 Unpatch Game: seed and custom HD removed, the box unlocked with the player's choice back")
+    I.search_game_data = real_search
     root.destroy()
     A.messagebox.showwarning = real_warning
     print(f"{check.failed} failure(s)")

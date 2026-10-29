@@ -618,6 +618,11 @@ def unpatch(game: Path) -> int:
         return refuse("no randomizer seed is installed here")
     record = json.loads(marker.read_text(encoding="utf-8"))
     backup = game / BACKUP
+    missing = [name for name, f in record["files"].items() if f["backup"] and not (backup / name).is_file()]
+    if missing:                          # checked before anything is restored: no half-restored game
+        return refuse(f"the backup of {', '.join(missing)} is missing from {BACKUP}; nothing was "
+                      "restored. Restore the original game files from your game's store (verify/repair "
+                      "the installation), then delete " + MARKER)
     problems = []
     for name, f in record["files"].items():
         target = find(game, name) or game / name

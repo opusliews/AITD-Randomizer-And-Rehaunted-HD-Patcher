@@ -94,7 +94,7 @@ HELP = {
     "keynames": "Keys show their real name from the start (in the original game every key is "
                 "\"A Key\" until you use it).",
     "edition": "Installs the AITD Randomizer edition of ReHaunted over your ReHaunted Tatou.exe "
-               "(your original is backed up and restored by Uninstall). It reads the seed from disk, "
+               "(your original is backed up and restored by Unpatch Game). It reads the seed from disk, "
                "has engine fixes the randomizer relies on, and press F7 makes a bug report capture. "
                "Every seed needs it: the shuffled visible items change OBJETS.ITD, which stock "
                "ReHaunted reads from its exe.",
@@ -103,7 +103,8 @@ HELP = {
                  "separate download: choose its folder below (it holds TatouHd.exe and the "
                  "backgrounds_custom folder). Start TatouHd.exe instead of Tatou.exe to play with them; "
                  "HD backgrounds must be on in ReHaunted's options. ReHaunted 2.4 only. Only "
-                 "TatouHd.exe and backgrounds_custom are added; Uninstall seed removes them again.",
+                 "TatouHd.exe and backgrounds_custom are added; Unpatch Game removes them again. "
+                 "While a seed is installed this choice is locked: unpatch the game to change it.",
     "folder": "The folder you play from: the one holding INDARK.EXE (the original game, e.g. "
               "C:\\GOG Games\\Alone in the Dark\\INDARK) or ReHaunted's Tatou.exe. The seed is "
               "installed here.",
@@ -128,6 +129,55 @@ NO_DATA = ("Your original game files were not found. Choose your game data direc
            "INDARK).")
 SAVES = ("Saves belong to their seed: start a New Game. Loading a save made with another seed, or "
          "with the unpatched game, will break the game.")
+
+
+@functools.lru_cache(maxsize=1)
+def patcher_id() -> str:
+    """Which patcher this is: the app version, the generator version and the bundled edition. An
+    installed seed counts as this patcher's (compatible) only when its record has the same id; any
+    other install must be unpatched before patching again (user, 2026-10-28). Unpatching itself
+    works for every version: it needs only the record and the backups (install.unpatch)."""
+    m = re.search(r'^VERSION = "([^"]+)"', (GEN / "Generator" / "generate.py").read_text(encoding="utf-8"), re.M)
+    edition = I.sha(EDITION_EXE)[:16] if EDITION_EXE.is_file() else "none"
+    return f"{APP_VERSION} | generator {m.group(1) if m else '?'} | edition {edition}"
+
+
+def generator_args(opt: dict) -> list[str]:
+    """The generator's arguments for these options (all but --out): what decides the seed's files."""
+    vanilla = int(opt["seed"]) == VANILLA_SEED        # the original layout: no randomizing option
+    argv = ["--seed", str(int(opt["seed"]))]
+    if opt["drops"] and not vanilla:
+        argv += ["--enemy-drops", "--drop-chance", str(opt["drop_chance"])]
+    if opt["spots_on"] and opt["spots"] and not vanilla:
+        argv += ["--extra-spots", str(opt["spots"])]
+    if opt["doors_on"] and opt["doors"] and not vanilla:
+        argv += ["--locked-doors", str(opt["doors"])]
+    # always on (visible items and saber pieces shuffle, so not for seed 0)
+    argv += ["--drop-glow"] + ([] if vanilla else ["--visible-items", "--saber-pieces"])
+    argv += ["--key-names"] * bool(opt["keynames"]) + ["--whole-mirrors"] * bool(opt["mirrors"])
+    wanted = None if vanilla else DIFFICULTIES.get(opt.get("difficulty"))
+    return argv + (["--difficulty", wanted] if wanted else [])
+
+
+def setup_of(opt: dict, rehaunted: bool) -> dict:
+    """The install choices a seed can be reinstalled with (same seed: saves keep working)."""
+    return {"hints": bool(opt["hints"]) and not rehaunted, "controls": bool(opt.get("controls")),
+            "keep_aspect": bool(opt.get("keep_aspect")) and rehaunted}
+
+
+def installed_state(folder: Path) -> tuple[str, dict | None]:
+    """("none", None) | ("compatible", record) | ("incompatible", record): whether the seed in this
+    folder was installed by this patcher (the "app" block _randomize adds to the install record)."""
+    try:
+        rec = json.loads((folder / I.MARKER).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return "none", None
+    app = rec.get("app") or {}
+    return ("compatible" if app.get("patcher") == patcher_id() else "incompatible"), rec
+
+
+INCOMPATIBLE = ("This game directory was patched by another version of the AITD Randomizer. Unpatch "
+                "the game first (Unpatch Game restores the original files), then randomize.")
 
 
 def load_settings() -> dict:
@@ -157,7 +207,7 @@ class Tip:
         self.job = self.widget.after(450, self._show)
 
     def _show(self):
-        if self.win:
+        if self.win or not self.text:
             return
         x, y = self.widget.winfo_rootx() + 16, self.widget.winfo_rooty() + self.widget.winfo_height() + 4
         self.win = tk.Toplevel(self.widget)
@@ -363,8 +413,9 @@ class App:
         se = ttk.Entry(o, textvariable=self.seed, width=14)
         se.grid(row=0, column=1, sticky="w", **pad)
         Tip(se, HELP["seed"])
-        ttk.Button(o, text="Random", command=lambda: self.seed.set(str(random.randint(1, SEED_MAX)))
-                   ).grid(row=0, column=2, sticky="w")
+        rb = ttk.Button(o, text="Random", command=lambda: self.seed.set(str(random.randint(1, SEED_MAX))))
+        rb.grid(row=0, column=2, sticky="w")
+        self.seed_widgets = [se, rb]
 
         self.drops = tk.BooleanVar(value=self.s["drops"])
         self.drop_chance = tk.IntVar(value=self.s["drop_chance"])
@@ -385,8 +436,9 @@ class App:
         c.grid(row=1, column=0, columnspan=2, sticky="w")
         Tip(c, HELP["drops"])
         self.random_cbs = {"drops": c}     # the randomizing options, greyed out for seed 0
-        self.drop_sb = ttk.Spinbox(o, from_=1, to=100, width=5, textvariable=self.drop_chance)
+        self.drop_sb = ttk.Spinbox(o, from_=1, to=100, width=5, textvariable=self.drop_chance, command=self.sync)
         self.drop_sb.grid(row=1, column=2, sticky="w", **pad)
+        self.drop_sb.bind("<KeyRelease>", lambda _e: self.sync())
         Tip(self.drop_sb, HELP["drops"])
         self.number_sb = {}
         for row, (label, on, var, lo, hi, key) in enumerate(
@@ -407,9 +459,11 @@ class App:
         c = ttk.Checkbutton(o, text="Show key names", variable=self.keynames, command=self.sync)
         c.grid(row=4, column=0, columnspan=3, sticky="w")
         Tip(c, HELP["keynames"])
+        self.seed_widgets.append(c)
         c = ttk.Checkbutton(o, text="Prevent mirrors from breaking", variable=self.mirrors, command=self.sync)
         c.grid(row=5, column=0, columnspan=3, sticky="w")
         Tip(c, HELP["mirrors"])
+        self.seed_widgets.append(c)
         self.hints_cb = ttk.Checkbutton(o, text="Hints On", variable=self.hints, command=self.hints_clicked)
         self.hints_cb.grid(row=6, column=0, columnspan=3, sticky="w")
         Tip(self.hints_cb, HELP["hints"])
@@ -436,9 +490,11 @@ class App:
         a.pack(fill="x", pady=(10, 0))
         self.go = ttk.Button(a, text="Randomize and install", command=self.randomize)
         self.go.pack(side="left")
-        self.undo = ttk.Button(a, text="Uninstall seed", command=self.uninstall)
+        self.go_tip = Tip(self.go, "")
+        self.undo = ttk.Button(a, text="Unpatch Game", command=self.uninstall)
         self.undo.pack(side="left", padx=6)
-        Tip(self.undo, "Restores every file the randomizer changed, and checks each one.")
+        Tip(self.undo, "Restores every file the randomizer changed, and checks each one. Works for a "
+                       "game patched by any version of the AITD Randomizer.")
         self.play = ttk.Button(a, text="Run game", command=self.run_game)
         self.play.pack(side="left")
         self.play_tip = Tip(self.play, "")
@@ -452,6 +508,8 @@ class App:
         self.log = ScrolledText(main, height=12, state="disabled", wrap="word", font=("Consolas", 9))
         self.log.pack(fill="both", expand=True, pady=(10, 0))
         self.info = None
+        self.inst = ("none", None)   # installed_state of the game directory
+        self.hd_saved = None         # the player's (custom_hd) while the installed seed locks the box
         self.refresh()
         self.sync()
         root.after(100, self.pump)
@@ -468,7 +526,29 @@ class App:
                 "difficulty": self.difficulty.get(), "vh_doors_warned": self.vh_warned,
                 "folder": self.folder.get().strip(), "sep_data": self.sep.get(),
                 "data_dir": self.data_dir.get().strip(),
-                "custom_hd": self.custom_hd.get(), "hd_assets": self.hd_assets.get().strip()}
+                "custom_hd": self.custom_hd.get() if self.hd_saved is None else self.hd_saved,
+                "hd_assets": self.hd_assets.get().strip()}
+
+    def effective(self) -> dict:
+        """The options to install with: as options(), but while a seed is installed the custom HD
+        box shows (and keeps) what is installed."""
+        opt = self.options()
+        if self.hd_saved is not None:
+            opt["custom_hd"], opt["hd_keep"] = self.custom_hd.get(), True
+        return opt
+
+    def install_change(self) -> str:
+        """Against the installed seed (this patcher's): "new" (seed, seed options or difficulty
+        differ), "setup" (only hints, controls or aspect differ), "same", or "" (nothing installed
+        by this patcher, or the seed number is not valid yet)."""
+        state, rec = self.inst
+        opt = self.options()
+        if state != "compatible" or not opt["seed"].isdigit():
+            return ""
+        app = rec["app"]
+        if generator_args(opt) != app.get("generator_args"):
+            return "new"
+        return "setup" if setup_of(opt, self.has_rehaunted()) != app.get("setup") else "same"
 
     def difficulty_changed(self):
         """Very hard seeds come from many locked doors and few extra spots (Research/SeedDifficulty.md:
@@ -550,12 +630,48 @@ class App:
             self.keep_aspect_cb.state(["!disabled"])
         self.sync_hd()
         idle = not self.busy
-        self.go.state(["!disabled"] if idle and self.data_ok and not self.hd_blocks() else ["disabled"])
+        state, rec = self.inst
+        change = self.install_change()
+        seed = rec.get("seed") if rec else None
+        self.go.config(text="Reinstall" if change == "setup" else
+                       "Randomize Again" if state == "compatible" else "Randomize and install")
+        self.go_tip.text = {
+            "new": f"Replaces seed {seed} with this seed and these options (the game is unpatched first).",
+            "setup": f"Installs seed {seed} again with the changed hints, controls or aspect. The seed "
+                     "itself is the same, so its saves keep working.",
+            "same": f"Seed {seed} is already installed with these settings.",
+        }.get(change, INCOMPATIBLE if state == "incompatible" else "")
+        go_ok = idle and self.data_ok and not self.hd_blocks() and state != "incompatible" and change != "same"
+        self.go.state(["!disabled"] if go_ok else ["disabled"])
         self.undo.state(["!disabled"] if idle and self.info and self.info["installed_seed"] is not None
                         else ["disabled"])
         what, how = self.launch
-        self.play.state(["!disabled"] if idle and what else ["disabled"])
-        self.play_tip.text = f"Starts {what}." if what else how
+        self.play.state(["!disabled"] if idle and what and state != "incompatible" else ["disabled"])
+        self.play_tip.text = INCOMPATIBLE if state == "incompatible" else f"Starts {what}." if what else how
+        if state == "incompatible":           # only the game directory and Unpatch Game until unpatched
+            for w in (self.seed_widgets + list(self.random_cbs.values()) + [self.drop_sb]
+                      + list(self.number_sb.values()) + [self.hints_cb, self.controls_cb, self.keep_aspect_cb,
+                      self.difficulty_cb, self.edition_cb, self.sep_cb, self.data_entry, self.data_browse]):
+                w.state(["disabled"])
+        else:                                 # the ones no other rule turns back on
+            for w in self.seed_widgets + [self.controls_cb]:
+                w.state(["!disabled"])
+
+    def lock_hd(self):
+        """While a seed is installed, the custom HD box shows what is installed and is locked: adding
+        or removing the backgrounds means unpatching first (user, 2026-10-28; copying them takes
+        long). The player's own choice comes back after unpatching."""
+        state, rec = self.inst
+        if self.has_rehaunted() and state != "none":
+            if self.hd_saved is None:
+                self.hd_saved = self.custom_hd.get()
+            app = rec.get("app") or {}
+            m = CH.load_manifest(Path(self.folder.get().strip()))
+            self.custom_hd.set(bool(app["custom_hd"]) if "custom_hd" in app else
+                               bool(m and m.get("installed_by") == "randomizer"))
+        elif self.hd_saved is not None:
+            self.custom_hd.set(self.hd_saved)
+            self.hd_saved = None
 
     def sync_hd(self):
         """Custom HD backgrounds: ReHaunted 2.4 folders only (custom_hd.detect); the row is hidden
@@ -567,6 +683,15 @@ class App:
             return
         for w in rows:
             w.grid()
+        if self.hd_saved is not None:        # locked by the installed seed (lock_hd)
+            for w in (self.hd_cb, self.hd_entry, self.hd_browse):
+                w.state(["disabled"])
+            self.hd_status.config(fg=GREY, text=(
+                "Custom HD backgrounds: installed with this seed. To remove them, unpatch the game first."
+                if self.custom_hd.get() else
+                "Custom HD backgrounds: not installed. To add them, unpatch the game first."))
+            self.hd_ok = True
+            return
         msg, ok = "", True
         if self.hd_problem:
             self.custom_hd.set(False)
@@ -664,6 +789,11 @@ class App:
         self.found = I.search_game_data() if self.has_rehaunted() else []
         self.launch = launch_target(Path(f)) if self.info is not None else (
             None, "Choose the game directory first.")
+        self.inst = installed_state(Path(f)) if self.info is not None else ("none", None)
+        if self.inst[0] == "incompatible":
+            self.status.config(text=text + "\nPatched by another version of the AITD Randomizer: "
+                                           "unpatch the game before patching it again.")
+        self.lock_hd()
         self.refresh_data()
 
     def refresh_data(self):
@@ -793,7 +923,8 @@ class App:
 
     # ---- actions -------------------------------------------------------------------------------
     def randomize(self):
-        opt = self.options()
+        change = self.install_change()
+        opt = self.effective()
         if not opt["seed"].isdigit() or not VANILLA_SEED <= int(opt["seed"]) <= SEED_MAX:
             messagebox.showerror(APP_NAME, f"The seed must be a number from {VANILLA_SEED} to {SEED_MAX} "
                                            f"({VANILLA_SEED} = the original item layout).")
@@ -808,16 +939,29 @@ class App:
             return
         own = self.info["sentinel"] and not self.info["copied_data"]
         opt["data_override"] = None if own or self.data_path is None else str(self.data_path)
-        if self.info["installed_seed"] is not None and not messagebox.askyesno(
+        if self.inst[0] == "incompatible":
+            messagebox.showerror(APP_NAME, INCOMPATIBLE)
+            return
+        if change == "setup":
+            if not messagebox.askyesno(APP_NAME, f"Reinstall seed {self.info['installed_seed']} with the "
+                                                 "changed hints, controls or aspect?\n\nThe seed is the same, "
+                                                 "so its saves keep working."):
+                return
+        elif self.info["installed_seed"] is not None and not messagebox.askyesno(
                 APP_NAME, f"Seed {self.info['installed_seed']} is installed in this folder. Replace it?\n\n"
-                          "It is uninstalled first (every original file restored)." + "\n\n" + SAVES):
+                          "The game is unpatched first (every original file restored)." + "\n\n" + SAVES):
             return
         self.say(f"\n=== Seed {opt['seed']} ===\n")
         self.run(self._randomize, Path(opt["folder"]).resolve(), opt, self.has_rehaunted())
 
     def _randomize(self, folder: Path, opt: dict, rehaunted: bool):
+        """Generate and install the seed. opt["hd_keep"] (the window, while a seed is installed: the
+        custom HD option is locked): leave the custom HD backgrounds as they are."""
         writable(folder)
-        if rehaunted and opt.get("custom_hd"):     # every custom HD check that can refuse, before any write
+        if installed_state(folder)[0] == "incompatible":
+            raise Refused(INCOMPATIBLE)
+        keep_hd = bool(opt.get("hd_keep"))
+        if rehaunted and opt.get("custom_hd") and not keep_hd:   # every custom HD check that can refuse, before any write
             problems = CH.detect(folder)["problems"]
             if problems:
                 raise Refused("Custom HD backgrounds: " + problems[0])
@@ -826,35 +970,25 @@ class App:
             except CH.Refused as e:
                 raise Refused(f"Custom HD backgrounds: {e}") from None
         if I.detect(folder)["installed_seed"] is not None:
-            print("Uninstalling the current seed...")
+            print("Unpatching the current seed...")
             if I.unpatch(folder) != 0:
-                raise Refused("The installed seed could not be uninstalled; see the log.")
+                raise Refused("The installed seed could not be unpatched; see the log.")
         data = self._game_data(folder, opt.get("data_override"))
         print(f"Original game files: {data}")
         os.environ["AITD_RANDO_DATA"] = str(data)
         import generate as G
         G.SRC = data
         out = SEEDS / f"seed_{opt['seed']}"
-        argv = ["--seed", opt["seed"], "--out", str(out)]
-        vanilla = int(opt["seed"]) == VANILLA_SEED        # the original layout: no randomizing option
-        if opt["drops"] and not vanilla:
-            argv += ["--enemy-drops", "--drop-chance", str(opt["drop_chance"])]
-        if opt["spots_on"] and opt["spots"] and not vanilla:
-            argv += ["--extra-spots", str(opt["spots"])]
-        if opt["doors_on"] and opt["doors"] and not vanilla:
-            argv += ["--locked-doors", str(opt["doors"])]
-        # always on (visible items and saber pieces shuffle, so not for seed 0)
-        argv += ["--drop-glow"] + ([] if vanilla else ["--visible-items", "--saber-pieces"])
-        argv += ["--key-names"] * opt["keynames"] + ["--whole-mirrors"] * opt["mirrors"]
+        args = generator_args(opt)
+        vanilla = int(opt["seed"]) == VANILLA_SEED
         wanted = None if vanilla else DIFFICULTIES.get(opt.get("difficulty"))
         if vanilla:
             print("Seed 0: the original item layout, with the fixes and options...")
         elif wanted:
-            argv += ["--difficulty", wanted]
             print(f"Generating a {opt['difficulty']} layout (this can take a minute or two)...")
         else:
             print("Generating...")
-        if G.main(argv) != 0:
+        if G.main(args[:2] + ["--out", str(out)] + args[2:]) != 0:
             if wanted:
                 raise Refused(f"No {opt['difficulty']} layout was found for seed {opt['seed']} with these "
                               "options. Press Random for another seed, or choose another difficulty "
@@ -869,7 +1003,18 @@ class App:
                      keep_aspect=bool(opt.get("keep_aspect")) and rehaunted)
         if rc != 0:
             raise Refused("The seed was generated but not installed; see the log. Your game is unchanged.")
-        hd_note = self._custom_hd(folder, opt) if rehaunted else ""
+        if keep_hd:
+            hd_note = ("\n\nCustom HD backgrounds: start TatouHd.exe (not Tatou.exe) to play with them."
+                       if opt.get("custom_hd") else "")
+        else:
+            hd_note = self._custom_hd(folder, opt) if rehaunted else ""
+        # what this patcher installed, so the window can tell the same settings, a changed setup
+        # (Reinstall) or another patcher's install (Unpatch first). No paths: bug reports copy it.
+        marker = folder / I.MARKER
+        rec = json.loads(marker.read_text(encoding="utf-8"))
+        rec["app"] = {"patcher": patcher_id(), "generator_args": args, "setup": setup_of(opt, rehaunted),
+                      "custom_hd": bool(opt.get("custom_hd")) and rehaunted}
+        marker.write_text(json.dumps(rec, indent=1) + "\n", encoding="utf-8")
         what = (": the original item layout, with the fixes and your options" if vanilla else
                 f". Difficulty: {diff['label']} (score {diff['score']}; the original game = 100)")
         return (APP_NAME, f"Seed {opt['seed']} is installed{what}.\n\nStart the game as usual and choose "
@@ -917,16 +1062,16 @@ class App:
 
     def uninstall(self):
         folder = Path(self.folder.get().strip()).resolve()
-        if not messagebox.askyesno(APP_NAME, "Uninstall the seed and restore the original files?\n\n" + SAVES):
+        if not messagebox.askyesno(APP_NAME, "Unpatch the game and restore the original files?\n\n" + SAVES):
             return
-        self.say("\n=== Uninstall ===\n")
+        self.say("\n=== Unpatch ===\n")
         self.run(self._uninstall, folder)
 
     @staticmethod
     def _uninstall(folder: Path):
         writable(folder)
         if I.unpatch(folder) != 0:
-            raise Refused("Uninstall stopped; see the log.")
+            raise Refused("Unpatching stopped; see the log.")
         m = CH.load_manifest(folder)            # the TatouHd edition plays from the seed's game files
         if m and m.get("installed_by") == "randomizer":
             print("Removing the custom HD backgrounds...")
