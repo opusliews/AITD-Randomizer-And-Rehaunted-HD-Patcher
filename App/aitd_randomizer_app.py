@@ -952,11 +952,17 @@ class App:
         (CH.pending_update; seconds: it reads the pack's image headers)."""
         key = self.hd_key()
         self.hd_pending[key] = "checking"
+        self.say(f"Checking the custom HD pack ({key[2]}) against the installed backgrounds. The first "
+                 "time after the pack was copied or moved this reads every image once and can take a "
+                 "minute or two...\n")
 
         def check():
-            try:
-                self._check_pack(Path(key[2]))
-                return CH.pending_update(Path(key[0]), Path(key[2]))
+            try:                            # one header scan (the pack check's), then the comparison
+                _exe, flavor, _desc = CH.pack_exe(Path(key[2]))
+                if flavor != "edition":
+                    return None
+                files = CH.scan_assets(Path(key[2]))[0]
+                return CH.pending_update(Path(key[0]), Path(key[2]), files)
             except Exception:               # no usable pack there: nothing to offer
                 return None
         if self.ASYNC_CHECKS:
@@ -1059,6 +1065,10 @@ class App:
                     key, res = payload
                     self.hd_pending[key] = res
                     self.sync()
+                    self.say("Custom HD pack: " + (
+                        "not a usable custom HD pack (the edition TatouHd.exe and backgrounds_custom).\n"
+                        if res is None else f"{self.hd_outdated()}: press Update HD.\n" if self.hd_outdated()
+                        else "the installed backgrounds and TatouHd.exe are up to date with it.\n"))
                 elif kind == "update":
                     key, res = payload
                     self.checks[key] = res
