@@ -337,7 +337,8 @@
    "enemy": 57,
    "region": "1/4",
    "requires": "true",
-   "spawn": "being in 1/4 (LIFE 72 room timer)"
+   "spawn": "being in 1/4 (LIFE 72 room timer)",
+   "disabled": "never carries a drop (user, 2026-10-28): it can stay stuck in the window wall, and a drop at its death spot could land out of reach; its roll is still made so the other enemies' rolls stay as before"
   },
   "E:64": {
    "enemy": 64,

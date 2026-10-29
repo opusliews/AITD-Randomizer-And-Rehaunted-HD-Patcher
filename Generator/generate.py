@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v22 (2026-10-28)"   # can empties, thrown can kills the giant spider; spinning crimson glow; v21 spider drop E:156
+VERSION = "v23 (2026-10-28)"   # the Master Bedroom werewolf (E:57) never carries a drop; v22 can empties + giant spider can kill
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -276,12 +276,13 @@ def find_zone_branch(instrs, param):
 
 
 def enemy_drop_slots(man, rng, chance):
-    """Roll each eligible enemy (independent chance); a rolled enemy carries 1-2 items."""
+    """Roll each eligible enemy (independent chance); a rolled enemy carries 1-2 items. A slot
+    marked "disabled" still makes its roll (the others' rolls stay the same) but never carries."""
     out = []
     for sid, e in man.get("enemy_drop_slots", {}).items():
         if sid.startswith("_"):
             continue
-        if rng.random() * 100 < chance:
+        if rng.random() * 100 < chance and not e.get("disabled"):
             out.append({"id": sid, "family": "enemy_drop", "enemy": e["enemy"], "items": [],
                         "sites": {}, "positions": MAX_PER_LOCATION, "cap": MAX_PER_LOCATION, "min": 1})
     return out
