@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v23 (2026-10-28)"   # the Master Bedroom werewolf (E:57) never carries a drop; v22 can empties + giant spider can kill
+VERSION = "v24 (2026-10-29)"   # "Master Bedroom Dresser's Key" (text 630); v23 werewolf E:57 never drops
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -106,6 +106,7 @@ def friendly_names(objs, key_names=False):
     Generated/Logic/item_names.json."""
     import aitd_text as X
     txt = X.entries(read_pak(SRC / "ENGLISH.PAK").entries[0].data)
+    txt.update({k: v.encode("ascii") for k, v in TEXT_RENAMES["ENGLISH"].items()})   # as installed
     lives = [L.decode(e.data) for e in read_pak(SRC / "LISTLIFE.PAK").entries]
     owner = {o["found_life"]: i for i, o in enumerate(objs) if o["found_life"] != -1}
     title = {}
@@ -968,12 +969,19 @@ def track_fixes(spray: bool = False) -> tuple[bytes, dict]:
     return write_pak([bytes(t) for t in tracks]), report
 
 
+# vanilla texts renamed in every seed, per language (user, 2026-10-29: the key from the Master
+# Bedroom dresser, F1:R4:HC5, says which dresser; "The Dresser's Key" in vanilla)
+TEXT_RENAMES = {"ENGLISH": {630: "Master Bedroom Dresser's Key"}, "USA": {630: "Master Bedroom Dresser's Key"}}
+
+
 def language_paks(extra: dict[int, str] | None = None) -> dict[str, bytes]:
-    """The six language PAKs with the flavour texts (and e.g. new key names) added."""
+    """The six language PAKs with the flavour texts (and e.g. new key names) added, and
+    TEXT_RENAMES applied."""
     import aitd_text as X
     out = {}
     for lang in LANGUAGES:
         es = [e.data for e in read_pak(SRC / f"{lang}.PAK").entries]
+        es[0] = X.replace_entries(es[0], TEXT_RENAMES.get(lang, {}))
         es[0] = X.add_entries(es[0], {**FLAVOUR_TEXTS, **(extra or {})})
         out[f"{lang}.PAK"] = write_pak(es)
     return out
@@ -1139,6 +1147,7 @@ def add_key_names(entries: list[bytearray], objs) -> dict:
     (the same found_name the game runs when the key is used), right after 'take 2'."""
     import aitd_text as X
     txt = X.entries(read_pak(SRC / "ENGLISH.PAK").entries[0].data)
+    txt.update({k: v.encode("ascii") for k, v in TEXT_RENAMES["ENGLISH"].items()})   # as installed
     renames = key_renames(objs, [L.decode(bytes(e)) for e in entries], txt)
     before = L.decode(bytes(entries[NEW_GAME_LIFE]))
     out_lines, done = [], False

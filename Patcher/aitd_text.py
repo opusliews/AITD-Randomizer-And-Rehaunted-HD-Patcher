@@ -23,6 +23,24 @@ def entries(data: bytes) -> dict[int, bytes]:
     return {int(m.group(1)): m.group(2) for m in _ENTRY.finditer(body)}
 
 
+def replace_entries(data: bytes, new: dict[int, str]) -> bytes:
+    """The existing entries `new` names, with their text replaced (same position, `@id:` kept)."""
+    body_end = data.find(END)
+    body_end = len(data) if body_end < 0 else body_end
+    out = data
+    for i, text in sorted(new.items()):
+        raw = text.encode("ascii")
+        if any(b < 0x20 for b in raw) or b"@" in raw:
+            raise ValueError(f"text {i}: control characters or '@' are not allowed")
+        hits = [m for m in _ENTRY.finditer(out[:body_end]) if int(m.group(1)) == i]
+        if len(hits) != 1:
+            raise ValueError(f"text {i}: {len(hits)} entries with this id")
+        m = hits[0]
+        out = out[:m.start(2)] + raw + out[m.end(2):]
+        body_end += len(raw) - (m.end(2) - m.start(2))
+    return out
+
+
 def add_entries(data: bytes, new: dict[int, str]) -> bytes:
     existing = entries(data)
     clash = sorted(set(new) & set(existing))
