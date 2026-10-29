@@ -7,6 +7,7 @@
   "pirate_dead": {"text": "Kill the Pirate with the Sword.", "status": "suggested"},
   "ghosts_dead": {"text": "Banish the Dancers: play Saint-Saëns' Dance of Death on the Gramophone.", "status": "suggested"},
   "medusas_dead": {"text": "Defeat both Medusas with the two Small Mirrors.", "status": "suggested"},
+  "worm_lured": {"text": "Lure the worm: it chases you once you come down through Jeremy's Study; lead it to the cave where it settles (it then only attacks when you come close). From then on the passage from the Cellar leads into the caves.", "status": "suggested"},
   "spiders_sprayed": {"text": "Kill the Garden spiders: once they have dropped in (searching the Center Bed wakes them), use the Can of Bug Spray in the Garden.", "status": "suggested"},
   "boss_defeated": {"text": "Final fight: defeat Pregzt (needs the Talisman, the lit Oil Lamp and the Lighter: the water in the last room ruins matches).", "status": "suggested"}
  },

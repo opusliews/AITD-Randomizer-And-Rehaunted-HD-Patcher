@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v24 (2026-10-29)"   # "Master Bedroom Dresser's Key" (text 630); v23 werewolf E:57 never drops
+VERSION = "v25 (2026-10-29)"   # the worm blocks the cellar side until lured (5/3 -> 5/2 needs worm_lured); v24 Dresser key name
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -86,7 +86,8 @@ EVENT_LABEL = {"lamp_lit": "the lamp can be lit", "jug_filled": "the jug can be 
                "knight_dead": "the knight can be defeated", "pirate_dead": "the pirate can be defeated",
                "ghosts_dead": "the ghosts can be banished", "medusas_dead": "the medusas can be defeated",
                "boss_defeated": "Pregzt can be defeated (goal)",
-               "spiders_sprayed": "the Garden spiders can be sprayed"}
+               "spiders_sprayed": "the Garden spiders can be sprayed",
+               "worm_lured": "the worm can be lured (then the Cellar passage leads into the caves)"}
 
 
 STATE_WORDS = ("empty", "broken", "wet")
