@@ -372,7 +372,7 @@ def enemy_death_sites(lives, enemy):
 
 
 def patch(slots, placement, key_names_objs=None, doors=None, visible=None, saber_broken=False,
-          whole_mirrors=False, glow_objs=None, spray=None):
+          whole_mirrors=False, glow_objs=None, spray=None, deadly_smoke=False):
     entries = [bytearray(e.data) for e in read_pak(SRC / "LISTLIFE.PAK").entries]
     # base patch for every seed (vanilla flaw): the broken vase drops its contents at the player
     vase_report = [VIS_MECH().vase_contents_at_player(entries), VIS_MECH().vase_breaks_at_feet(entries)]
@@ -659,6 +659,8 @@ def patch(slots, placement, key_names_objs=None, doors=None, visible=None, saber
         report["saber_pieces"] = break_saber_at_new_game(entries)
     if whole_mirrors:
         report[HIT_LIFE] = keep_mirrors_whole(entries)
+    if deadly_smoke:
+        report[SMOKE_LIFE] = make_smoke_deadly(entries)
     if doors is not None:                 # More Locked Doors: key and lock scripts are appended
         keys, key_recs, door_objs = doors
         report["locked_doors"] = locked_doors.add_scripts(L, entries, key_recs, keys, door_objs)
@@ -1112,6 +1114,35 @@ def add_drop_glows(entries: list[bytearray], slots, placement, objs: list[dict])
     return out
 
 
+SMOKE_LIFE = 427       # OBJ 98, the Smoking Room smoke: one cough and -5 health per cloud cycle
+SMOKE_DAMAGE = 32000   # Deadly Smoke: more than any health (var_21 is 16-bit), so the hit kills
+
+
+def make_smoke_deadly(entries: list[bytearray]) -> dict:
+    """Option Deadly Smoke (user, 2026-10-29): smoke damage kills instantly. LIFE 427 (Research/
+    SmokingRoomSmoke.md) coughs and runs `sub 21 #5` when a cloud reaches 480 ticks (FOG_FLAG 2) with
+    the player in room 13. With #32000 health drops to 0 or below, and the player's LIFE 549 then takes
+    its `if var_21 > 0` else branch, life(39): the normal death. Only the constant changes: the same
+    size and flow. The logic is unchanged (user, 2026-10-29): the table item and the exit to the main
+    hall stay possible without the jug, as the first hit comes 8 s after entering."""
+    before = L.decode(bytes(entries[SMOKE_LIFE]))
+    lines = L.format_script(before).splitlines()
+    hits = [k for k, line in enumerate(lines) if line.split(";")[0].rstrip().endswith("sub 21 #5")]
+    if len(hits) != 1:
+        raise SystemExit(f"LIFE {SMOKE_LIFE}: the smoke damage line was not found once ({len(hits)})")
+    k = hits[0]
+    code, _, comment = lines[k].partition(";")
+    lines[k] = code.rstrip()[:-len("#5")] + f"#{SMOKE_DAMAGE}" + ("    ;" + comment if comment else "")
+    patched = L.parse_script("\n".join(lines) + "\n")
+    chk = L.check_text_patch(before, patched, set())
+    data = L.encode(patched)
+    L.decode(data)
+    if not chk.ok or chk.added or chk.removed or len(data) != len(entries[SMOKE_LIFE]):
+        raise SystemExit(f"LIFE {SMOKE_LIFE}: deadly smoke patch failed the flow check")
+    entries[SMOKE_LIFE] = bytearray(data)
+    return {"ok": True, "deadly_smoke": True, "damage": SMOKE_DAMAGE, "sha256": hashlib.sha256(data).hexdigest()}
+
+
 HIT_LIFE = 553         # the player's hit reaction: breaks a carried mirror (54, then 55) per hit
 MIRRORS = (54, 55)
 
@@ -1210,6 +1241,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--whole-mirrors", action="store_true",
                     help="option Prevent Mirrors From Breaking: being hit no longer breaks a carried "
                          "mirror (vanilla: a broken mirror can't kill a medusa, a soft-lock)")
+    ap.add_argument("--deadly-smoke", action="store_true",
+                    help="option Deadly Smoke: the Smoking Room smoke kills instead of taking 5 health "
+                         "(LIFE 427)")
     ap.add_argument("--check-placement", type=Path, default=None, metavar="PLACEMENT_JSON",
                     help="no fill and no output: build this seed's world (same seed and options) and "
                          "check the given placement.json against today's logic; exit 0 if the goal "
@@ -1391,7 +1425,7 @@ def main(argv: list[str] | None = None) -> int:
         displaced = {i for s in slots if s["family"] == "world" for i in s["items"]} - set(assignment.values())
         visible = (assignment, displaced, objs)
     pak, report = patch(slots, placement, objs if a.key_names else None, doors, visible, saber_broken,
-                        a.whole_mirrors, objs if a.drop_glow else None, spray)
+                        a.whole_mirrors, objs if a.drop_glow else None, spray, a.deadly_smoke)
     (out / "patchset" / "LISTLIFE.PAK").write_bytes(pak)
     src_hash = hashlib.sha256((SRC / "LISTLIFE.PAK").read_bytes()).hexdigest()
     files = {"LISTLIFE.PAK": {"source_sha256": src_hash, "sha256": hashlib.sha256(pak).hexdigest()}}
@@ -1436,6 +1470,7 @@ def main(argv: list[str] | None = None) -> int:
                     "extra_spots": a.extra_spots, "key_names": a.key_names,
                     "locked_doors": a.locked_doors or None, "visible_items": a.visible_items,
                     "saber_pieces": a.saber_pieces, "whole_mirrors": a.whole_mirrors,
+                    "deadly_smoke": a.deadly_smoke,
                     "drop_glow": a.drop_glow,
                     "max_per_location": cap_used,
                     **({"forced_max_per_location": a.max_per_location} if a.max_per_location else {})},
@@ -1499,6 +1534,8 @@ def main(argv: list[str] | None = None) -> int:
               f"At most {cap_used} items per location; an empty search spot says \"Nothing important!\"."),
              "" if not a.extra_spots else f"Option: {a.extra_spots} extra search spots (empty in vanilla).",
              "" if not a.whole_mirrors else "Option: mirrors don't break when you are hit.",
+             "" if not a.deadly_smoke else "Option Deadly Smoke: the Smoking Room smoke kills instantly (douse the "
+                                           "ashtray with the filled jug).",
              "" if not a.key_names else "Option: keys show their real names from the start (vanilla: \"A Key\" until used).",
              "" if not a.saber_pieces else (
                  "Option Saber Pieces: this seed's saber **starts broken**; its blade is a separate item (see the "

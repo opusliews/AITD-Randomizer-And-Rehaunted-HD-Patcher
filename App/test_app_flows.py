@@ -49,7 +49,7 @@ import aitd_randomizer_app as A     # noqa: E402
 ORIG = Path(__file__).resolve().parents[2] / "OriginalGame"
 I = A.I
 ALL = {**A.DEFAULTS, "seed": "4242", "keynames": True, "hints": True, "difficulty": "Normal"}
-PLAIN = {**ALL, "seed": "77", "spots_on": False, "doors_on": False, "hints": False, "mirrors": False,
+PLAIN = {**ALL, "seed": "77", "spots_on": False, "doors_on": False, "hints": False, "mirrors": False, "smoke": False,
          "difficulty": "Any"}
 
 
@@ -97,6 +97,9 @@ def main(work: Path):
     m = json.loads((A.SEEDS / "seed_4242" / "patchset" / "manifest.json").read_text(encoding="utf-8"))
     check(m["options"]["whole_mirrors"] and m["scripts"].get("553", {}).get("whole_mirrors"),
           "A Prevent mirrors from breaking: LIFE 553 patched")
+    check(A.DEFAULTS["smoke"] and m["options"]["deadly_smoke"]
+          and (m["scripts"].get("427") or {}).get("damage") == 32000,
+          "A Deadly Smoke on by default: LIFE 427 kills")
     glows = m["scripts"].get("drop_glow") or {}
     check(m["options"]["drop_glow"] and {"M:82", "M:149"} <= {g["slot"] for g in glows.values()}
           and "LISTBODY.PAK" in seed_files and "LISTBOD2.PAK" in seed_files,
@@ -116,6 +119,8 @@ def main(work: Path):
     o = json.loads((A.SEEDS / "seed_77" / "patchset" / "manifest.json").read_text(encoding="utf-8"))["options"]
     check(not o["whole_mirrors"] and "553" not in json.loads((A.SEEDS / "seed_77" / "patchset" / "manifest.json")
           .read_text(encoding="utf-8"))["scripts"], "A mirrors box unticked: LIFE 553 vanilla")
+    check(not o["deadly_smoke"] and "427" not in json.loads((A.SEEDS / "seed_77" / "patchset" / "manifest.json")
+          .read_text(encoding="utf-8"))["scripts"], "A Deadly Smoke unticked: LIFE 427 vanilla")
     check(not o["extra_spots"] and not o["locked_doors"] and o["visible_items"] and o["saber_pieces"],
           f"A unticked boxes: no extra spots or locked doors; visible items and saber pieces always on ({o})")
     check(I.unpatch(game) == 0 and tree(gog) == before, "A uninstall: whole folder identical to before")
@@ -257,6 +262,7 @@ def main(work: Path):
     o = m["options"]
     check(o["vanilla_layout"] and not o["enemy_drops"] and not o["extra_spots"] and not o["locked_doors"]
           and not o["visible_items"] and not o["saber_pieces"] and o["key_names"] and o["whole_mirrors"]
+          and o["deadly_smoke"]
           and m["difficulty"]["label"] == "Vanilla" and not m["saber_broken"],
           f"V randomizing options ignored, the others kept ({o}, {m['difficulty']})")
     pl = json.loads((A.SEEDS / "seed_0" / "placement.json").read_text(encoding="utf-8"))

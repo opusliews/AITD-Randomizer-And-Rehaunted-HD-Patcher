@@ -92,6 +92,8 @@ def main() -> int:
         cmd += ["--saber-pieces"]
     if opts.get("visible_items"):
         cmd += ["--visible-items"]
+    if opts.get("deadly_smoke"):
+        cmd += ["--deadly-smoke"]
     if opts.get("forced_max_per_location"):          # test seeds only; normal seeds pick 2 or 3 themselves
         cmd += ["--max-per-location", str(opts["forced_max_per_location"])]
     print("regenerating:", " ".join(cmd[1:]))

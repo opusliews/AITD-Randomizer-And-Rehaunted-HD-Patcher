@@ -137,6 +137,7 @@ EDITION = {
     "5e4aa4509fdea324c7a851d5bdf483563887e5bebd235b5b9ceab56e40a176ea": "edition 5E4AA450 (as D49747B6; save slot thumbnails change with the selected slot in HD mode)",
     "926d37bf807b9ed8ce3c26017e2f153a692a86c70ae621210f3197b619962d79": "edition 926D37BF (as 5E4AA450; the crimson drop glow (colour 0x51) is drawn faint and see-through like the grey one)",
     "b70c8a998f406c24d6b4683355c0db15bc5897b588af77025d356f676b266bc8": "edition B70C8A99 (as 926D37BF; the drop glow is told by its model, 274, so its colour can be 0x50 like the Talisman's)",
+    "edf748ed956c94bab952553cd0828c861189f6433770a03ad8b004c64e5ed632": "edition EDF748ED (as B70C8A99; sound_then plays its second sample, e.g. the laugh after the library doors close)",
 }
 KNOWN["Tatou.exe"].update({h: "AITD Randomizer " + v for h, v in EDITION.items()})
 

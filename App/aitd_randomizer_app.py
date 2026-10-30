@@ -85,6 +85,7 @@ HELP = {
                 "changes.",
     "mirrors": "Being hit no longer breaks a mirror you carry. In the original game a hit breaks "
                "one, and a broken mirror can't defeat the medusas, so the game can't be finished.",
+    "smoke": "Smoke damage kills instantly. It is recommended to leave this enabled.",
     "difficulty": "Picks a layout of this difficulty for the seed. The difficulty is the length of the "
                   "shortest route through the seed's puzzle chain, against the original game's layout "
                   "(= 100): Easy under 60, Normal 60-89, Hard 90-119, Very hard 120 and up. More locked "
@@ -117,7 +118,7 @@ HELP = {
 # Shuffle Visible Items and Saber Pieces are always on (user decision 2026-10-17), and so is the
 # drop glow on every monster drop (user, 2026-10-18)
 DEFAULTS = {"seed": "", "drops": True, "drop_chance": 25, "spots_on": True, "spots": 10,
-            "doors_on": True, "doors": 25, "keynames": False, "mirrors": True, "hints": True, "controls": False, "keep_aspect": False, "edition": True,
+            "doors_on": True, "doors": 25, "keynames": False, "mirrors": True, "smoke": True, "hints": True, "controls": False, "keep_aspect": False, "edition": True,
             "difficulty": "Any", "vh_doors_warned": False,
             "folder": "", "sep_data": False, "data_dir": "", "custom_hd": False, "hd_assets": ""}
 DIFFICULTIES = {"Any": None, "Easy": "easy", "Normal": "normal", "Hard": "hard", "Very hard": "very-hard"}
@@ -155,6 +156,7 @@ def generator_args(opt: dict) -> list[str]:
     # always on (visible items and saber pieces shuffle, so not for seed 0)
     argv += ["--drop-glow"] + ([] if vanilla else ["--visible-items", "--saber-pieces"])
     argv += ["--key-names"] * bool(opt["keynames"]) + ["--whole-mirrors"] * bool(opt["mirrors"])
+    argv += ["--deadly-smoke"] * bool(opt.get("smoke", True))
     wanted = None if vanilla else DIFFICULTIES.get(opt.get("difficulty"))
     return argv + (["--difficulty", wanted] if wanted else [])
 
@@ -205,7 +207,7 @@ def recover_settings(folder: Path, rec: dict) -> dict:
             "drop_chance": int(o.get("drop_chance") or 25), "spots_on": bool(o.get("extra_spots")),
             "spots": int(o.get("extra_spots") or 0), "doors_on": bool(o.get("locked_doors")),
             "doors": int(o.get("locked_doors") or 0), "keynames": bool(o.get("key_names")),
-            "mirrors": bool(o.get("whole_mirrors")), "difficulty": label,
+            "mirrors": bool(o.get("whole_mirrors")), "smoke": bool(o.get("deadly_smoke")), "difficulty": label,
             "hints": exe in (I.INDARK_CLASSIC_HINT, I.INDARK_CLASSIC_HINT_CTRL),
             "controls": bool(rec.get("modern_controls")), "keep_aspect": bool(rec.get("keep_aspect")),
             "custom_hd": bool(m and m.get("installed_by") == "randomizer"), "folder": str(folder)}
@@ -500,6 +502,7 @@ class App:
         self.doors = tk.IntVar(value=self.s["doors"])
         self.keynames = tk.BooleanVar(value=self.s["keynames"])
         self.mirrors = tk.BooleanVar(value=self.s["mirrors"])
+        self.smoke = tk.BooleanVar(value=self.s["smoke"])
         self.hints = tk.BooleanVar(value=self.s["hints"])
         self.hints_pref = self.s["hints"]         # the player's choice, kept while ReHaunted greys it out
         self.controls = tk.BooleanVar(value=self.s["controls"])
@@ -539,22 +542,26 @@ class App:
         c.grid(row=5, column=0, columnspan=3, sticky="w")
         Tip(c, HELP["mirrors"])
         self.seed_widgets.append(c)
+        c = ttk.Checkbutton(o, text="Deadly Smoke", variable=self.smoke, command=self.sync)
+        c.grid(row=6, column=0, columnspan=3, sticky="w")
+        Tip(c, HELP["smoke"])
+        self.seed_widgets.append(c)
         self.hints_cb = ttk.Checkbutton(o, text="Hints On", variable=self.hints, command=self.hints_clicked)
-        self.hints_cb.grid(row=6, column=0, columnspan=3, sticky="w")
+        self.hints_cb.grid(row=7, column=0, columnspan=3, sticky="w")
         Tip(self.hints_cb, HELP["hints"])
         self.controls_cb = ttk.Checkbutton(o, text="Keyboard and mouse controls", variable=self.controls,
                                            command=self.controls_clicked)
-        self.controls_cb.grid(row=7, column=0, columnspan=3, sticky="w")
+        self.controls_cb.grid(row=8, column=0, columnspan=3, sticky="w")
         Tip(self.controls_cb, HELP["controls"])
         self.keep_aspect_cb = ttk.Checkbutton(o, text="Maintain aspect ratio", variable=self.keep_aspect,
                                               command=self.keep_aspect_clicked)
-        self.keep_aspect_cb.grid(row=8, column=0, columnspan=3, sticky="w")
+        self.keep_aspect_cb.grid(row=9, column=0, columnspan=3, sticky="w")
         Tip(self.keep_aspect_cb, HELP["keep_aspect"])
-        ttk.Label(o, text="Difficulty").grid(row=9, column=0, sticky="w", pady=(4, 0))
+        ttk.Label(o, text="Difficulty").grid(row=10, column=0, sticky="w", pady=(4, 0))
         self.difficulty = tk.StringVar(value=self.s["difficulty"] if self.s["difficulty"] in DIFFICULTIES else "Any")
         self.vh_warned = bool(self.s["vh_doors_warned"])
         dc = ttk.Combobox(o, textvariable=self.difficulty, values=list(DIFFICULTIES), state="readonly", width=12)
-        dc.grid(row=9, column=1, sticky="w", **pad)
+        dc.grid(row=10, column=1, sticky="w", **pad)
         dc.bind("<<ComboboxSelected>>", lambda _e: self.difficulty_changed())
         Tip(dc, HELP["difficulty"])
         self.difficulty_cb = dc
@@ -600,7 +607,7 @@ class App:
         return {"seed": self.seed.get().strip(), "drops": self.drops.get(), "drop_chance": self._int(self.drop_chance, 25),
                 "spots_on": self.spots_on.get(), "spots": self._int(self.spots, 0),
                 "doors_on": self.doors_on.get(), "doors": self._int(self.doors, 0),
-                "keynames": self.keynames.get(), "mirrors": self.mirrors.get(), "hints": self.hints_pref, "controls": self.controls_pref, "keep_aspect": self.keep_aspect_pref, "edition": self.edition.get(),
+                "keynames": self.keynames.get(), "mirrors": self.mirrors.get(), "smoke": self.smoke.get(), "hints": self.hints_pref, "controls": self.controls_pref, "keep_aspect": self.keep_aspect_pref, "edition": self.edition.get(),
                 "difficulty": self.difficulty.get(), "vh_doors_warned": self.vh_warned,
                 "folder": self.folder.get().strip(), "sep_data": self.sep.get(),
                 "data_dir": self.data_dir.get().strip(),
@@ -850,7 +857,7 @@ class App:
             try:
                 s = self._check_pack(Path(key or "."))
                 res = (True, f"{s['stills']} still(s), {s['animations']} animation(s) ({s['frames']} frames), "
-                             f"{s['bytes'] / 1e6:.0f} MB")
+                             f"{s['models']} model(s), {s['bytes'] / 1e6:.0f} MB")
             except CH.Refused as e:
                 res = (False, str(e))
             except Exception as e:           # an unreadable file or folder
