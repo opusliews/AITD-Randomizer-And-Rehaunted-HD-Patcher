@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v29 (2026-10-30)"   # the lured worm stays parked until the endgame; v28 names the 3rd Floor Study chest key
+VERSION = "v30 (2026-10-30)"   # rooms 8/9 keep vanilla's OBJ 222 life_mode with the lured worm; v29 the lured worm stays parked until the endgame; v28 names the 3rd Floor Study chest key
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -824,7 +824,9 @@ CELLAR_WORDS = ((848, 6000, 5800, "cellar -> tunnel arrival z moved out of retur
                 (1694, 33, 172, "worm Study placement guarded by the lure flag var_172"),
                 (1810, 33, 172, "worm cellar placement guarded by the lure flag var_172"))
 WORM_DELETE_LIVES = (477, 482)  # room 8/9 controllers: wolf-spider side of the tunnels
-WORM_DELETE_WORDS = ((24, 170, 172), (28, 3, 0))  # delete only before lure, not whenever spawned
+WORM_DELETE_AT, WORM_DELETE_GUARD = 38, "if_egal var_172 #0"  # inserted in front of `delete 218`;
+# vanilla `if_egal var_170 #3` @20 still guards `obj_222.life_mode 1` @32 (v29 changed that test
+# itself, so a lured worm also skipped the life_mode line)
 ENDGAME_INSERT_AT = 330           # LIFE 522: `var 172 #1` before the final endlife
 ENDGAME_INSERT = bytes.fromhex("1300ac00ffff0100")
 ENDGAME_JUMPS = ((8, 160), (20, 154))   # the two `goto 330` jump words, +4 words after the insert
@@ -839,8 +841,9 @@ TRACK_FIXES = {   # STOP moved in front of MARK 1: the player stops before the t
 def cellar_tunnel_fixes(entries) -> dict:
     """LIFE 550: arrival z 6000 -> 5800 and both worm placements guarded by var_172 (same
     size; Visible Items edits LIFE 550 without moving offsets). LIFE 477/482: rooms 8/9 may
-    delete the worm before it is lured, but not after. LIFE 522: `var 172 #1` before the final
-    endlife, both early jumps still on endlife; its `delete 218` remains the final cleanup."""
+    delete the worm before it is lured, but not after; everything else there runs as in vanilla
+    (an inserted `if_egal var_172 #0` guards only `delete 218`). LIFE 522: `var 172 #1` before the
+    final endlife, both early jumps still on endlife; its `delete 218` remains the final cleanup."""
     report = {}
     life = entries[CELLAR_LIFE]
     for at, old, new, why in CELLAR_WORDS:
@@ -853,17 +856,27 @@ def cellar_tunnel_fixes(entries) -> dict:
                            "sha256": hashlib.sha256(bytes(life)).hexdigest()}
 
     for n in WORM_DELETE_LIVES:
-        life = entries[n]
-        for at, old, new in WORM_DELETE_WORDS:
-            word = struct.unpack_from("<H", life, at)[0]
-            if word != old:
-                raise SystemExit(f"LIFE {n} @{at}: expected {old}, found {word} (worm deletion guard)")
-            struct.pack_into("<H", life, at, new)
-        decoded = L.format_script(L.decode(bytes(life)))
-        if "if_egal var_172 #0" not in decoded or "delete 218" not in decoded:
-            raise SystemExit(f"LIFE {n}: worm deletion guard failed the decode check")
+        before = bytes(entries[n])
+        lines = L.format_script(L.decode(before)).splitlines()
+        at = [i for i, s in enumerate(lines) if s.endswith(f"; @{WORM_DELETE_AT}")]
+        if (len(at) != 1 or lines[at[0]].split("    ; @")[0] != "delete 218"
+                or not any(s.startswith("if_egal var_170 #3 @") and s.endswith("; @20") for s in lines)):
+            raise SystemExit(f"LIFE {n}: not the vanilla room 8/9 worm cleanup")
+        nxt = lines[at[0] + 1]
+        label = nxt.split(":")[0] if re.match(r"L\d+:", nxt) else None
+        if label is None:      # the instruction after the delete is the jump target of @8/@20
+            raise SystemExit(f"LIFE {n}: no label after `delete 218` ({nxt!r})")
+        lines.insert(at[0], f"{WORM_DELETE_GUARD} @{label}")
+        patched = L.parse_script("\n".join(lines) + "\n")
+        chk = L.check_text_patch(L.decode(before), patched, {32})   # life_mode may now skip the delete
+        data = L.encode(patched)
+        decoded = L.format_script(L.decode(data))
+        if (not chk.ok or chk.added != 1 or chk.removed or len(data) != len(before) + 12
+                or "if_egal var_170 #3" not in decoded or f"{WORM_DELETE_GUARD} @" not in decoded):
+            raise SystemExit(f"LIFE {n}: worm deletion guard failed the flow check")
+        entries[n] = bytearray(data)
         report[n] = {"ok": True, "worm_parked_after_lure": True,
-                     "sha256": hashlib.sha256(bytes(life)).hexdigest()}
+                     "sha256": hashlib.sha256(data).hexdigest()}
 
     before = bytes(entries[ENDGAME_LIFE])
     if len(before) != ENDGAME_INSERT_AT + 2 or any(

@@ -49,6 +49,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import aitd_randomizer_app as A     # noqa: E402
 import aitd_text as X               # noqa: E402
 from aitd_pak import read_pak       # noqa: E402
+import aitd_life as L               # noqa: E402
 
 ORIG = Path(__file__).resolve().parents[2] / "OriginalGame"
 I = A.I
@@ -290,9 +291,13 @@ def main(work: Path):
           "V the fixes are applied (worm chase, permanent lure, cellar/tunnel, TRACK 40/41)")
     life_entries = read_pak(A.SEEDS / "seed_0" / "patchset" / "LISTLIFE.PAK").entries
     word = lambda life, at: int.from_bytes(life_entries[life].data[at:at + 2], "little")
+    room89 = {n: L.format_script(L.decode(life_entries[n].data)) for n in (477, 482)}
     check(word(550, 1694) == word(550, 1810) == 172
-          and all(word(n, 24) == 172 and word(n, 28) == 0 for n in (477, 482)),
-          "V lured worm invariant: neither entry moves it and rooms 8/9 do not delete it")
+          and all("if_egal var_170 #3 @L54    ; @20\nobj_222.life_mode 1    ; @32\n"
+                  "if_egal var_172 #0 @L54    ; @38\ndelete 218    ; @50\nL54:" in s
+                  for s in room89.values()),
+          "V lured worm invariant: neither entry moves it; rooms 8/9 delete it only before the lure "
+          "and still set OBJ 222's life_mode as in vanilla")
     check(I.sha(game / "INDARK.EXE") == I.INDARK_CLASSIC_HINT, "V INDARK.EXE has the Classic fixes + search hint")
     check(I.unpatch(game) == 0 and tree(gv) == before, "V uninstall: whole folder identical to before")
 
