@@ -41,6 +41,35 @@ def glow_check(P, new) -> list[str]:
     return errs
 
 
+def offworld_check(P, pl, src) -> list[str]:
+    """An item may start in the world only in its own location's room (F<f>:R<r>:..., or the
+    vanilla item's room for P:<obj>); any other location's items (enemy drops, containers...)
+    must start off-world. Else they also lie somewhere visible: the cloned door keys on the
+    Pantry nail (generator v25, seed 510255268)."""
+    import aitd_objets as O
+    f = P / "patchset" / "OBJETS.ITD"
+    if not f.exists():
+        return []
+    objs, van = O.load(f), O.load(src / "OBJETS.ITD")
+    errs = []
+    for sid, items in pl.items():
+        if sid.startswith("W:"):
+            continue
+        m = re.match(r"F(\d+):R(\d+):", sid)
+        if m:
+            home = (int(m[1]), int(m[2]))
+        elif sid.startswith("P:"):
+            v = van[int(sid[2:])]
+            home = (v["stage"], v["room"])
+        else:
+            home = None
+        for it in items:
+            at = (objs[it]["stage"], objs[it]["room"])
+            if at[0] != -1 and at != home:
+                errs.append(f"item {it} ({sid}) starts in the world at floor {at[0]} room {at[1]}")
+    return errs
+
+
 def verify(seed_dir) -> tuple[int, list[str]]:
     """(scripts with award mismatches, report lines)."""
     import generate as G
@@ -93,6 +122,8 @@ def verify(seed_dir) -> tuple[int, list[str]]:
         e=+expect[n]; g=awards(new[n], glow_ids)
         if e!=g: bad+=1; lines.append(f"LIFE {n} expected {dict(e)} got {dict(g)}")
     bad += len(glow_errs); lines += glow_errs
+    offw = offworld_check(P, pl, G.SRC)
+    bad += len(offw); lines += offw
     lines.append(f"scripts with award mismatches: {bad}")
     return bad, lines
 

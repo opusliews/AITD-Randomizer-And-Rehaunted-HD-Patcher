@@ -90,11 +90,14 @@ def plan_keys(locked: list[int], first_obj: int) -> dict[str, dict]:
 
 def key_records(keys: dict[str, dict], objs: list[dict]) -> list[dict]:
     """New OBJETS records (appended in key order): clones of the vanilla model key. Their
-    found_life is filled in by add_scripts once the script index is known."""
+    found_life is filled in by add_scripts once the script index is known.
+    They start off-world: model key 163 lies on the Pantry nail in vanilla, and its clones kept
+    that position (decoy keys on the nail, seed 510255268, user 2026-10-30; generator v26)."""
     out = []
     for label, k in keys.items():
         rec = dict(objs[k["model"]])
         rec["found_name"] = k["text"]
+        rec.update(stage=-1, room=-1, x=0, y=0, z=0, alpha=0, beta=0, gamma=0)
         out.append(rec)
     return out
 

@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v25 (2026-10-29)"   # the worm blocks the cellar side until lured (5/3 -> 5/2 needs worm_lured); v24 Dresser key name
+VERSION = "v26 (2026-10-30)"   # new door keys start off-world (no decoys on the Pantry nail); the worm blocks the cellar side until lured (5/3 -> 5/2 needs worm_lured); v24 Dresser key name
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -1606,7 +1606,7 @@ def main(argv: list[str] | None = None) -> int:
     bad, chk_lines = verify_seed.verify(out)
     if bad:
         print("\n".join(chk_lines))
-        print(f"seed {a.seed}: REJECTED by verify_seed.py (the patched scripts do not match the placement)")
+        print(f"seed {a.seed}: REJECTED by verify_seed.py (the patched scripts or objects do not match the placement)")
         return 1
     placed = sum(i is not None for v in placement.values() for i in v)
     spots = [x["id"] for x in slots if x["family"] == "extra_spot"]
