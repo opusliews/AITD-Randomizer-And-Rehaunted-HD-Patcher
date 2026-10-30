@@ -351,6 +351,12 @@ def writable(folder: Path) -> None:
                       "Program Files, run this app as administrator.") from None
 
 
+def randomizer_hd(folder: Path) -> dict | None:
+    """The custom-HD manifest when it belongs to the randomizer, including after a partial unpatch."""
+    m = CH.load_manifest(folder)
+    return m if m and m.get("installed_by") == "randomizer" else None
+
+
 def launch_target(folder: Path) -> tuple[str | None, dict | str]:
     """How the Run game button starts the game in this folder: (what, {"cmd", "cwd"} or {"url"}),
     or (None, why not).
@@ -718,6 +724,8 @@ class App:
         self.sync_hd()
         idle = not self.busy
         state, rec = self.inst
+        hd_cleanup = bool(self.info and self.info["installed_seed"] is None
+                          and randomizer_hd(Path(self.folder.get().strip())))
         change = self.install_change()
         seed = rec.get("seed") if rec else None
         # another patcher's install: the update check says whether this one gives the same seed files
@@ -750,11 +758,17 @@ class App:
             "checking": "\nInstalled by another version of the AITD Randomizer: checking whether this "
                         "version changes the seed...",
         }.get(kind, "\nPatched by another version of the AITD Randomizer: unpatch the game before "
-                    "patching it again.") if state == "incompatible" else ""))
+                    "patching it again.") if state == "incompatible" else "")
+                           + ("\nCustom HD cleanup is unfinished. Close the game, then press Unpatch Game "
+                              "again." if hd_cleanup else ""))
         go_ok = idle and not self.hd_blocks() and (
             updatable if state == "incompatible" else self.data_ok and (change != "same" or bool(hd_out)))
+        if hd_cleanup:
+            go_ok = False
+            self.go_tip.text = "Close the game and press Unpatch Game again to finish removing custom HD."
         self.go.state(["!disabled"] if go_ok else ["disabled"])
-        self.undo.state(["!disabled"] if idle and self.info and self.info["installed_seed"] is not None
+        self.undo.state(["!disabled"] if idle and self.info
+                        and (self.info["installed_seed"] is not None or hd_cleanup)
                         and kind != "checking" else ["disabled"])
         what, how = self.launch
         blocked = state == "incompatible" and not updatable
@@ -774,10 +788,10 @@ class App:
         or removing the backgrounds means unpatching first (user, 2026-10-28; copying them takes
         long). The player's own choice comes back after unpatching."""
         state, rec = self.inst
-        if self.has_rehaunted() and state != "none":
+        if self.has_rehaunted() and (state != "none" or randomizer_hd(Path(self.folder.get().strip()))):
             if self.hd_saved is None:
                 self.hd_saved = self.custom_hd.get()
-            app = rec.get("app") or {}
+            app = (rec or {}).get("app") or {}
             m = CH.load_manifest(Path(self.folder.get().strip()))
             self.custom_hd.set(bool(app["custom_hd"]) if "custom_hd" in app else
                                bool(m and m.get("installed_by") == "randomizer"))
@@ -805,6 +819,8 @@ class App:
                 self.start_hd_check()
             pending, out = self.hd_pending.get(key), self.hd_outdated()
             self.hd_status.config(fg=RED if out else GREY, text=(
+                "Custom HD cleanup is unfinished. Close the game, then press Unpatch Game again."
+                if self.info and self.info["installed_seed"] is None else
                 "Custom HD backgrounds: not installed. To add them, unpatch the game first." if not on else
                 f"Custom HD backgrounds: the pack has {out}: Update HD installs them (only what changed)."
                 if out else
@@ -1117,6 +1133,9 @@ class App:
                 res = (APP_NAME, str(e), False, "need_data")
             except Refused as e:
                 res = (APP_NAME, str(e), False)
+            except I.FileInUseError as e:
+                res = (APP_NAME, f"{Path(e.filename).name} is still in use. Close the game, then try "
+                                 "Unpatch Game again. Nothing was changed.", False)
             except PermissionError as e:
                 res = (APP_NAME, f"Windows did not allow writing a file ({e.filename}). If the game is "
                                  "under Program Files, run this app as administrator.", False)
@@ -1314,10 +1333,29 @@ class App:
     @staticmethod
     def _uninstall(folder: Path):
         writable(folder)
-        if I.unpatch(folder) != 0:
+        seed = (folder / I.MARKER).is_file()
+        m = randomizer_hd(folder)                # TatouHd plays from the seed's game files
+        if not seed and not m:
+            raise Refused("No randomizer seed or custom HD installation is present here.")
+        executables = []                         # one preflight before either component changes
+        if seed:
+            rec = json.loads((folder / I.MARKER).read_text(encoding="utf-8"))
+            for name in rec["files"]:
+                p = I.find(folder, name) or folder / name
+                if p.suffix.lower() == ".exe" and p.is_file():
+                    executables.append(p)
+        if m:
+            for rel, frec in m["files"].items():
+                if Path(rel).suffix.lower() != ".exe":
+                    continue
+                p = ((CH.find_ci(folder, CH.EXE_NAME) or folder / CH.EXE_NAME)
+                     if rel == CH.EXE_NAME else folder / rel)
+                if p.is_file() and CH._unchanged(p, frec, full=True):
+                    executables.append(p)
+        I.require_unlocked(executables)
+        if seed and I.unpatch(folder) != 0:
             raise Refused("Unpatching stopped; see the log.")
-        m = CH.load_manifest(folder)            # the TatouHd edition plays from the seed's game files
-        if m and m.get("installed_by") == "randomizer":
+        if m:
             print("Removing the custom HD backgrounds...")
             if CH.uninstall(folder):
                 return (APP_NAME, "The original files are restored. Some custom HD files changed "
@@ -1413,10 +1451,10 @@ def selftest(game: Path) -> int:
             res = App._randomize(App.__new__(App), game, opt, any(
                 p["file"] == "Tatou.exe" for p in I.detect(game)["programs"]))
             ok = res[2] and I.detect(game)["installed_seed"] == 4242
+            ok = I.unpatch(game) == 0 and ok
         except Exception:
             traceback.print_exc()
             ok = False
-        ok = I.unpatch(game) == 0 and ok
         same = tree() == before
         print(f"SELFTEST {'PASS' if ok and same else 'FAIL'} (install {ok}, folder restored {same})")
     return 0 if ok and same else 1

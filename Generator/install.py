@@ -53,6 +53,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import sys
 import time
@@ -67,6 +68,41 @@ CFG_NAMES = ("aitd_remaster.cfg", "aitd_remaster_hd.cfg")   # ReHaunted 2.4+, 2.
 BACKUP = "AITD_Randomizer_Backup"
 SAVE_WARNING = ("WARNING: saves belong to their seed. Loading a save made with another seed, or "
                 "with the unpatched game, will break the game. Start a New Game.")
+
+
+class FileInUseError(PermissionError):
+    """An executable that must be replaced or removed is still open on Windows."""
+
+
+def require_unlocked(paths) -> None:
+    """Without changing them, obtain an exclusive update/delete handle to existing executables.
+
+    Windows locks a running image against replacement/deletion. Check every executable before an
+    unpatch writes anything, so closing TatouHd/INDARK is a clean refusal instead of a partial
+    uninstall. Other platforms do not have this Windows image-lock behavior.
+    """
+    paths = list(dict.fromkeys(Path(p).resolve() for p in paths if Path(p).is_file()))
+    if sys.platform != "win32" or not paths:
+        return
+    import ctypes
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    create = kernel32.CreateFileW
+    create.argtypes = (ctypes.c_wchar_p, ctypes.c_uint32, ctypes.c_uint32, ctypes.c_void_p,
+                       ctypes.c_uint32, ctypes.c_uint32, ctypes.c_void_p)
+    create.restype = ctypes.c_void_p
+    close = kernel32.CloseHandle
+    close.argtypes = (ctypes.c_void_p,)
+    close.restype = ctypes.c_int
+    access = 0x80000000 | 0x40000000 | 0x00010000   # GENERIC_READ | GENERIC_WRITE | DELETE
+    invalid = ctypes.c_void_p(-1).value
+    for path in paths:
+        handle = create(str(path), access, 0, None, 3, 0x80, None)  # no sharing, OPEN_EXISTING
+        if handle == invalid:
+            err = ctypes.get_last_error()
+            if err in (5, 32, 33):                 # access denied / sharing / lock violation
+                raise FileInUseError(err, os.strerror(err), str(path))
+            raise OSError(err, os.strerror(err), str(path))
+        close(handle)
 
 KNOWN = {
     "INDARK.EXE": {
@@ -624,6 +660,16 @@ def unpatch(game: Path) -> int:
         return refuse(f"the backup of {', '.join(missing)} is missing from {BACKUP}; nothing was "
                       "restored. Restore the original game files from your game's store (verify/repair "
                       "the installation), then delete " + MARKER)
+    executables = []
+    for name in record["files"]:
+        target = find(game, name) or game / name
+        if target.suffix.lower() == ".exe" and target.is_file():
+            executables.append(target)
+    try:
+        require_unlocked(executables)
+    except FileInUseError as e:
+        return refuse(f"{Path(e.filename).name} is in use. Close the game and try Unpatch Game again; "
+                      "nothing was restored.")
     problems = []
     for name, f in record["files"].items():
         target = find(game, name) or game / name

@@ -9,6 +9,9 @@ same patch works in the original DOS game and in the ReHaunted edition.
 * Contact locations: the zone script's `found` and its coupled checks follow the new item
   (catalog sites: word / expr_arg / const), so spot events stay at the spot:
   the notebook mantel's werewolf (LIFE 138 @44), the vase table's werewolf jump (LIFE 66 @216).
+* Ballroom fireplace (W:144): leaving through either adjacent room removes the dancers after
+  the item from the fireplace has been taken. Vanilla LIFE 260/304 test key 144; those two
+  location guards follow the replacement item, while key 144's pirate-chest behavior stays put.
 * Ritual Chamber talisman table (LIFE 186): only `found 110` @52 follows. The talisman body/flag
   lines after it are guarded by "talisman found" and stay (retargeting them would give the new
   item the talisman's model, and could clear a touch-spot talisman's flag). The room chime @328
@@ -50,6 +53,9 @@ WEDGE_FOUND_LIFE, WEDGE_TAKEN_CASE = 437, 4          # LIFE 437 @4: case 2048
 BARREL_LIFE, BARREL_ROLL_LIFE, BARREL_BACK_AT = 432, 433, 34   # idle; roll; its "life 432" @34
 PLAYER_LIFE, PATH2 = 550, (998, 1010, 1022, 1074)     # object / stage / room checks, delete 205
 NEVER_ACTION = 32767
+BALLROOM_FIREPLACE = "W:144"
+BALLROOM_KEY = 144
+BALLROOM_EXIT_GUARDS = ((260, 44), (304, 334))   # Drawing Room and Garden controllers
 
 
 def site(entries, life, at, kind, value):
@@ -126,6 +132,18 @@ def apply(entries: list[bytearray], objs: list[dict], assignment: dict[str, int]
         off = site(entries, TALISMAN_LIFE, CHIME_AT, "expr_arg", TALISMAN)
         put_word(entries, TALISMAN_LIFE, off, TALISMAN, DUD)
         report["lives"].setdefault(TALISMAN_LIFE, []).append(f"@{CHIME_AT} chime silenced (object({DUD}))")
+
+    # The dancers are removed only after the guarded fireplace location has been collected and
+    # the player leaves the Ballroom. Both neighboring room controllers use the vanilla key's
+    # found flag as that location latch, so make only those two checks follow the placed item.
+    # Other references to key 144 (notably LIFE 503, the pirate chest) remain item behavior.
+    fireplace_item = assignment.get(BALLROOM_FIREPLACE, BALLROOM_KEY)
+    if fireplace_item != BALLROOM_KEY:
+        for life, at in BALLROOM_EXIT_GUARDS:
+            off = site(entries, life, at, "const", BALLROOM_KEY)
+            put_word(entries, life, off, BALLROOM_KEY, fireplace_item)
+            report["lives"].setdefault(life, []).append(
+                f"@{at} Ballroom fireplace guard {BALLROOM_KEY} -> {fireplace_item}")
 
     x = assignment.get(WEDGE_SPOT, WEDGE)
     if x != WEDGE:

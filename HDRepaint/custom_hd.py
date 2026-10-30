@@ -603,6 +603,19 @@ def uninstall(game: Path, log=print) -> int:
     m = load_manifest(game)
     if m is None:
         raise Refused("no custom HD backgrounds are installed here (no manifest)")
+    if I is not None:
+        executables = []
+        for rel, rec in m["files"].items():
+            if Path(rel).suffix.lower() != ".exe":
+                continue
+            p = (find_ci(game, EXE_NAME) or game / EXE_NAME) if rel == EXE_NAME else game / rel
+            if p.is_file() and _unchanged(p, rec, full=True):
+                executables.append(p)
+        try:
+            I.require_unlocked(executables)
+        except I.FileInUseError as e:
+            raise Refused(f"{Path(e.filename).name} is in use. Close it and try uninstall again; "
+                          "nothing was removed.") from None
     seed = (game / SEED_MARKER).exists()
     kept, removed = [], 0
     for rel, rec in m["files"].items():

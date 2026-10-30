@@ -94,7 +94,7 @@
    "to": "5/2",
    "requires": "event:worm_lured",
    "status": "verified",
-   "evidence": "user 2026-10-29 + Research/CellarTunnelTransition_4-0_5-3.md issue 2: coming from the cellar, LIFE 550 case 11 puts the worm (OBJ 218) right in front of the arrival (TRACK 19 end) and room 5/3 connects only to 5/2, so the cellar side is sealed until the worm is lured from the office side (LIFE 465 parks it, var_172 = 1; generate.py cellar_tunnel_fixes keeps it parked on later cellar entries; user runtime 2026-10-13). The way back 5/3 -> 4/0 stays free."
+   "evidence": "user 2026-10-29 + Research/CellarTunnelTransition_4-0_5-3.md issue 2: coming from the cellar, LIFE 550 case 11 puts the worm (OBJ 218) right in front of the arrival (TRACK 19 end) and room 5/3 connects only to 5/2, so the cellar side is sealed until the worm is lured from the office side (LIFE 465 parks it, var_172 = 1). Generator v29 guards both LIFE 550 placements and the LIFE 477/482 room cleanup with var_172, so no ordinary script moves or deletes it after the lure; LIFE 522 endgame cleanup still deletes it. The way back 5/3 -> 4/0 stays free."
   },
   {
    "from": "1/7",

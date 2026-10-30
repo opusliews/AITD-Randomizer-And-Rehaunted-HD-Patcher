@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v26 (2026-10-30)"   # new door keys start off-world (no decoys on the Pantry nail); the worm blocks the cellar side until lured (5/3 -> 5/2 needs worm_lured); v24 Dresser key name
+VERSION = "v29 (2026-10-30)"   # the lured worm stays parked until the endgame; v28 names the 3rd Floor Study chest key
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -821,7 +821,10 @@ def worm_chase_wall_collision(entries) -> dict:
 # so the original DOS game gets them too. ReHaunted leaves already patched data alone.
 CELLAR_LIFE, ENDGAME_LIFE = 550, 522
 CELLAR_WORDS = ((848, 6000, 5800, "cellar -> tunnel arrival z moved out of return zone F5:R3:SZ1"),
+                (1694, 33, 172, "worm Study placement guarded by the lure flag var_172"),
                 (1810, 33, 172, "worm cellar placement guarded by the lure flag var_172"))
+WORM_DELETE_LIVES = (477, 482)  # room 8/9 controllers: wolf-spider side of the tunnels
+WORM_DELETE_WORDS = ((24, 170, 172), (28, 3, 0))  # delete only before lure, not whenever spawned
 ENDGAME_INSERT_AT = 330           # LIFE 522: `var 172 #1` before the final endlife
 ENDGAME_INSERT = bytes.fromhex("1300ac00ffff0100")
 ENDGAME_JUMPS = ((8, 160), (20, 154))   # the two `goto 330` jump words, +4 words after the insert
@@ -834,9 +837,10 @@ TRACK_FIXES = {   # STOP moved in front of MARK 1: the player stops before the t
 
 
 def cellar_tunnel_fixes(entries) -> dict:
-    """LIFE 550: arrival z 6000 -> 5800 and the worm guard var_33 -> var_172 (same size; Visible
-    Items edits LIFE 550 without moving offsets). LIFE 522: `var 172 #1` before the final endlife,
-    both early jumps still on endlife."""
+    """LIFE 550: arrival z 6000 -> 5800 and both worm placements guarded by var_172 (same
+    size; Visible Items edits LIFE 550 without moving offsets). LIFE 477/482: rooms 8/9 may
+    delete the worm before it is lured, but not after. LIFE 522: `var 172 #1` before the final
+    endlife, both early jumps still on endlife; its `delete 218` remains the final cleanup."""
     report = {}
     life = entries[CELLAR_LIFE]
     for at, old, new, why in CELLAR_WORDS:
@@ -847,6 +851,19 @@ def cellar_tunnel_fixes(entries) -> dict:
     L.decode(bytes(life))
     report[CELLAR_LIFE] = {"ok": True, "cellar_tunnel_fixes": [w[3] for w in CELLAR_WORDS],
                            "sha256": hashlib.sha256(bytes(life)).hexdigest()}
+
+    for n in WORM_DELETE_LIVES:
+        life = entries[n]
+        for at, old, new in WORM_DELETE_WORDS:
+            word = struct.unpack_from("<H", life, at)[0]
+            if word != old:
+                raise SystemExit(f"LIFE {n} @{at}: expected {old}, found {word} (worm deletion guard)")
+            struct.pack_into("<H", life, at, new)
+        decoded = L.format_script(L.decode(bytes(life)))
+        if "if_egal var_172 #0" not in decoded or "delete 218" not in decoded:
+            raise SystemExit(f"LIFE {n}: worm deletion guard failed the decode check")
+        report[n] = {"ok": True, "worm_parked_after_lure": True,
+                     "sha256": hashlib.sha256(bytes(life)).hexdigest()}
 
     before = bytes(entries[ENDGAME_LIFE])
     if len(before) != ENDGAME_INSERT_AT + 2 or any(
@@ -972,9 +989,13 @@ def track_fixes(spray: bool = False) -> tuple[bytes, dict]:
     return write_pak([bytes(t) for t in tracks]), report
 
 
-# vanilla texts renamed in every seed, per language (user, 2026-10-29: the key from the Master
-# Bedroom dresser, F1:R4:HC5, says which dresser; "The Dresser's Key" in vanilla)
-TEXT_RENAMES = {"ENGLISH": {630: "Master Bedroom Dresser's Key"}, "USA": {630: "Master Bedroom Dresser's Key"}}
+# Vanilla texts renamed in every seed, per language. These distinguish keys whose original names
+# are ambiguous: text 591 opens the 3rd Floor Study chest; text 630 comes from the Master Bedroom
+# dresser (user, 2026-10-29/30).
+TEXT_RENAMES = {
+    "ENGLISH": {591: "Key to the 3rd Floor Study Chest", 630: "Master Bedroom Dresser's Key"},
+    "USA": {591: "Key to the 3rd Floor Study Chest", 630: "Master Bedroom Dresser's Key"},
+}
 
 
 def language_paks(extra: dict[int, str] | None = None) -> dict[str, bytes]:

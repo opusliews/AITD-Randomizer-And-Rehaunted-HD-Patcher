@@ -41,10 +41,14 @@ import hashlib
 import json
 import shutil
 import sys
+import ctypes
+from ctypes import wintypes
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import aitd_randomizer_app as A     # noqa: E402
+import aitd_text as X               # noqa: E402
+from aitd_pak import read_pak       # noqa: E402
 
 ORIG = Path(__file__).resolve().parents[2] / "OriginalGame"
 I = A.I
@@ -94,6 +98,14 @@ def main(work: Path):
                         if p.suffix.upper() in (".PAK", ".ITD"))      # what install.py copies
     check(all(I.sha(game / n) == I.sha(A.SEEDS / "seed_4242" / "patchset" / n) for n in seed_files),
           f"A all {len(seed_files)} seed files installed ({', '.join(seed_files)})")
+    key_name = "Key to the 3rd Floor Study Chest"
+    language_names = {
+        lang: X.entries(read_pak(A.SEEDS / "seed_4242" / "patchset" / f"{lang}.PAK").entries[0].data)
+        [591].decode("cp437")
+        for lang in ("ENGLISH", "USA")
+    }
+    check(set(language_names.values()) == {key_name},
+          f"A 3rd Floor Study chest key renamed in ENGLISH/USA ({language_names})")
     m = json.loads((A.SEEDS / "seed_4242" / "patchset" / "manifest.json").read_text(encoding="utf-8"))
     check(m["options"]["whole_mirrors"] and m["scripts"].get("553", {}).get("whole_mirrors"),
           "A Prevent mirrors from breaking: LIFE 553 patched")
@@ -272,8 +284,15 @@ def main(work: Path):
           f"V every location holds its original items ({len(vanilla)} locations)")
     fixes = m["scripts"]
     check(fixes.get("460", {}).get("worm_chase_wall_collision") and fixes.get("522", {}).get("endgame_lure_flag")
-          and fixes.get("550", {}).get("cellar_tunnel_fixes") and "LISTTRAK.PAK" in m["files"],
-          "V the fixes are applied (worm chase, cellar/tunnel LIFE 550/522, TRACK 40/41)")
+          and fixes.get("550", {}).get("cellar_tunnel_fixes")
+          and all(fixes.get(str(n), {}).get("worm_parked_after_lure") for n in (477, 482))
+          and "LISTTRAK.PAK" in m["files"],
+          "V the fixes are applied (worm chase, permanent lure, cellar/tunnel, TRACK 40/41)")
+    life_entries = read_pak(A.SEEDS / "seed_0" / "patchset" / "LISTLIFE.PAK").entries
+    word = lambda life, at: int.from_bytes(life_entries[life].data[at:at + 2], "little")
+    check(word(550, 1694) == word(550, 1810) == 172
+          and all(word(n, 24) == 172 and word(n, 28) == 0 for n in (477, 482)),
+          "V lured worm invariant: neither entry moves it and rooms 8/9 do not delete it")
     check(I.sha(game / "INDARK.EXE") == I.INDARK_CLASSIC_HINT, "V INDARK.EXE has the Classic fixes + search hint")
     check(I.unpatch(game) == 0 and tree(gv) == before, "V uninstall: whole folder identical to before")
 
@@ -456,6 +475,39 @@ def main(work: Path):
     check(app2.hd_outdated() == "" and app2.go.instate(["disabled"]) and app2.go.cget("text") == "Randomize Again",
           "S2 after Update HD: up to date, nothing to do")
     exe.write_bytes(exe_before)
+
+    # A running TatouHd must refuse before the seed marker, backups or any HD file changes.
+    installed_tree = tree(rs2)
+    create = ctypes.WinDLL("kernel32", use_last_error=True).CreateFileW
+    create.argtypes = (wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, wintypes.LPVOID,
+                       wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE)
+    create.restype = wintypes.HANDLE
+    close = ctypes.WinDLL("kernel32", use_last_error=True).CloseHandle
+    close.argtypes = (wintypes.HANDLE,)
+    close.restype = wintypes.BOOL
+    handle = create(str(rs2 / "TatouHd.exe"), 0x80000000, 1, None, 3, 0x80, None)
+    if handle == wintypes.HANDLE(-1).value:
+        raise OSError(ctypes.get_last_error(), "could not hold TatouHd.exe open for the lock test")
+    locked_refused = False
+    try:
+        A.App._uninstall(rs2)
+    except I.FileInUseError as e:
+        locked_refused = Path(e.filename).name.lower() == "tatouhd.exe"
+    finally:
+        close(handle)
+    check(locked_refused and tree(rs2) == installed_tree and (rs2 / I.MARKER).is_file()
+          and CH.load_manifest(rs2) is not None,
+          "S2 running TatouHd: unpatch refused before any file or marker changed")
+
+    # Recovery from the old failure mode: seed already restored, randomizer HD still present.
+    check(I.unpatch(rs2) == 0 and not (rs2 / I.MARKER).exists()
+          and CH.load_manifest(rs2) is not None,
+          "S2 simulated old partial unpatch: only randomizer custom HD remains")
+    app2.refresh()
+    check(app2.undo.instate(["!disabled"]) and app2.go.instate(["disabled"])
+          and "cleanup is unfinished" in app2.status.cget("text")
+          and "cleanup is unfinished" in app2.hd_status.cget("text"),
+          "S2 HD-only recovery state: Unpatch enabled, Randomize disabled, clear status")
     r = A.App._uninstall(rs2)
     app2.refresh()
     check(r[2] and tree(rs2) == before and app2.hd_saved is None and not app2.custom_hd.get()
