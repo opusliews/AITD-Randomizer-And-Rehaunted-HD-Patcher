@@ -59,16 +59,16 @@ corresponding option is selected.
 
 | Folder | Purpose |
 |---|---|
-| `App` | Desktop randomizer and patcher interface |
-| `Generator` | Deterministic seed generation and installation |
-| `Logic` | Progression and completion validation |
-| `Patcher` | Game-data readers, writers, catalogs, and executable patches |
-| `BugSpray` | ReHaunted bug-fix resources |
-| `DropGlow` | Dropped-item visibility support |
-| `VisibleItems` | Visible-item resource generation |
-| `Sounds` | Sound replacement resources and tooling |
-| `HDRepaint` | ReHaunted custom-texture installer and packaging tools |
-| `AnimExport` | Animation export tooling |
+| `App` | Tk desktop interface for generating, installing, and removing randomizer seeds and optional HD assets |
+| `Generator` | Seed placement, locked-door generation, patch assembly, installation and restoration, seed verification, and spoiler walkthroughs |
+| `Logic` | World-region and progression data, the reachability checker, and supporting audits and tests |
+| `Patcher` | Readers and writers for AITD PAK, LIFE, TRACK, OBJETS, and text data; LIFE assembly, item-location catalogs, and classic `INDARK.EXE` patches |
+| `BugSpray` | Implementation, models, animation, and sound for the randomizer's new Bug Spray item |
+| `DropGlow` | Model, animation, and LIFE-script support for the light beams marking items dropped by monsters |
+| `VisibleItems` | Placement and posing rules, custom models, and game-data changes for shuffled items at visible world locations |
+| `Sounds` | Utility that extracts `LISTSAMP.PAK` VOC effects to WAV and builds a local browser showing their LIFE-script usage |
+| `HDRepaint` | Installation, verification, and packaging tools for the custom ReHaunted background/model pack, plus HDA inspection utilities |
+| `AnimExport` | Bidirectional conversion between AITD bodies/animations and glTF/GLB, with preview and validation tools |
 
 Generated build output, original game files, compiled engine binaries, and the HD
 image assets are intentionally excluded from version control. Private reverse-
