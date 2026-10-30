@@ -276,8 +276,51 @@ def main(work: Path):
     _, warn, _ = CH.scan_assets(ov_pack)
     check("no_masks without a custom background: warned",
           any("no_masks_CAMERA03_013.txt: no custom background" in w for w in warn))
+    test_models(work)
     print(f"\n{sum(results)}/{len(results)} passed")
     return 0 if all(results) else 1
+
+
+def test_models(work: Path):
+    """models_custom/ (TatouHd custom models): a models-only pack, warnings, install, uninstall."""
+    game, pack = work / "mgame", work / "mpack"
+    (game / "atlases").mkdir(parents=True)
+    (game / "Tatou.exe").write_bytes(b"stand-in for ReHaunted's Tatou.exe")
+    (game / "version.txt").write_text("2.4.0.1008\n")
+    (game / "atlases/body_LISTBOD2_012.png").write_bytes(b"ReHaunted's own atlas")
+    shutil.copytree(GOG, game, dirs_exist_ok=True)             # game files present: nothing copied in
+    before = tree(game)
+    mc = pack / "models_custom"
+    pack.mkdir(parents=True)
+    shutil.copy2(ED_EXE, pack / "TatouHd.exe")
+    check("models: a pack with neither folder is refused", "no backgrounds_custom or models_custom" in refused(CH.scan_assets, pack))
+    mc.mkdir()
+    model = HERE.parent / "HDModel/test_models/models_custom/LISTBOD2_012.bin"   # from test_aitd_blender.py --write-dir
+    shutil.copy2(model, mc / "LISTBOD2_012.bin")
+    tiny_png(mc / "body_LISTBOD2_012.png", 4)
+    shutil.copy2(model, mc / "LISTBOD2_011.bin")                # no picture: warned
+    tiny_png(mc / "body_LISTBODY_030.png", 4)                   # picture without a model: warned
+    (mc / "emily.blend").write_bytes(b"x")                      # not a model: skipped
+    files, warn, s = CH.scan_assets(pack)
+    check("models: models-only pack accepted, 2 models + 2 pictures packed",
+          s["models"] == 2 and set(files) == {"models_custom/LISTBOD2_011.bin", "models_custom/LISTBOD2_012.bin",
+                                              "models_custom/body_LISTBODY_030.png", "models_custom/body_LISTBOD2_012.png"})
+    check("models: model without a body picture warned", any("LISTBOD2_011.bin has no body_LISTBOD2_011.png" in w for w in warn))
+    check("models: picture without a model warned", any("pictures for LISTBODY_030 without" in w for w in warn))
+    check("models: other file skipped", any("models_custom/emily.blend" in w for w in warn))
+    check("models: the complete model gets no warning", not any("LISTBOD2_012" in w for w in warn))
+    m = quiet(game, pack)
+    check("models: installed into models_custom/, ReHaunted's atlases untouched",
+          (game / "models_custom/LISTBOD2_012.bin").read_bytes() == model.read_bytes()
+          and "models_custom/body_LISTBOD2_012.png" in m["files"]
+          and (game / "atlases/body_LISTBOD2_012.png").read_bytes() == b"ReHaunted's own atlas")
+    check("models: verify (full) clean", CH.verify(game, full=True, log=lambda s: None) == [])
+    (mc / "LISTBOD2_011.bin").unlink()
+    log = []
+    CH.install(game, pack, log=log.append)
+    check("models: removed from the pack -> removed from the game", not (game / "models_custom/LISTBOD2_011.bin").exists())
+    CH.uninstall(game, log=lambda s: None)
+    check("models: uninstall leaves the folder exactly as before", tree(game) == before)
 
 
 if __name__ == "__main__":

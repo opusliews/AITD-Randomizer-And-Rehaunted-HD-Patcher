@@ -118,9 +118,9 @@ class App:
             pack = Path(self.pack.get().strip())
             _exe, flavor, desc = CH.pack_exe(pack)
             _files, warn, s = CH.scan_assets(pack)
-            ok_pack = s["stills"] + s["animations"] > 0
+            ok_pack = s["stills"] + s["animations"] + s["models"] > 0
             self.pack_status.config(text=f"{desc}; {s['stills']} still(s), {s['animations']} animation(s) "
-                                         f"({s['frames']} frames), {s['bytes'] / 1e6:.0f} MB"
+                                         f"({s['frames']} frames), {s['models']} model(s), {s['bytes'] / 1e6:.0f} MB"
                                          + (f"; {len(warn)} note(s), see Install" if warn else ""))
         except CH.Refused as e:
             self.pack_status.config(text=str(e))

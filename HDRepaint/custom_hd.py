@@ -23,6 +23,11 @@ PACK is the HD release folder (Research/HDRepaint.md, "Shipping"):
   PACK/backgrounds_custom/no_masks_<NAME>_<idx>.txt  (that camera's vanilla masks are not drawn
   while its custom image is shown; its overlay hides the actors instead. Empty: all masks; else
   the mask numbers to drop, counted over the camera's viewed rooms, e.g. "0")
+  PACK/models_custom/<HQR>_<NNN>.bin  (a custom model, e.g. LISTBOD2_012.bin = Emily empty-handed:
+  TatouHd draws it instead of the game's model while HD is on; written by Generated/HDModel/
+  aitd_blender.py) and its pictures PACK/models_custom/{body,other,ramp,spheres}_<HQR>_<NNN>.png
+  (laid out from the custom model's shape, not ReHaunted's atlases/)
+Either folder may be missing, not both.
 Any camera or animation in it is installed; nothing here lists cameras. TatouHd.exe comes from the
 pack, so a new TatouHd only needs a new pack: our builds are recognised by the marker string
 "TatouHd build: flavor=<flavor>" in the exe (older builds by hash).
@@ -30,7 +35,7 @@ pack, so a new TatouHd only needs a new pack: our builds are recognised by the m
 Rules:
 - Only ReHaunted 2.4 folders (version.txt 2.4.x, or a known 2.4 Tatou.exe); anything else is
   refused before anything is written.
-- Written: TatouHd.exe, backgrounds_custom/ and the manifest; with the edition TatouHd (no
+- Written: TatouHd.exe, backgrounds_custom/, models_custom/ and the manifest; with the edition TatouHd (no
   embedded game data) and no game files in the folder, also the original game files, copied from
   the player's own GOG/Steam/CD copy (install.py's search, checked against the GOG hashes).
   ReHaunted's own files (Tatou.exe, backgrounds_hd.hda, backgrounds_hd/, masks_hd/, configs) are
@@ -94,6 +99,10 @@ LOOP_FROM_FILE = "loop_from.txt"          # optional: the frame the loop restart
 SHOW_WHILE_FILE = "show_while_object.txt" # optional, overlays: shown while this object exists
 SYNC_FILE = "sync_smoke.txt"              # optional, overlays: frames follow the smoke cloud's 11 s cycle
 CONFIG_FILES = (FRAME_MS_FILE, LOOP_FROM_FILE, SHOW_WHILE_FILE, SYNC_FILE)
+# custom models (TatouHd hdCustomModel.cpp): the model file and its pictures
+MODEL_DIR = "models_custom"
+MODEL_RE = re.compile(r"^(LISTBODY|LISTBOD2)_(\d{3})\.bin$", re.I)
+MODEL_PIC_RE = re.compile(r"^(body|other|ramp|spheres)_(LISTBODY|LISTBOD2)_(\d{3})\.png$", re.I)
 
 try:                                      # the game-data search and the edition hashes
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "Generator"))
@@ -268,13 +277,16 @@ def scan_assets(pack: Path) -> tuple[dict[str, Path], list[str], dict]:
     """(relative path -> source file, warnings, summary) for PACK/backgrounds_custom.
     Checks names, PNG headers and that every frame of an animation has the same size."""
     root = find_ci(pack, ASSET_DIR) if pack.is_dir() else None
-    if root is None or not root.is_dir():
-        raise Refused(f"no {ASSET_DIR} folder in {pack} (choose the custom HD pack folder: it holds "
-                      f"{EXE_NAME} and {ASSET_DIR}/CAMERA00_000.png, {ASSET_DIR}/anim_CAMERA00_000/...)")
+    mroot = find_ci(pack, MODEL_DIR) if pack.is_dir() else None
+    has_bg = root is not None and root.is_dir()
+    has_models = mroot is not None and mroot.is_dir()
+    if not has_bg and not has_models:
+        raise Refused(f"no {ASSET_DIR} or {MODEL_DIR} folder in {pack} (choose the custom HD pack folder: it "
+                      f"holds {EXE_NAME} and {ASSET_DIR}/CAMERA00_000.png, {ASSET_DIR}/anim_CAMERA00_000/...)")
     files, warn = {}, []
     stills, anims, frames, size = 0, 0, 0, 0
     no_masks = []
-    for p in sorted(root.iterdir()):
+    for p in (sorted(root.iterdir()) if has_bg else []):
         if p.is_file():
             if NO_MASKS_RE.match(p.name):
                 files[f"{ASSET_DIR}/{p.name}"] = p
@@ -340,7 +352,35 @@ def scan_assets(pack: Path) -> tuple[dict[str, Path], list[str], dict]:
             warn.append(f"{name}: no custom background {cam.upper()} in the pack, so its vanilla masks stay")
         elif not any(k.startswith(f"overlay_{cam}/") for k in packed):
             warn.append(f"{name}: no overlay_{cam.upper()}, so nothing hides the actors on that camera")
-    summary = {"stills": stills, "animations": anims, "frames": frames, "bytes": size}
+    models = 0
+    if has_models:
+        pics, bins = {}, set()
+        for p in sorted(mroot.iterdir()):
+            m, mp = MODEL_RE.match(p.name), MODEL_PIC_RE.match(p.name)
+            if not p.is_file() or not (m or mp):
+                warn.append(f"skipped {MODEL_DIR}/{p.name}: not a custom model (<HQR>_<NNN>.bin) or its picture "
+                            "(body_<HQR>_<NNN>.png)")
+                continue
+            if m:
+                if p.stat().st_size < 16:
+                    warn.append(f"skipped {MODEL_DIR}/{p.name}: too small to be a model")
+                    continue
+                bins.add(f"{m.group(1).upper()}_{m.group(2)}")
+                models += 1
+            else:
+                if png_info(p) is None:
+                    warn.append(f"skipped {MODEL_DIR}/{p.name}: not a PNG file")
+                    continue
+                pics.setdefault(f"{mp.group(2).upper()}_{mp.group(3)}", []).append(mp.group(1).lower())
+            files[f"{MODEL_DIR}/{p.name}"] = p
+            size += p.stat().st_size
+        for key in sorted(bins):
+            if "body" not in pics.get(key, []):
+                warn.append(f"{MODEL_DIR}/{key}.bin has no body_{key}.png: TatouHd draws it in its flat 1992 colours "
+                            "(and writes a template picture into models_custom)")
+        for key in sorted(set(pics) - bins):
+            warn.append(f"{MODEL_DIR}: pictures for {key} without {key}.bin are not used")
+    summary = {"stills": stills, "animations": anims, "frames": frames, "models": models, "bytes": size}
     return files, warn, summary
 
 
@@ -413,7 +453,7 @@ def install(game: Path, pack: Path, replace_unmanaged: bool = False, installed_b
     for w in warn:
         log("note: " + w)
     if not files:
-        raise Refused(f"no custom backgrounds in {pack / ASSET_DIR}")
+        raise Refused(f"no custom backgrounds or models in {pack}")
     old = load_manifest(game) or {"files": {}}
     data_copy = {}                         # name -> source file, original game files to copy in
     if flavor == "edition" and not info["game_data"]:
@@ -498,11 +538,12 @@ def install(game: Path, pack: Path, replace_unmanaged: bool = False, installed_b
     finally:
         (game / MANIFEST).write_text(json.dumps(new, indent=1) + "\n", encoding="utf-8")
     _remove_empty_dirs(game / ASSET_DIR)
+    _remove_empty_dirs(game / MODEL_DIR)
     bad = verify(game, full=False, log=lambda s: None)
     if bad:
         raise Refused(f"verification failed after install: {bad[0]}")
     log(f"installed {EXE_NAME} ({exe_desc}) and {summary['stills']} still(s), {summary['animations']} "
-        f"animation(s) ({summary['frames']} frames) into {game}; manifest {MANIFEST}"
+        f"animation(s) ({summary['frames']} frames), {summary['models']} model(s) into {game}; manifest {MANIFEST}"
         + (f"; copied {len(data_copy)} original game file(s)" if data_copy else ""))
     for n in info["notes"]:
         log("note: " + n)
@@ -589,6 +630,7 @@ def uninstall(game: Path, log=print) -> int:
         log(f"kept {len(kept_data)} original game file(s) copied in by this tool: "
             + ("a randomizer seed is installed and uses them" if seed else "changed since install"))
     _remove_empty_dirs(game / ASSET_DIR)
+    _remove_empty_dirs(game / MODEL_DIR)
     if kept or kept_data:
         m["files"] = {rel: m["files"][rel] for rel in kept}
         m["game_data"] = kept_data
@@ -642,7 +684,7 @@ def main() -> int:
             for w in warn:
                 print("note: " + w)
             print(f"{desc} ({flavor}); {s['stills']} still(s), {s['animations']} animation(s), "
-                  f"{s['frames']} frame(s), {s['bytes'] / 1e6:.0f} MB")
+                  f"{s['frames']} frame(s), {s['models']} model(s), {s['bytes'] / 1e6:.0f} MB")
     except Refused as e:
         print("REFUSED: " + str(e))
         return 1
