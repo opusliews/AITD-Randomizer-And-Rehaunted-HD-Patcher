@@ -5,6 +5,9 @@
      INDARK.EXE fixes + search hint are in place; randomize again without hints and with Many
      Search Places / More Locked Doors / Prevent Mirrors From Breaking unticked (replaces the seed, exe without the hint);
      uninstall -> every file identical to the copy before (whole tree compared).
+  R  (inside A, seed 4242 installed) Report Bug: the zip holds the install record, the saves
+     (game folder and GOG's cloud_saves overlay), the crash log and the seed's spoiler, no game
+     data; the user folder is scrubbed from the text files; the issue link names the zip.
   B  ReHaunted without game files, no Steam/GOG found -> refused before any write.
   C  ReHaunted without game files, data found (the search is pointed at OriginalGame/INDARK):
      data copied in, edition installed; the keyboard + mouse controls flag in the install record
@@ -41,6 +44,8 @@ import hashlib
 import json
 import shutil
 import sys
+import urllib.parse
+import zipfile
 import ctypes
 from ctypes import wintypes
 from pathlib import Path
@@ -77,10 +82,79 @@ def randomize(folder: Path, opt: dict, rehaunted: bool):
         return ("REFUSED", str(e), False)
 
 
+def bug_report_checks(work: Path, gog: Path, game: Path):
+    """R (seed 4242 installed in the Classic copy): saves in the game folder and in GOG's DOSBox
+    overlay cloud_saves/INDARK, a crash log naming the user folder; removed again afterwards."""
+    home = str(Path.home())
+    planted = {game / "SAVE0.ITD": b"save", gog / "cloud_saves" / "INDARK" / "SAVE3.ITD": b"save",
+               game / "crash_log.txt": f"Executable: {home}\\Games\\Tatou.exe\n".encode()}
+    for p, data in planted.items():
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(data)
+    zpath, url = A.bug_report(game, f"installed into {home}\\Games\n", work / "reports")
+    with zipfile.ZipFile(zpath) as z:
+        names = set(z.namelist())
+        texts = {n: z.read(n).decode("utf-8", "replace") for n in names if n.endswith(A.TEXT_SUFFIXES)}
+    want = {"report.txt", "game/AITD_Randomizer.json", "game/crash_log.txt", "saves/SAVE0.ITD",
+            "saves/cloud_saves/SAVE3.ITD", "seed/spoiler.md", "seed/placement.json", "seed/patchset/manifest.json"}
+    check(want <= names, f"R bug report holds the record, saves (game folder + cloud_saves), crash log, spoiler ({sorted(names)})")
+    check(not any(n.upper().endswith((".PAK", ".EXE")) for n in names), "R bug report holds no game data or programs")
+    rep = texts.get("report.txt", "")
+    check(A.patcher_id() in rep and "Installed: seed 4242" in rep and "Changed since install: nothing" in rep
+          and "installed into %USERPROFILE%" in rep, "R report.txt: app id, installed seed, unchanged files, the log")
+    leaks = [n for n, t in texts.items() if any(f.lower() in t.lower()
+             for f in (home, home.replace("\\", "/"), home.replace("\\", "\\\\")))]
+    check(not leaks and "%USERPROFILE%" in texts.get("game/crash_log.txt", ""),
+          f"R the user folder is scrubbed from every text file (left in: {leaks})")
+    q = urllib.parse.parse_qs(urllib.parse.urlsplit(url).query)
+    check(url.startswith(A.ISSUES_URL + "?") and q["title"] == ["Bug report: seed 4242"] and zpath.name in q["body"][0],
+          "R issue link: title with the seed, body names the zip")
+    empty, _ = A.bug_report(work / "no_such_folder", "", work / "reports")
+    with zipfile.ZipFile(empty) as z:
+        check(z.namelist() == ["report.txt"], "R no game folder: the report still saves (report.txt only)")
+    for p in planted:
+        p.unlink()
+    shutil.rmtree(gog / "cloud_saves")
+
+
+def user_dir_checks(work: Path):
+    """U: the app folder is in Windows' Documents folder (which may have moved, e.g. to OneDrive);
+    what apps before 1.2 saved in Path.home()/Documents is moved there, a file already in the new
+    folder wins, and what stays behind is still found."""
+    check(A.documents_dir().is_dir(), f"U Documents folder from Windows: {A.documents_dir()}")
+    saved = A.USER_DIR, A.SEEDS, A.SETTINGS
+    A.USER_DIR = work / "docs" / A.APP_NAME
+    A.SEEDS, A.SETTINGS = A.USER_DIR / "Seeds", A.USER_DIR / "settings.json"
+    old = A.LEGACY_DIR
+    files = {old / "Seeds" / "seed_9" / "spoiler.md": "old 9", old / "Seeds" / "seed_8" / "spoiler.md": "old 8",
+             old / "settings.json": '{"seed": "123"}', A.SEEDS / "seed_8" / "spoiler.md": "new 8"}
+    for p, t in files.items():
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(t, encoding="utf-8")
+    check(A.load_settings()["seed"] == "123" and A.seed_folder("seed_9") == old / "Seeds" / "seed_9",
+          "U before the move: settings and a seed are found in the old folder")
+    msg = A.move_legacy_dir()
+    check((A.SEEDS / "seed_9" / "spoiler.md").read_text(encoding="utf-8") == "old 9"
+          and (A.SEEDS / "seed_8" / "spoiler.md").read_text(encoding="utf-8") == "new 8"
+          and (old / "Seeds" / "seed_8" / "spoiler.md").is_file() and not (old / "Seeds" / "seed_9").exists()
+          and A.load_settings()["seed"] == "123" and A.seed_folder("seed_9") == A.SEEDS / "seed_9"
+          and "Moved 2 file(s)" in msg and "1 file(s) stayed" in msg,
+          f"U moved to the new folder, the newer copy kept, the conflict left behind ({msg.strip()})")
+    check(A.move_legacy_dir() == "", "U nothing more to move: no log line on the next start")
+    A.LEGACY_DIR = A.USER_DIR
+    check(A.move_legacy_dir() == "", "U Documents not moved (same folder): nothing to do")
+    A.LEGACY_DIR = old
+    shutil.rmtree(work / "docs")
+    shutil.rmtree(old.parent)
+    A.USER_DIR, A.SEEDS, A.SETTINGS = saved
+
+
 def main(work: Path):
     if work.exists():
         shutil.rmtree(work)
     A.SEEDS = work / "Seeds"
+    A.LEGACY_DIR = work / "legacy_documents" / A.APP_NAME    # never the real old folder
+    user_dir_checks(work)
     # A: Classic
     gog = work / "A_gog"
     shutil.copytree(ORIG / "INDARK", gog / "INDARK")
@@ -94,6 +168,7 @@ def main(work: Path):
           and "Difficulty: Normal" in r[1], f"A difficulty Normal requested and shown ({d})")
     rec = I.detect(game)
     check(rec["installed_seed"] == 4242, "A marker says seed 4242")
+    bug_report_checks(work, gog, game)
     check(I.sha(game / "INDARK.EXE") == I.INDARK_CLASSIC_HINT, "A INDARK.EXE has the Classic fixes + search hint")
     seed_files = sorted(p.name for p in (A.SEEDS / "seed_4242" / "patchset").iterdir()
                         if p.suffix.upper() in (".PAK", ".ITD"))      # what install.py copies

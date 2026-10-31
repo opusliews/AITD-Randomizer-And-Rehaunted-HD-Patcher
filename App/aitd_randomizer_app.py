@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse, bisect, collections, contextlib, copy, csv, ctypes, dataclasses, functools  # noqa: F401,E401
 import glob, hashlib, heapq, io, itertools, json, math, os, queue, random, re, shutil  # noqa: F401,E401
 import string, struct, subprocess, sys, threading, time, traceback, typing, winreg  # noqa: F401,E401
+import datetime, platform, urllib.parse, uuid, webbrowser, zipfile  # noqa: E401  (bug report, Documents)
 from pathlib import Path
 
 import tkinter as tk
@@ -25,7 +26,7 @@ from tkinter import filedialog, messagebox, ttk
 from tkinter.scrolledtext import ScrolledText
 
 APP_NAME = "AITD Randomizer"
-APP_VERSION = "1.1 (2026-10-31)"
+APP_VERSION = "1.2 (2026-10-31)"
 FROZEN = getattr(sys, "frozen", False)
 if FROZEN:
     sys.dont_write_bytecode = True    # the bundled tools are .py files in a temporary folder
@@ -35,9 +36,30 @@ for _d in ("Generator", "Patcher", "Logic", "VisibleItems", "HDRepaint"):
     sys.path.insert(0, str(GEN / _d))
 EDITION_EXE = (BASE / "edition" / "Tatou.exe" if FROZEN else
                BASE / "ReHaunted24" / "TatouSource" / "build" / "randomizer-edition" / "Fitd" / "Tatou.exe")
-USER_DIR = Path.home() / "Documents" / APP_NAME
+def documents_dir() -> Path:
+    """The Windows Documents folder (known folder FOLDERID_Documents). It follows a Documents folder
+    moved to OneDrive or another drive, which Path.home()/"Documents" does not; that path is the
+    fallback when the call fails."""
+    try:
+        guid = (ctypes.c_ubyte * 16).from_buffer_copy(uuid.UUID("FDD39AD0-238F-46AF-ADB4-6C85480369C7").bytes_le)
+        out = ctypes.c_wchar_p()
+        if ctypes.windll.shell32.SHGetKnownFolderPath(ctypes.byref(guid), 0, None, ctypes.byref(out)) == 0:
+            try:
+                if out.value:
+                    return Path(out.value)
+            finally:
+                ctypes.windll.ole32.CoTaskMemFree(out)
+    except (OSError, AttributeError, ValueError):
+        pass
+    return Path.home() / "Documents"
+
+
+USER_DIR = documents_dir() / APP_NAME
+LEGACY_DIR = Path.home() / "Documents" / APP_NAME   # apps before 1.2 used this even when Documents had moved
 SEEDS = USER_DIR / "Seeds"
 SETTINGS = USER_DIR / "settings.json"
+REPORTS = USER_DIR / "Bug reports"
+ISSUES_URL = "https://github.com/opusliews/AITD-Randomizer-And-Rehaunted-HD-Patcher/issues/new"
 SEED_MAX = 999_999_999
 VANILLA_SEED = 0            # the original item layout with the fixes (generate.py VANILLA_SEED)
 
@@ -193,9 +215,9 @@ def recover_settings(folder: Path, rec: dict) -> dict:
     if "forced_max_per_location" in o:
         raise Refused("it was made with a generator option this app doesn't set")
     try:
-        man = json.loads((SEEDS / str(rec.get("seed_dir")) / "patchset" / "manifest.json").read_text(encoding="utf-8"))
+        man = json.loads((seed_folder(rec.get("seed_dir")) / "patchset" / "manifest.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
-        raise Refused(f"the seed's folder ({SEEDS / str(rec.get('seed_dir'))}) is not on this computer") from None
+        raise Refused(f"the seed's folder ({seed_folder(rec.get('seed_dir'))}) is not on this computer") from None
     requested = (man.get("difficulty") or {}).get("requested")
     label = next((k for k, v in DIFFICULTIES.items() if v == requested), None)
     if label is None:
@@ -255,11 +277,52 @@ def update_check(folder: Path, rec: dict, work: Path) -> tuple[str, str, dict | 
     return "same", "", opt
 
 
-def load_settings() -> dict:
+def seed_folder(seed_dir) -> Path:
+    """An installed seed's folder: in SEEDS, or still in the old folder (move_legacy_dir could not
+    move it)."""
+    p = SEEDS / str(seed_dir)
+    old = LEGACY_DIR / "Seeds" / str(seed_dir)
+    return old if not p.is_dir() and old.is_dir() else p
+
+
+def move_legacy_dir() -> str:
+    """Move what apps before 1.2 saved in Path.home()/Documents/AITD Randomizer into USER_DIR when
+    Windows' Documents folder is somewhere else (e.g. OneDrive). A file that already exists in
+    USER_DIR, or can't be moved, stays where it is (seed_folder and load_settings still find it).
+    Returns a line for the log, or "" when there was nothing to move."""
     try:
-        return {**DEFAULTS, **json.loads(SETTINGS.read_text(encoding="utf-8"))}
-    except (OSError, ValueError):
-        return dict(DEFAULTS)
+        if not LEGACY_DIR.is_dir() or os.path.normcase(LEGACY_DIR.resolve()) == os.path.normcase(USER_DIR.resolve()):
+            return ""
+    except OSError:
+        return ""
+    moved, kept = 0, 0
+    for src in sorted(p for p in LEGACY_DIR.rglob("*") if p.is_file()):
+        dst = USER_DIR / src.relative_to(LEGACY_DIR)
+        try:
+            if dst.exists():
+                kept += 1
+                continue
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(src), str(dst))
+            moved += 1
+        except OSError:
+            kept += 1
+    for d in sorted((p for p in LEGACY_DIR.rglob("*") if p.is_dir()), key=lambda p: len(p.parts), reverse=True):
+        with contextlib.suppress(OSError):
+            d.rmdir()
+    with contextlib.suppress(OSError):
+        LEGACY_DIR.rmdir()
+    return (f"Moved {moved} file(s) of your seeds and settings from {LEGACY_DIR} to {USER_DIR}"
+            + (f"; {kept} file(s) stayed in the old folder." if kept else ".") + "\n") if moved else ""
+
+
+def load_settings() -> dict:
+    for path in (SETTINGS, LEGACY_DIR / SETTINGS.name):
+        try:
+            return {**DEFAULTS, **json.loads(path.read_text(encoding="utf-8"))}
+        except (OSError, ValueError):
+            continue
+    return dict(DEFAULTS)
 
 
 def save_settings(s: dict) -> None:
@@ -414,6 +477,100 @@ def describe(folder: Path) -> tuple[str, dict | None]:
     else:
         lines.append("Installed: no seed (the game is unchanged)")
     return "\n".join(lines), info
+
+
+REPORT_DUMPS = 3                    # the newest ReHaunted minidumps that go into a bug report
+TEXT_SUFFIXES = (".txt", ".json", ".md", ".cfg", ".log")
+
+
+def report_files(folder: Path) -> list[tuple[str, Path]]:
+    """(name in the zip, file) for a bug report about this game folder:
+    - game/: the install record, the custom HD manifest, ReHaunted's config, version and crash log,
+      the newest minidumps (ReHaunted writes them next to the exe);
+    - saves/: SAVEn.ITD (+ ReHaunted's SAVEn.png) in the game folder, and GOG's DOSBox overlay
+      <GOG folder>/cloud_saves/INDARK/ (dosboxAlone1_single.conf mounts it over C:, so the
+      original game's saves land there);
+    - seed/: the installed seed's spoiler, placement and patch manifest (no game data)."""
+    out = []
+    if not folder.is_dir():
+        return out
+    for name in (I.MARKER, CH.MANIFEST, *I.CFG_NAMES, "version.txt", "crash_log.txt"):
+        p = I.find(folder, name)
+        if p and p.is_file():
+            out.append((f"game/{p.name}", p))
+    dumps = sorted(folder.glob("*.dmp"), key=lambda p: p.stat().st_mtime, reverse=True)
+    out += [(f"game/{p.name}", p) for p in dumps[:REPORT_DUMPS]]
+    for where, base in (("saves", folder), ("saves/cloud_saves", folder.parent / "cloud_saves" / folder.name)):
+        if base.is_dir():
+            out += [(f"{where}/{p.name}", p) for p in sorted(base.iterdir())
+                    if p.is_file() and re.fullmatch(r"SAVE\d+\.(ITD|PNG)", p.name, re.I)]
+    try:
+        rec = json.loads((folder / I.MARKER).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        rec = None
+    if rec and rec.get("seed_dir"):
+        seed = seed_folder(rec["seed_dir"])
+        for rel in ("spoiler.md", "placement.json", "patchset/manifest.json", "patchset/search_zones.txt"):
+            if (seed / rel).is_file():
+                out.append((f"seed/{rel}", seed / rel))
+    return out
+
+
+def scrub(text: str) -> str:
+    """The Windows user folder (it holds the user name) as %USERPROFILE%, in every spelling a
+    path takes in these files: backslashes, forward slashes, JSON-escaped backslashes."""
+    home = str(Path.home())
+    for form in (home.replace("\\", "\\\\"), home, home.replace("\\", "/")):
+        text = re.sub(re.escape(form), lambda _m: "%USERPROFILE%", text, flags=re.I)
+    return text
+
+
+def changed_since_install(folder: Path) -> list[str]:
+    """Installed files whose hash is no longer the one the install record wrote."""
+    try:
+        rec = json.loads((folder / I.MARKER).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return []
+    return [name for name, f in rec.get("files", {}).items()
+            if not (folder / name).is_file() or I.sha(folder / name) != f.get("after")]
+
+
+def bug_report(folder: Path, log: str, out_dir: Path) -> tuple[Path, str]:
+    """Write a bug-report zip for this game folder into out_dir; returns (the zip, the issue URL).
+    report.txt holds the app and Windows versions, what the folder holds (describe/detect),
+    installed files changed since install, and the window's log. Text files have the user
+    folder scrubbed (scrub); minidumps and saves go in as they are."""
+    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    zpath = out_dir / f"AITD-bug-report-{stamp}.zip"
+    files = report_files(folder)
+    text, info = describe(folder)
+    changed = changed_since_install(folder) if folder.is_dir() else []
+    report = "\n".join([
+        f"AITD Randomizer bug report, {stamp}",
+        f"App: {APP_NAME} {patcher_id()}",
+        f"Windows: {platform.platform()}",
+        f"Game folder: {folder}",
+        "", text, "",
+        "Changed since install: " + (", ".join(changed) if changed else "nothing"),
+        "Files in this report: " + (", ".join(n for n, _ in files) if files else "none"),
+        "", "detect:", json.dumps(info, indent=1) if info else "(no folder)",
+        "", "Log:", log.strip() or "(empty)", ""])
+    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("report.txt", scrub(report))
+        for name, p in files:
+            if p.suffix.lower() in TEXT_SUFFIXES:
+                z.writestr(name, scrub(p.read_text(encoding="utf-8", errors="replace")))
+            else:
+                z.write(p, name)
+    seed = info.get("installed_seed") if info else None
+    body = "\n".join([
+        "**What happened?**", "", "", "**What did you expect to happen?**", "", "",
+        "**Steps to reproduce (if you know them):**", "", "",
+        "---", f"Please attach the bug report zip by dragging it into this box: `{zpath.name}`",
+        f"App: {patcher_id()}", "Game: " + text.replace("\n", "; ")])
+    title = f"Bug report: seed {seed}" if seed is not None else "Bug report"
+    return zpath, ISSUES_URL + "?" + urllib.parse.urlencode({"title": title, "body": scrub(body)})
 
 
 class App:
@@ -588,6 +745,11 @@ class App:
         self.play_tip = Tip(self.play, "")
         self.launch = (None, "")
         ttk.Button(a, text="About", command=self.about).pack(side="right")
+        bug = ttk.Button(a, text="Report Bug", command=self.report_bug)
+        bug.pack(side="right", padx=(6, 0))
+        Tip(bug, "Saves a zip with what is needed to look into a problem (the install record, the "
+                "seed's spoiler, your saves, ReHaunted crash logs) and opens the project's issue page, "
+                "where you describe the problem and attach the zip.")
         ttk.Button(a, text="Seed folder", command=self.open_seeds).pack(side="right", padx=6)
         sp = ttk.Button(a, text="Spoiler...", command=self.spoiler)
         sp.pack(side="right")
@@ -1370,7 +1532,7 @@ class App:
         except (OSError, ValueError):
             messagebox.showinfo(APP_NAME, "No seed is installed in this folder.")
             return
-        path = SEEDS / str(rec.get("seed_dir")) / "spoiler.md"
+        path = seed_folder(rec.get("seed_dir")) / "spoiler.md"
         if not path.is_file():
             messagebox.showinfo(APP_NAME, f"The spoiler of seed {rec.get('seed')} is not on this computer "
                                           f"(looked for {path}).")
@@ -1411,6 +1573,29 @@ class App:
         SEEDS.mkdir(parents=True, exist_ok=True)
         os.startfile(SEEDS)
 
+    def report_bug(self):
+        folder = Path(self.folder.get().strip()) if self.folder.get().strip() else Path()
+        if not messagebox.askyesno(APP_NAME, (
+                "This saves a zip for a bug report with:\n"
+                "- the version of this app and what is installed in the game folder;\n"
+                "- the installed seed's spoiler (where every item is);\n"
+                "- your save games;\n"
+                "- ReHaunted's crash log and crash dumps, if there are any;\n"
+                "- this window's log.\n\n"
+                "Your Windows user folder is removed from the text files; crash dumps can still "
+                "contain your user name. Nothing is sent: the project's issue page opens in your "
+                "browser (you need a GitHub account), where you describe the problem and attach "
+                "the zip.\n\nSave the bug report?")):
+            return
+        try:
+            zpath, url = bug_report(folder, self.log.get("1.0", "end"), REPORTS)
+        except OSError as e:
+            messagebox.showerror(APP_NAME, f"Could not save the bug report: {e}")
+            return
+        self.say(f"Bug report saved: {zpath}\nAttach it to the issue that opens in your browser.\n")
+        subprocess.Popen(["explorer", "/select,", str(zpath)])
+        webbrowser.open(url)
+
     def about(self):
         messagebox.showinfo(f"About {APP_NAME}", f"""{APP_NAME} {APP_VERSION}
 
@@ -1437,8 +1622,9 @@ def selftest(game: Path) -> int:
     bundle has every module and data file). GAME: a throwaway copy of a game folder. Randomizes
     seed 4242 with every option (hints too, for the original game), uninstalls, compares the whole folder; writes GAME.selftest.log."""
     log = Path(str(game) + ".selftest.log")
-    global SEEDS
+    global SEEDS, LEGACY_DIR
     SEEDS = Path(str(game) + ".seeds")
+    LEGACY_DIR = Path(str(game) + ".legacy")     # never the player's real folders
     with open(log, "w", encoding="utf-8") as f, contextlib.redirect_stdout(f):
         def tree():
             return {str(p.relative_to(game)): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -1463,12 +1649,15 @@ def selftest(game: Path) -> int:
 def main():
     if len(sys.argv) == 3 and sys.argv[1] == "--selftest":
         sys.exit(selftest(Path(sys.argv[2]).resolve()))
+    moved = move_legacy_dir()            # before App reads the settings
     root = tk.Tk()
     try:
         ttk.Style(root).theme_use("vista")
     except tk.TclError:
         pass
-    App(root)
+    app = App(root)
+    if moved:
+        app.say(moved)
     root.mainloop()
 
 
