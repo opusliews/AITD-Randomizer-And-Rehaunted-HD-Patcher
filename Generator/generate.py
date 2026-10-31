@@ -60,7 +60,7 @@ import spray as SPRAY             # noqa: E402  (the Bug Spray item, every rando
 SRC = gamedata.source_dir()      # ResearchRun/SourceCopy, or the player's game folder (the app)
 CAT = GEN / "Patcher" / "catalog"
 ROOT = GEN.parent
-VERSION = "v30 (2026-10-30)"   # rooms 8/9 keep vanilla's OBJ 222 life_mode with the lured worm; v29 the lured worm stays parked until the endgame; v28 names the 3rd Floor Study chest key
+VERSION = "v31 (2026-10-30)"   # the Bug Spray can shaded like vanilla models (palette ramp 0xF1..0xF9, black nozzle); v30 rooms 8/9 keep vanilla's OBJ 222 life_mode with the lured worm; v29 the lured worm stays parked until the endgame; v28 names the 3rd Floor Study chest key
 PART2_FAMILIES = {"container", "locked_container", "inventory_container", "breakage",
                   "monster_drop", "extra_search"}
 PUT_AT_FAMILIES = {"breakage", "monster_drop", "enemy_drop"}
@@ -1482,6 +1482,10 @@ def main(argv: list[str] | None = None) -> int:
         (out / "patchset" / "LISTSAMP.PAK").write_bytes(samp)
         files["LISTSAMP.PAK"] = {"source_sha256": hashlib.sha256((SRC / "LISTSAMP.PAK").read_bytes()).hexdigest(),
                                  "sha256": hashlib.sha256(samp).hexdigest()}
+        ress = SPRAY.palette_pak()                        # the can's yellow ramp (palette 0xF1..0xF9)
+        (out / "patchset" / "ITD_RESS.PAK").write_bytes(ress)
+        files["ITD_RESS.PAK"] = {"source_sha256": hashlib.sha256((SRC / "ITD_RESS.PAK").read_bytes()).hexdigest(),
+                                 "sha256": hashlib.sha256(ress).hexdigest()}
     glows = report.get("drop_glow") or {}
     if doors or a.visible_items or glows:                # new key records, door leaves, moved items, glows
         objets = O.write_objets(objs, 400)

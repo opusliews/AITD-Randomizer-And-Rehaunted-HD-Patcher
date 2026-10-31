@@ -263,3 +263,25 @@ def sample_pak() -> bytes:
     if not voc.startswith(b"Creative Voice File\x1a") or len(voc) > 64000:
         raise SystemExit(f"{SOUND_FILE}: not a VOC of at most 64000 bytes")
     return write_pak(list(ents) + [voc, voc])
+
+
+PALETTE_ENTRY = 3                         # ITD_RESS.PAK: the game palette (256 x RGB, 8-bit values)
+PALETTE_FILLER = (123, 115, 103)          # what vanilla 0xF0..0xFF hold
+
+
+def palette_pak() -> bytes:
+    """ITD_RESS.PAK with the can's yellow ramp (spray_assets.YELLOW_RAMP_RGB) in palette entries
+    YELLOW_RAMP_AT.. ; every other entry keeps its original bytes."""
+    import gamedata
+    import spray_assets as A
+    from aitd_pak import read_pak, rebuild_pak
+    src = gamedata.source_dir() / "ITD_RESS.PAK"
+    pal = bytearray(read_pak(src).entries[PALETTE_ENTRY].data)
+    if len(pal) != 768 or max(pal) <= 63:
+        raise SystemExit("ITD_RESS.PAK entry 3 is not the 8-bit game palette")
+    for k, rgb in enumerate(A.YELLOW_RAMP_RGB):
+        at = 3 * (A.YELLOW_RAMP_AT + k)
+        if tuple(pal[at:at + 3]) != PALETTE_FILLER:
+            raise SystemExit(f"palette entry {A.YELLOW_RAMP_AT + k:#x} is not the unused filler")
+        pal[at:at + 3] = bytes(rgb)
+    return rebuild_pak(src.read_bytes(), {PALETTE_ENTRY: bytes(pal)})

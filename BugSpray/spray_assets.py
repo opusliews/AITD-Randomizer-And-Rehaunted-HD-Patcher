@@ -14,7 +14,8 @@
   17 groups (the held body has no prop bones). Keyframe times are game timer ticks: 60 per second in DOS.
 
 Palette (ITD_RESS entry 3): no saturated yellow exists; 0x0E (255,255,135) is the only clear
-yellow, 0xD6 (75,95,35) the most saturated green, 0x6F near-black. Material 0 = flat.
+yellow, 0xD6 (75,95,35) the most saturated green; 0x6F is a dark teal (19,31,27), not black
+(the old nozzle colour), 0xBF is black. Material 0 = flat.
 Angles: 1024 = 360 degrees; negative x swings an arm forward (drinking anim 277: upper arm
 -202, forearm -190); positive x tilts the head down (idle anim 4 frame 1: head +60).
 """
@@ -26,7 +27,21 @@ sys.path[:0] = [str(HERE), str(HERE.parent / "AnimExport")]
 import aitd_model as M
 import body_io as B
 
-YELLOW, GREEN, BLACK = 0x0E, 0xD6, 0x6F
+YELLOW, GREEN, BLACK = "yellow", "green", "black"     # colour ramps (RAMPS), shaded per face
+# Each face gets one of 9 shades of its colour from the way it faces, like the vanilla jug (LISTBODY
+# 99/100: its side faces run 0x70..0x78 with the horizontal angle to a fixed direction about 20
+# degrees from the model's +x; Research/BugSpray.md "Shading"). The palette has a single clear
+# yellow (0x0E), so every seed with the spray writes a 9-step yellow ramp into palette entries
+# 0xF1..0xF9 (ITD_RESS entry 3; spray.palette_pak). No background, model or full-screen picture
+# uses 0xF1..0xFE: they all hold the filler (123,115,103) (user choice, 2026-10-30, option B).
+YELLOW_RAMP_AT = 0xF1
+YELLOW_RAMP_RGB = tuple(tuple(round(t + (l - t) * k / 8) for t, l in zip((255, 255, 135), (95, 90, 30)))
+                        for k in range(9))      # 0x0E's yellow down to a dark yellow
+RAMPS = {"yellow": tuple(range(YELLOW_RAMP_AT, YELLOW_RAMP_AT + 9)),
+         "green": tuple(range(0xD2, 0xDB)),            # 0xD6 (the can's green until now) in the middle
+         "black": (0xBC, 0xBC, 0xBD, 0xBD, 0xBE, 0xBE, 0xBF, 0xBF, 0xBF)}   # 0xBF = (0, 0, 0)
+LIGHT_DEG = 20                         # the bright side: degrees from the can's w axis towards -side
+TOP_SHADE, BOTTOM_SHADE = 1, 8
 SIDES = 8
 RADIUS, HEIGHT = 42, 200               # mm-like engine units; the player is about 1777 tall
 BANDS = (YELLOW, GREEN, YELLOW, GREEN, YELLOW)
@@ -89,16 +104,30 @@ def can_mesh(origin, axis, side):
     for f in (q(0, 1, 2, 3), q(4, 5, 6, 7), q(0, 1, 5, 4), q(1, 2, 6, 5), q(2, 3, 7, 6), q(3, 0, 4, 7)):
         polys.append((BLACK, f))
     centre = tuple(origin[i] + axis[i] * HEIGHT / 2 for i in range(3))
+    la = math.radians(LIGHT_DEG)
+    light = _norm(tuple(math.cos(la) * w[i] - math.sin(la) * u[i] for i in range(3)))
     out = []
-    for colour, f in polys:                                   # vanilla winding
+    for ramp, f in polys:                                     # vanilla winding
         p = [verts[i] for i in f]
         n = _cross(tuple(p[1][i] - p[0][i] for i in range(3)), tuple(p[2][i] - p[0][i] for i in range(3)))
         mid = tuple(sum(c[i] for c in p) / len(p) for i in range(3))
         inward = tuple(centre[i] - mid[i] for i in range(3))
         if sum(n[i] * inward[i] for i in range(3)) < 0:
             f = f[::-1]
-        out.append((colour, f))
+            n = tuple(-c for c in n)
+        out.append((RAMPS[ramp][shade(tuple(-c for c in _norm(n)), axis, light)], f))
     return [tuple(round(c) for c in v) for v in verts], out
+
+
+def shade(outward, axis, light):
+    """0 (lit) .. 8 (darkest): as the vanilla jug, linear in the horizontal angle between the
+    face and the light direction; faces along the can axis get fixed shades."""
+    up = sum(outward[i] * axis[i] for i in range(3))
+    if abs(up) > 0.7:
+        return TOP_SHADE if up > 0 else BOTTOM_SHADE
+    h = _norm(tuple(outward[i] - up * axis[i] for i in range(3)))
+    cos = max(-1.0, min(1.0, sum(h[i] * light[i] for i in range(3))))
+    return round(math.degrees(math.acos(cos)) / 180 * 8)
 
 
 INVENTORY_SCALE = 10      # user (DOS test T14, 2026-10-28): 1:1 was tiny in the inventory; vanilla

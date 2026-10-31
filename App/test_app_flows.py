@@ -107,6 +107,12 @@ def main(work: Path):
     }
     check(set(language_names.values()) == {key_name},
           f"A 3rd Floor Study chest key renamed in ENGLISH/USA ({language_names})")
+    old_res, new_res = read_pak(ORIG / "INDARK" / "ITD_RESS.PAK").entries, read_pak(game / "ITD_RESS.PAK").entries
+    pal_old, pal_new = old_res[3].data, new_res[3].data
+    changed = sorted({i // 3 for i in range(768) if pal_old[i] != pal_new[i]})
+    check(len(old_res) == len(new_res) and all(a.data == b.data for k, (a, b) in enumerate(zip(old_res, new_res)) if k != 3)
+          and changed == list(range(0xF1, 0xFA)) and tuple(pal_new[3 * 0xF1:3 * 0xF1 + 3]) == (255, 255, 135),
+          f"A Bug Spray yellow ramp: only palette entries 0xF1..0xF9 changed ({[hex(c) for c in changed]})")
     m = json.loads((A.SEEDS / "seed_4242" / "patchset" / "manifest.json").read_text(encoding="utf-8"))
     check(m["options"]["whole_mirrors"] and m["scripts"].get("553", {}).get("whole_mirrors"),
           "A Prevent mirrors from breaking: LIFE 553 patched")

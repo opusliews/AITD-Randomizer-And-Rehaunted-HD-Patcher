@@ -179,3 +179,22 @@ def write_pak(entries: list[bytes], header_word: int = 0) -> bytes:
         out += struct.pack("<IIIBBH", 0, len(data), len(data), 0, 0, 0)
         out += data
     return bytes(out)
+
+
+def rebuild_pak(raw: bytes, replace: dict[int, bytes]) -> bytes:
+    """Rebuild the PAK file `raw` with the entries in `replace` stored uncompressed; every other
+    entry keeps its on-disc block byte for byte (from its offset to the next one: compressed
+    entries are followed by bytes outside disc_size). With nothing replaced the result equals
+    `raw`."""
+    header_word, first = struct.unpack_from("<II", raw, 0)
+    count = first // 4 - 1
+    offsets = list(struct.unpack_from(f"<{count}I", raw, 4)) + [len(raw)]
+    out = bytearray(raw[:first])
+    for i in range(count):
+        struct.pack_into("<I", out, 4 + 4 * i, len(out))
+        if i in replace:
+            data = replace[i]
+            out += struct.pack("<IIIBBH", 0, len(data), len(data), 0, 0, 0) + data
+        else:
+            out += raw[offsets[i]:offsets[i + 1]]
+    return bytes(out)
