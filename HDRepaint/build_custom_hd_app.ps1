@@ -6,6 +6,7 @@ $ErrorActionPreference = "Stop"
 $Here = $PSScriptRoot
 $Gen = Split-Path $Here -Parent
 $Py = "C:\Tools\PythonFull\python.exe"
+if (-not (Test-Path $Py)) { $Py = (Get-Command python).Source }
 
 $args = @("-m", "PyInstaller", "--noconfirm", "--clean", "--onefile", "--windowed",
           "--name", "ReHaunted Custom Textures",

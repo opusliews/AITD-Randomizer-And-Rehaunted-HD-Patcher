@@ -25,7 +25,7 @@ from tkinter import filedialog, messagebox, ttk
 from tkinter.scrolledtext import ScrolledText
 
 APP_NAME = "AITD Randomizer"
-APP_VERSION = "1.0 (2026-10-28)"
+APP_VERSION = "1.1 (2026-10-31)"
 FROZEN = getattr(sys, "frozen", False)
 if FROZEN:
     sys.dont_write_bytecode = True    # the bundled tools are .py files in a temporary folder
