@@ -38,7 +38,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-sys.path.insert(0, r"C:\Projects\AITD\Generated\Patcher")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "Patcher"))
 import aitd_life as L  # noqa: E402
 import placement as P  # noqa: E402
 

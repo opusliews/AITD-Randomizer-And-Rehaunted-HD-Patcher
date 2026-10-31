@@ -36,7 +36,7 @@ import aitd_life as L          # noqa: E402
 import aitd_track as T         # noqa: E402
 from aitd_pak import read_pak, write_pak   # noqa: E402
 
-ROOT = Path(__file__).resolve().parents[2]          # C:\Projects\AITD
+ROOT = Path(__file__).resolve().parents[2]          # project root
 RUN = ROOT / "Generated" / "ResearchRun"
 SOURCE = RUN / "SourceCopy"
 ORIGINAL = ROOT / "OriginalGame" / "INDARK"

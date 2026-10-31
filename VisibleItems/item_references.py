@@ -5,12 +5,12 @@ import re
 import sys
 from pathlib import Path
 
-sys.path.insert(0, r"C:\Projects\AITD\Generated\Patcher")
+ROOT = Path(__file__).resolve().parents[2]
 import aitd_life as L  # noqa: E402
 import aitd_objets as O  # noqa: E402
 import aitd_pak as P  # noqa: E402
 
-G = Path(r"C:\Projects\AITD\OriginalGame\INDARK")
+G = ROOT / "OriginalGame" / "INDARK"
 VISIBLE = [13, 56, 86, 83, 102, 107, 110, 120, 121, 123, 144, 125, 163, 171, 199, 182, 232, 17, 25, 96, 148, 205]
 
 

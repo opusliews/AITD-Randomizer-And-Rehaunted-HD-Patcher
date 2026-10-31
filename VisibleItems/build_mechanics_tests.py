@@ -10,7 +10,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-sys.path.insert(0, r"C:\Projects\AITD\Generated\Patcher")
+sys.path.insert(0, str(HERE.parent / "Patcher"))
 import aitd_life as L  # noqa: E402
 import aitd_objets as O  # noqa: E402
 from aitd_pak import read_pak, write_pak  # noqa: E402
@@ -18,7 +18,7 @@ import build_visual_tests as BV  # noqa: E402
 import mechanics as M  # noqa: E402
 import placement as P  # noqa: E402
 
-SRC = Path(r"C:\Projects\AITD\OriginalGame\INDARK")
+SRC = P.ROOT / "OriginalGame" / "INDARK"
 SCN = P.ROOT / "Generated" / "Scenarios"
 PATCHSET = SCN / "patchsets" / "vis_mechanics"
 OUT = SCN / "visible_mech"

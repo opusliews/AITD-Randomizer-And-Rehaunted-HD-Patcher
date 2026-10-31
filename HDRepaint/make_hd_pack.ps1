@@ -16,6 +16,7 @@ $ErrorActionPreference = "Stop"
 $Here = $PSScriptRoot
 $Root = Split-Path (Split-Path $Here -Parent) -Parent
 $Py = "C:\Tools\PythonFull\python.exe"
+if (-not (Test-Path $Py)) { $Py = (Get-Command python).Source }
 if (-not $Backgrounds) { $Backgrounds = Join-Path $Here "backgrounds_custom" }
 if (-not $Models) { $Models = Join-Path $Here "models_custom" }
 if (-not $Out) { $Out = Join-Path $Here "pack\AITD Custom HD" }
