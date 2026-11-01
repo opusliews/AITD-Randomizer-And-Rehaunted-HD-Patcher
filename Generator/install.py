@@ -175,6 +175,7 @@ EDITION = {
     "b70c8a998f406c24d6b4683355c0db15bc5897b588af77025d356f676b266bc8": "edition B70C8A99 (as 926D37BF; the drop glow is told by its model, 274, so its colour can be 0x50 like the Talisman's)",
     "edf748ed956c94bab952553cd0828c861189f6433770a03ad8b004c64e5ed632": "edition EDF748ED (as B70C8A99; sound_then plays its second sample, e.g. the laugh after the library doors close)",
     "4b089127fcd6783cc379d547e1c91c4e2d52679a72ea1656c25499ecb0b94d80": "edition 4B089127 (as EDF748ED; a thrown item can't be picked up for 6 seconds after it lands)",
+    "3296f71fea0419b5ced00a0b000051bd21a80fa84df0df77c4663c4731ad264f": "edition 3296F71F (ReHaunted 2.5 base: as 4B089127 merged with upstream 2.5.0.0110; game mode always AITD1)",
 }
 KNOWN["Tatou.exe"].update({h: "AITD Randomizer " + v for h, v in EDITION.items()})
 

@@ -26,7 +26,7 @@ from tkinter import filedialog, messagebox, ttk
 from tkinter.scrolledtext import ScrolledText
 
 APP_NAME = "AITD Randomizer"
-APP_VERSION = "1.2 (2026-10-31)"
+APP_VERSION = "1.3 (2026-11-01)"
 FROZEN = getattr(sys, "frozen", False)
 if FROZEN:
     sys.dont_write_bytecode = True    # the bundled tools are .py files in a temporary folder
@@ -35,7 +35,7 @@ GEN = BASE / "Generated"
 for _d in ("Generator", "Patcher", "Logic", "VisibleItems", "HDRepaint"):
     sys.path.insert(0, str(GEN / _d))
 EDITION_EXE = (BASE / "edition" / "Tatou.exe" if FROZEN else
-               BASE / "ReHaunted24" / "TatouSource" / "build" / "randomizer-edition" / "Fitd" / "Tatou.exe")
+               BASE / "ReHaunted24" / "TatouSource" / "build" / "e25" / "Fitd" / "Tatou.exe")
 def documents_dir() -> Path:
     """The Windows Documents folder (known folder FOLDERID_Documents). It follows a Documents folder
     moved to OneDrive or another drive, which Path.home()/"Documents" does not; that path is the
@@ -125,7 +125,7 @@ HELP = {
                  "the original rooms exactly, with the original masks) from the custom HD pack, a "
                  "separate download: choose its folder below (it holds TatouHd.exe and the "
                  "backgrounds_custom folder). Start TatouHd.exe instead of Tatou.exe to play with them; "
-                 "HD backgrounds must be on in ReHaunted's options. ReHaunted 2.4 only. Only "
+                 "HD backgrounds must be on in ReHaunted's options. ReHaunted 2.4 or 2.5. Only "
                  "TatouHd.exe and backgrounds_custom are added; Unpatch Game removes them again. "
                  "While a seed is installed this choice is locked: unpatch the game to change it.",
     "folder": "The folder you play from: the one holding INDARK.EXE (the original game, e.g. "
@@ -962,7 +962,7 @@ class App:
             self.hd_saved = None
 
     def sync_hd(self):
-        """Custom HD backgrounds: ReHaunted 2.4 folders only (custom_hd.detect); the row is hidden
+        """Custom HD backgrounds: ReHaunted 2.4 and 2.5 folders only (custom_hd.detect); the row is hidden
         for the original game. The status line says what is wrong, if anything."""
         rows = (self.hd_cb, self.hd_entry, self.hd_browse, self.hd_status)
         if not self.has_rehaunted():

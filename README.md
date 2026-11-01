@@ -28,7 +28,7 @@ for a complete release package.
 
 - Windows 10 or Windows 11.
 - A legally obtained GOG or Steam installation of *Alone in the Dark*.
-- Either the original DOS version or ReHaunted 2.4, depending on the selected
+- Either the original DOS version or ReHaunted 2.4 or 2.5, depending on the selected
   patching mode.
 
 Free in the Dark (FITD) is not a supported installation target.

@@ -292,7 +292,7 @@ def main(work: Path):
     r = randomize(rs, {**PLAIN, **hd}, True)
     check(not r[2] and "not the randomizer edition build" in r[1] and tree(rs) == before,
           "G0 HD pack with the test TatouHd (not the edition): refused before any write")
-    shutil.copy2(hd_build / "hd-edition" / "Fitd" / "TatouHd.exe", assets / "TatouHd.exe")
+    shutil.copy2(hd_build / "h25" / "Fitd" / "TatouHd.exe", assets / "TatouHd.exe")
     rg = work / "G_rehaunted24"
     rg.mkdir()
     (rg / "Tatou.exe").write_bytes(b"placeholder ReHaunted exe")

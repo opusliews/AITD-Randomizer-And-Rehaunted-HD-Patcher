@@ -9,7 +9,7 @@ $Gen = Split-Path $App -Parent
 $Root = Split-Path $Gen -Parent
 $Py = "C:\Tools\PythonFull\python.exe"
 if (-not (Test-Path $Py)) { $Py = (Get-Command python).Source }
-$Edition = Join-Path $Root "ReHaunted24\TatouSource\build\randomizer-edition\Fitd\Tatou.exe"
+$Edition = Join-Path $Root "ReHaunted24\TatouSource\build\e25\Fitd\Tatou.exe"
 $files = @(
     "Generator\generate.py", "Generator\install.py", "Generator\locked_doors.py", "Generator\verify_seed.py",
     "Generator\walkthrough.py", "Generator\zone_table.py",

@@ -1,5 +1,5 @@
 """ReHaunted Custom Textures: the standalone patcher for the custom HD backgrounds (no randomizer).
-Adds TatouHd.exe and backgrounds_custom/ to a ReHaunted 2.4 folder, verifies, and uninstalls
+Adds TatouHd.exe and backgrounds_custom/ to a ReHaunted 2.4 or 2.5 folder, verifies, and uninstalls
 (custom_hd.py does the work; the randomizer app uses the same module and the same pack).
 
 It ships inside the custom HD pack (make_hd_pack.ps1):
@@ -57,7 +57,7 @@ class App:
         self.game = tk.StringVar(value=s.get("game", ""))
         self.pack = tk.StringVar(value=s.get("pack") or str(HERE))
         self.data = tk.StringVar(value=s.get("data", ""))
-        self.status = self._row(main, "ReHaunted 2.4 folder (the one holding Tatou.exe)", self.game)
+        self.status = self._row(main, "ReHaunted 2.4 or 2.5 folder (the one holding Tatou.exe)", self.game)
         self.pack_status = self._row(main, "Custom HD pack (TatouHd.exe and backgrounds_custom)", self.pack)
         self.data_status = self._row(main, "Original game files (only needed if not found automatically: "
                                            "the folder holding ITD_RESS.PAK)", self.data)

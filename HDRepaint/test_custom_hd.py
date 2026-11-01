@@ -17,7 +17,7 @@ import custom_hd as CH  # noqa: E402
 ROOT = HERE.parents[1]
 BUILD = ROOT / "ReHaunted24/TatouSource/build"
 SCEN_EXE = BUILD / "hd-repaint/Fitd/TatouHd.exe"
-ED_EXE = BUILD / "hd-edition/Fitd/TatouHd.exe"
+ED_EXE = BUILD / "h25/Fitd/TatouHd.exe"
 GOG = ROOT / "OriginalGame/INDARK"
 results = []
 
@@ -82,7 +82,7 @@ def main(work: Path):
     check("detect: 2.4 by version.txt, no problems", d["rehaunted"] and not d["problems"])
     check("exe_info: marker builds and old builds recognised, the edition Tatou.exe not",
           CH.exe_info(SCEN_EXE)[0] == "scenario" and CH.exe_info(ED_EXE)[0] == "edition"
-          and CH.exe_info(BUILD / "randomizer-edition/Fitd/Tatou.exe") is None)
+          and CH.exe_info(BUILD / "e25/Fitd/Tatou.exe") is None)
     m = CH.install(game, pack, log=log.append)
     check("install: manifest lists exe + 5 stills + 10 frames, no game data", len(m["files"]) == 16 and not m["game_data"])
     check("install: Thumbs.db skipped with a note", any("Thumbs.db" in s for s in log))
@@ -160,8 +160,15 @@ def main(work: Path):
     (pack / "TatouHd.exe").unlink()
     check("pack without TatouHd.exe: refused", "no TatouHd.exe in" in refused(quiet, game, pack))
     shutil.copy2(SCEN_EXE, pack / "TatouHd.exe")
+    for text, want in (("Re-Haunted 2.5.0.0110", "2.5"), ("2.5.0.0110\n", "2.5"), ("Re-Haunted 2.4.0.1008", "2.4")):
+        (game / "version.txt").write_text(text)
+        d = CH.detect(game)
+        check(f"version.txt {text.strip()!r}: accepted as {want}",
+              not d["problems"] and (d["rehaunted"] or "").startswith(want))
     (game / "version.txt").write_text("2.3.0.900\n")
     check("ReHaunted 2.3 (version.txt, unknown exe): refused", "not ReHaunted 2.4" in refused(quiet, game, pack))
+    (game / "version.txt").write_text("Re-Haunted 2.6.0.0001\n")
+    check("ReHaunted 2.6 (version.txt, unknown exe): refused", "not ReHaunted 2.4 or 2.5" in refused(quiet, game, pack))
     (game / "Tatou.exe").unlink()
     check("no Tatou.exe: refused", "no Tatou.exe" in refused(quiet, game, pack))
 

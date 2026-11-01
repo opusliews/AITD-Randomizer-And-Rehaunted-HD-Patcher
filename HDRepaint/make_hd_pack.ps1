@@ -5,7 +5,7 @@
 #       [-Backgrounds <your backgrounds_custom folder>] [-Models <your models_custom folder>] [-Out <pack folder>]
 # Result:
 #   <Out>\ReHaunted Custom Textures.exe   the patcher (build_custom_hd_app.ps1)
-#   <Out>\TatouHd.exe                     the edition build (build\hd-edition): no game data inside
+#   <Out>\TatouHd.exe                     the edition build (build\h25): no game data inside
 #   <Out>\backgrounds_custom\...          mirrored from -Backgrounds (stills + anim_* folders)
 #   <Out>\models_custom\...               mirrored from -Models when that folder exists (custom models,
 #                                         Generated\HDModel\aitd_blender.py); otherwise left out
@@ -21,7 +21,7 @@ if (-not $Backgrounds) { $Backgrounds = Join-Path $Here "backgrounds_custom" }
 if (-not $Models) { $Models = Join-Path $Here "models_custom" }
 if (-not $Out) { $Out = Join-Path $Here "pack\AITD Custom HD" }
 $Patcher = Join-Path $Here "dist\ReHaunted Custom Textures.exe"
-$TatouHd = Join-Path $Root "ReHaunted24\TatouSource\build\hd-edition\Fitd\TatouHd.exe"
+$TatouHd = Join-Path $Root "ReHaunted24\TatouSource\build\h25\Fitd\TatouHd.exe"
 foreach ($p in $Backgrounds, $Patcher, $TatouHd) { if (-not (Test-Path $p)) { throw "missing $p" } }
 
 New-Item -ItemType Directory -Force $Out | Out-Null
@@ -36,7 +36,7 @@ if (Test-Path $Models) {
     Remove-Item -Recurse -Force $PackModels
 }
 @"
-Custom HD backgrounds for Alone in the Dark: Re-Haunted 2.4
+Custom HD backgrounds for Alone in the Dark: Re-Haunted 2.4 and 2.5
 
 Without the randomizer: run "ReHaunted Custom Textures.exe", choose your ReHaunted folder, press
 Install / Update. With the randomizer: tick "Include custom HD backgrounds" in the AITD Randomizer

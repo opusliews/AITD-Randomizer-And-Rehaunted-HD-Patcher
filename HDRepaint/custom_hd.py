@@ -1,5 +1,5 @@
 """Install, verify and uninstall the custom HD backgrounds (TatouHd.exe + backgrounds_custom/)
-in a ReHaunted 2.4 folder. One implementation, used by:
+in a ReHaunted 2.4 or 2.5 folder. One implementation, used by:
   - the standalone patcher (custom_hd_app.py, and this file's command line);
   - the randomizer app (option "Include custom HD backgrounds").
 
@@ -33,8 +33,9 @@ pack, so a new TatouHd only needs a new pack: our builds are recognised by the m
 "TatouHd build: flavor=<flavor>" in the exe (older builds by hash).
 
 Rules:
-- Only ReHaunted 2.4 folders (version.txt 2.4.x, or a known 2.4 Tatou.exe); anything else is
-  refused before anything is written.
+- Only ReHaunted 2.4 and 2.5 folders (version.txt 2.4.x / 2.5.x, or a known Tatou.exe of those);
+  anything else is refused before anything is written. TatouHd is 2.5-based since 2026-11-01 and
+  runs on either version's files (Research/ReHaunted25Merge.md).
 - Written: TatouHd.exe, backgrounds_custom/, models_custom/ and the manifest; with the edition TatouHd (no
   embedded game data) and no game files in the folder, also the original game files, copied from
   the player's own GOG/Steam/CD copy (install.py's search, checked against the GOG hashes).
@@ -82,7 +83,10 @@ TATOUHD = {
         ("edition", "TatouHd edition 8FCD9EC7 (2026-10-20: randomizer edition 3526D627 + custom stills and animations)"),
 }
 
-# Tatou.exe builds known to be ReHaunted 2.4 (install.py KNOWN/EDITION)
+# ReHaunted versions the custom HD backgrounds install into (version.txt "major.minor")
+SUPPORTED = ("2.4", "2.5")
+VERSION_RE = re.compile(r"(\d+)\.(\d+)")
+# Tatou.exe builds known to be a supported ReHaunted (install.py KNOWN/EDITION): hash -> description
 REHAUNTED_24 = {
     "f90bf9522e41222e536c7968441b663df31de89cc722f61bda1fe7f61dfd8b79": "ReHaunted 2.4.0.1008, official release",
 }
@@ -107,8 +111,8 @@ MODEL_PIC_RE = re.compile(r"^(body|other|ramp|spheres)_(LISTBODY|LISTBOD2)_(\d{3
 try:                                      # the game-data search and the edition hashes
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "Generator"))
     import install as I
-    for _h, _desc in I.EDITION.items():   # the 2.4-based randomizer editions count as ReHaunted 2.4
-        if "2.4" in _desc or _desc.startswith("edition") and "as " in _desc:
+    for _h, _desc in I.EDITION.items():   # the 2.4- and 2.5-based randomizer editions count as supported
+        if "2.4" in _desc or "2.5" in _desc or _desc.startswith("edition") and "as " in _desc:
             REHAUNTED_24.setdefault(_h, "AITD Randomizer " + _desc)
 except ImportError:
     I = None
@@ -187,19 +191,20 @@ def detect(game: Path) -> dict:
         h = sha(tatou)
         info["tatou"] = {"sha256": h, "identified_as": REHAUNTED_24.get(h, "unknown build")}
     known_exe = info["tatou"] is not None and info["tatou"]["sha256"] in REHAUNTED_24
-    v24 = bool(info["version"]) and info["version"].startswith("2.4")
+    m = VERSION_RE.search(info["version"] or "")      # "2.4.0.1008" or "Re-Haunted 2.5.0.0110"
+    minor = f"{m.group(1)}.{m.group(2)}" if m else None
     if tatou is None:
         info["problems"].append("no Tatou.exe here: not a ReHaunted folder (choose the folder that holds "
                                 "ReHaunted's Tatou.exe)")
-    elif not (known_exe or v24):
-        info["problems"].append("this is not ReHaunted 2.4 (version.txt says "
+    elif not (known_exe or minor in SUPPORTED):
+        info["problems"].append("this is not ReHaunted 2.4 or 2.5 (version.txt says "
                                 f"{info['version'] or 'nothing'}, Tatou.exe is an unknown build); "
-                                "the custom HD backgrounds need ReHaunted 2.4")
+                                "the custom HD backgrounds need ReHaunted 2.4 or 2.5")
     else:
-        info["rehaunted"] = "2.4" + (f" ({info['version']})" if info["version"] else "")
+        info["rehaunted"] = (minor if minor in SUPPORTED else "2.4") + (f" ({info['version']})" if info["version"] else "")
         if not known_exe:
             info["notes"].append("Tatou.exe is not a build this tool knows, but version.txt says "
-                                 f"{info['version']}: accepted as ReHaunted 2.4")
+                                 f"{info['version']}: accepted as ReHaunted {minor}")
     info["hd_archive"] = find_ci(game, "backgrounds_hd.hda") is not None
     hd = read_cfg(game).get("graphics.hdBackgrounds")
     info["hd_backgrounds_on"] = None if hd is None else hd.lower() in ("true", "1")
